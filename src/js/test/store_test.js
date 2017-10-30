@@ -13,26 +13,24 @@ describe('store.js', function() {
     });
 
     it('gets and sets', async function() {
-      let [key, val] = ['key', 'val'],
-        res;
-
-      await this.dmap.set(key, val);
-      res = await this.dmap.get(key);
-
-      assert.equal(res, val);
+      let keys = 'abcdefg'.split('');
+      for (let i = 0; i < keys.length; i++) {
+        await this.dmap.set(keys[i], i);
+        assert.equal(await this.dmap.get(keys[i]), i);
+      }
     });
 
     it('loads from disk', async function() {
-      let disk = new FakeDisk(),
-        name = 'name',
-        [key, val] = ['key', 'val'];
+      let keys = 'abcdefg'.split('');
 
-      let dmap = new DiskMap(name, disk);
-      dmap.set(key, val);
+      for (let i = 0; i < keys.length; i++) {
+        await this.dmap.set(keys[i], i);
+        assert.equal(await this.dmap.get(keys[i]), i);
+      }
 
-      let newDisk = await DiskMap.load(name, disk);
-      assert.deepEqual(newDisk.keys, dmap.keys, 'same keys');
-      assert.deepEqual(await newDisk.toMap(), await dmap.toMap(), 'same map');
+      let newDisk = await DiskMap.load(this.dmap.name, this.dmap.disk);
+      assert.deepEqual(newDisk.keys, this.dmap.keys, 'same keys');
+      assert.deepEqual(await newDisk.toMap(), await this.dmap.toMap(), 'same map');
     });
   });
 });
