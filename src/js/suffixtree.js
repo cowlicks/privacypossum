@@ -3,69 +3,89 @@
 (function(exports) {
 
 const SENTINEL = '.',
-  TREE_KEY = 'TREE_KEY';
+  LABEL = 'label',
+  root_label = 'root';
 
-
-class Tree {
-  constructor() {
-    this._root = new Map();
-    this._keys = new Set();
+class Node extends Map {
+  constructor(label) {
+    super();
+    this[LABEL] = label;
   }
 
-  static deserialize(string) {
-    let out = new Tree();
-    out.loadStore(JSON.parse(string));
-    return out;
+  setLabelData(data) {
+    this[SENTINEL] = data;
+  }
+
+  getLabelData() {
+    return this[SENTINEL];
+  }
+
+  hasLabelData() {
+    return this.hasOwnProperty(SENTINEL);
+  }
+}
+
+function setAgg(node, part) {
+  if (!node.has(part)) {
+    node.set(part, new Node(part));
+  }
+  return node.get(part);
+}
+
+function getAgg(node, part) {
+  return node.get(part);
+}
+
+function branchAgg(node, part, agg) {
+  node = node.get(part);
+  if (typeof node !== 'undefined' && node.hasLabelData()) {
+    agg.set(part, node.getLabelData());
+  }
+  return node;
+};
+
+class Tree {
+  constructor(splitter) {
+    this.splitter = splitter;
+    this._root = new Node(root_label);
+  }
+
+  aggregate(key, aggFunc, aggregator) {
+    let parts = this.splitter(key),
+      len = parts.length,
+      node = this._root;
+
+    for (let i = 0; i < len; i++) {
+      let part = parts[i];
+      node = aggFunc(node, part, aggregator);
+      if (typeof node === 'undefined') {
+        return undefined;
+      }
+    }
+    return node
   }
 
   setItem(key, val) {
-    let parts = this.splitter(key),
-      len = parts.length,
-      node = this._root;
-
-    this._keys.add(key);
-
-    for (let i = 0; i < len; i++) {
-      let part = parts[i];
-      if (!node.has(part)) {
-        node.set(part, new Map());
-      }
-      node = node.get(part);
-    }
-    node[SENTINEL] = val;
+    let node = this.aggregate(key, setAgg);
+    node.setLabelData(val);
   }
 
   getItem(key) {
-    let parts = this.splitter(key),
-      len = parts.length,
-      node = this._root;
-
-    if (!this._keys.has(key)) {
-      return undefined;
-    }
-
-    for (let i = 0; i < len; i++) {
-      let part = parts[i];
-      node = node.get(part);
-    }
-    return node[SENTINEL];
+    let node = this.aggregate(key, getAgg);
+    return (typeof node === 'undefined') ? undefined : node.getLabelData();
   }
 
-  splitter(splitme) {
-    return splitme.split('.').reverse();
-  }
-
-  serialize() {
-    let data = [];
-    this._keys.forEach(key => data.push([key, this.getItem(key)]));
-    return JSON.stringify({[TREE_KEY]: data});
-  }
-
-  loadStore(data) {
-    data[TREE_KEY].forEach(keyValue => this.setItem(...keyValue));
+  getBranchData(key) {
+    let aggregator = new Map();
+    let node = this.aggregate(key, branchAgg, aggregator)
+    return (typeof node == 'undefined') ? undefined : aggregator;
   }
 };
 
-Object.assign(exports, {Tree});
+function splitter(splitme) {
+  return splitme.split('.').reverse();
+}
+
+Object.assign(exports, {Tree, splitter});
 
 })(typeof exports == 'undefined' ? require.scopes.suffixtree = {} : exports);

@@ -1,32 +1,45 @@
 'use strict';
 
 const assert = require('chai').assert,
-  Tree = require('../suffixtree').Tree;
+  {Tree, splitter} = require('../suffixtree');
 
 describe('suffixtree.js', function() {
-  let host1 = 'example.com',
-    host2 = 'foo.bar.com',
-    val1 = 42,
-    val2 = 'value';
+  let host = 'bar.foo.example.com',
+    parts = host.split('.'),
+    len = parts.length;
 
   beforeEach(function() {
-    this.tree = new Tree();
+    this.tree = new Tree(splitter);
   });
 
   it('getItem and setItem', function() {
-    this.tree.setItem(host1, val1);
-    assert.equal(this.tree.getItem(host1), val1);
-    assert.isUndefined(this.tree.getItem('nope'));
+    for (let i = 2; i <= len; i++) {
+      let name = parts.slice(-i).join('.');
+
+      this.tree.setItem(name, i);
+
+      assert.equal(this.tree.getItem(name), i);
+    }
+
   });
 
-  it('serializes and unserializes', function() {
-    this.tree.setItem(host1, val1);
-    this.tree.setItem(host2, val2);
+  describe('#aggregate', function() {
+    it('gathers along a path', function() {
+      let expected = new Map();
+      for (let i = 2; i <= len; i++) {
+        let n = parts.slice(-i).join('.');
 
-    let string = this.tree.serialize();
-    let newTree = Tree.deserialize(string);
+        this.tree.setItem(n, i);
 
-    assert.equal(this.tree.getItem(host1), newTree.getItem(host1));
-    assert.equal(this.tree.getItem(host2), newTree.getItem(host2));
+        expected.set(n.split('.').shift(), i);
+      }
+
+      let result = this.tree.getBranchData(host);
+      assert.deepEqual(result, expected);
+      expected.forEach(key => assert.equal(result.get(key), expected.get(key)));
+    });
+    it('returns undefined for bad paths', function() {
+      assert.isUndefined(this.tree.getBranchData('foo.bar.com'));
+    });
   });
 });
