@@ -1,21 +1,8 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {DiskMap} = require('../store');
-
-function asyncify(func) {
-  return new Promise(resolve => setTimeout(() => resolve(func())));
-}
-
-class FakeDisk extends Map {
-  get(key, cb) {
-    return asyncify(() => cb(super.get(key)));
-  }
-
-  set(key, value, cb) {
-    return asyncify(() => cb(super.set(key, value)));
-  }
-}
+  {DiskMap} = require('../store'),
+  {FakeDisk} = require('./testing_utils');
 
 describe('store.js', function() {
   describe('DiskMap', function() {
