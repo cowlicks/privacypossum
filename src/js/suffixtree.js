@@ -65,12 +65,12 @@ class Tree {
     return node
   }
 
-  setItem(key, val) {
+  set(key, val) {
     let node = this.aggregate(key, setAgg);
     node.setLabelData(val);
   }
 
-  getItem(key) {
+  get(key) {
     let node = this.aggregate(key, getAgg);
     return (typeof node === 'undefined') ? undefined : node.getLabelData();
   }

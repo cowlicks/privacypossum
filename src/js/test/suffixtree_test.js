@@ -12,13 +12,13 @@ describe('suffixtree.js', function() {
     this.tree = new Tree(splitter);
   });
 
-  it('getItem and setItem', function() {
+  it('get and set', function() {
     for (let i = 2; i <= len; i++) {
       let name = parts.slice(-i).join('.');
 
-      this.tree.setItem(name, i);
+      this.tree.set(name, i);
 
-      assert.equal(this.tree.getItem(name), i);
+      assert.equal(this.tree.get(name), i);
     }
 
   });
@@ -29,7 +29,7 @@ describe('suffixtree.js', function() {
       for (let i = 2; i <= len; i++) {
         let n = parts.slice(-i).join('.');
 
-        this.tree.setItem(n, i);
+        this.tree.set(n, i);
 
         expected.set(n.split('.').shift(), i);
       }
