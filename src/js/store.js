@@ -5,8 +5,8 @@
 class DiskMap {
   constructor(name, disk) {
     this.disk = disk;
-    this.name = name + ':';
-    this.keys_key = 'keys_for_' + name + ':';
+    this.name = name;
+    this.keys_key = 'keys_for_' + name;
     this.keys = new Set();
   }
 
@@ -21,7 +21,7 @@ class DiskMap {
 
   }
 
-  getKeys() {
+  async getKeys() {
     return new Promise(resolve => {
       this.disk.get(this.keys_key, keys => {
         resolve(keys ? new Set(keys) : new Set([]));
@@ -41,8 +41,9 @@ class DiskMap {
 
   async toMap() {
     let out = new Map();
-    this.keys.forEach(key => out.set(key, out.get(key)));
-    await Promise.all(Array.from(out.values()));
+    for (let key of this.keys) {
+      out.set(key, await this.get(key));
+    }
     return out;
   }
 

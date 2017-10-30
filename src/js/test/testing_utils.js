@@ -1,6 +1,6 @@
 'use strict'
 
-function asyncify(func) {
+async function asyncify(func) {
   return new Promise(resolve => setTimeout(() => resolve(func())));
 }
 
