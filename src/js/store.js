@@ -12,12 +12,13 @@ class DiskMap {
 
   static async load(name, disk) {
     let out = new DiskMap(name, disk);
-    await out.initKeys();
+    await out.loadKeys();
     return out;
   }
 
-  async initKeys() {
+  async loadKeys() {
     this.keys = await this.getKeys();
+
   }
 
   getKeys() {
