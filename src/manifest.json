@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "name": "privacy-possum",
+  "author": "cowlicks@riseup.net",
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "woop-NoopscooPsnSXQ@jetpack"
+    }
+  },
+  "incognito": "spanning",
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "contextMenus",
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "storage",
+    "cookies",
+    "privacy"
+  ],
+  "background": {
+    "scripts": [
+      "js/bootstrap.js",
+      "js/suffixtree.js",
+      "js/store.js",
+      "js/tabs.js",
+      "js/domain_actions.js",
+      "js/webrequest.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/contentscripts/injector.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    "js/web_accessible/fingercounting.js"
+  ]
+}
