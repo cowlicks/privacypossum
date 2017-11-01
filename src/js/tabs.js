@@ -37,30 +37,30 @@ class Frame {
 }
 
 
-function Tabs() {
-  this._data = new Map();
-}
+class Tabs {
+  constructor() {
+    this._data = new Map();
+  }
 
-Tabs.prototype = {
-  getTabUrl: function(tabId) {
+  getTabUrl(tabId) {
     try {
       return this.getFrameUrl(tabId, 0);
     } catch(e) {
       return undefined;
     }
-  },
+  }
 
-  getFrameUrl: function(tabId, frameId) {
+  getFrameUrl(tabId, frameId) {
     try {
       return this.getFrame(tabId, frameId).url;
     } catch(e) {
       return undefined;
     }
-  },
+  }
 
-  getFrame: function(tabId, frameId) {
-      return this._data.get(tabId).get(frameId);
-  },
+  getFrame(tabId, frameId) {
+    return this._data.get(tabId).get(frameId);
+  }
 
   addResource(details) {
     // if new tab, or new main_frame for existing tab
@@ -86,11 +86,11 @@ Tabs.prototype = {
       tab.set(details.parentFrameId, new Frame({frameId: details.parentFrameId}));
     }
     tab.get(details.parentFrameId).children.set(frame.id, frame);
-  },
+  }
 
-  removeTab: function(tabId) {
+  removeTab(tabId) {
     return this._data.delete(tabId);
-  },
+  }
 };
 
 Object.assign(exports, {Frame, Tabs});
