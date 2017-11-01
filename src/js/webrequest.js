@@ -12,7 +12,7 @@ class WebRequest {
 
   recordRequest(details) {
     if (details.type.endsWith('_frame')) {
-      this.tabs.addFrame(new Frame(details));
+      this.tabs.addResource(details);
     }
   }
 

@@ -2,14 +2,40 @@
 
 (function(exports) {
 
-function Frame({frameId, url, tabId, parentFrameId, requestId, type}) {
-  this.id = frameId;
-  this.url = url;
-  this.tabId = tabId;
-  this.parentId = parentFrameId;
-  this.requestId = requestId;
-  this.type = type;
+class Resource {
+  constructor({url, method, type}) {
+    this.url = url;
+    this.method = method;
+    this.type = type;
+  }
 }
+
+class Frame {
+  constructor({frameId, url, tabId, parentFrameId, requestId, type}) {
+    this.id = frameId;
+    this.tabId = tabId;
+    this.parentId = parentFrameId;
+    this.requestId = requestId;
+    this.resources = new Map();
+    this.children = new Map();
+
+    if (type && type.endsWith('_frame')) {
+      this.url = url;
+      this.type = type;
+    }
+  }
+
+  hasResource(details) {
+    return this.resources.has(details.url);
+  }
+
+  recordResource(details) {
+    if (this.hasResource(details)) {
+      this.resources.set(details.url, new Resource(details));
+    }
+  }
+}
+
 
 function Tabs() {
   this._data = new Map();
@@ -17,31 +43,49 @@ function Tabs() {
 
 Tabs.prototype = {
   getTabUrl: function(tabId) {
-    return this.getFrameUrl(tabId, 0);
+    try {
+      return this.getFrameUrl(tabId, 0);
+    } catch(e) {
+      return undefined;
+    }
   },
 
   getFrameUrl: function(tabId, frameId) {
     try {
       return this.getFrame(tabId, frameId).url;
-    } catch (e) {
+    } catch(e) {
       return undefined;
     }
   },
 
   getFrame: function(tabId, frameId) {
-    try {
       return this._data.get(tabId).get(frameId);
-    } catch (e) {
-      return undefined;
-    }
   },
 
-  addFrame: function(frame) {
+  addResource(details) {
     // if new tab, or new main_frame for existing tab
-    if (!this._data.has(frame.tabId) || (frame.id === 0)) {
-      this._data.set(frame.tabId, new Map());
+    if (!this._data.has(details.tabId) || (details.frameId === 0)) {
+      this._data.set(details.tabId, new Map());
     }
-    this._data.get(frame.tabId).set(frame.id, frame);
+    let tab = this._data.get(details.tabId);
+
+    // if new frame
+    if (!tab.has(details.frameId)) {
+      tab.set(details.frameId, new Frame(details));
+    }
+    let frame = tab.get(details.frameId);
+
+    // add resource to frame
+    frame.recordResource(details);
+
+    if (details.parentFrameId === -1) {
+      return // main_frame request
+    }
+    // add this frame to its parent, but make new parent if it doesn't exist first
+    if (!tab.has(details.parentFrameId)) {
+      tab.set(details.parentFrameId, new Frame({frameId: details.parentFrameId}));
+    }
+    tab.get(details.parentFrameId).children.set(frame.id, frame);
   },
 
   removeTab: function(tabId) {

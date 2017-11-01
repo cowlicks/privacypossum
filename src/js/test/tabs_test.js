@@ -3,18 +3,15 @@
 const assert = require('chai').assert,
   {Tabs, Frame} = require('../tabs');
 
-const main_frame_details = {frameId: 0, url: 'https://google.com/', tabId: 1, parentFrameId: -1},
-  sub_frame_details = {frameId: 1, url: 'about:blank', tabId: 1, parentFrameId: 0};
+const main_frame_details = {frameId: 0, url: 'https://google.com/', tabId: 1, parentFrameId: -1, type: 'main_frame'},
+  sub_frame_details = {frameId: 1, url: 'about:blank', tabId: 1, parentFrameId: 0, type: 'sub_frame'};
 
 describe('tabs.js', function() {
-  let main_frame = new Frame(main_frame_details),
-    sub_frame = new Frame(sub_frame_details);
-
   describe('Tabs', function() {
     beforeEach(function() {
       this.tabs = new Tabs();
-      this.tabs.addFrame(main_frame);
-      this.tabs.addFrame(sub_frame);
+      this.tabs.addResource(main_frame_details);
+      this.tabs.addResource(sub_frame_details);
     });
 
     it('#getTabUrl', function() {
@@ -27,8 +24,8 @@ describe('tabs.js', function() {
     });
 
     it('#removeTab', function() {
-      this.tabs.addFrame(main_frame);
-      assert.isTrue(this.tabs.removeTab(main_frame.tabId));
+      this.tabs.addResource(main_frame_details);
+      assert.isTrue(this.tabs.removeTab(main_frame_details.tabId));
     });
   });
 });
