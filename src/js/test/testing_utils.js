@@ -16,10 +16,15 @@ class FakeDisk extends Map {
   }
 }
 
-function Mock() {
+function Mock(retval) {
   let out = function() {
     out.calledWith = Array.from(arguments);
+    out.called = true;
+    out.ncalls += 1;
+    return retval;
   }
+  out.called = false;
+  out.ncalls = 0;
   return out;
 }
 
