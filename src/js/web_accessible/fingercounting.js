@@ -46,7 +46,7 @@ function onFingerPrinting(loc) {
 }
 
 // get the location of arguments.callee.caller
-function scriptLocation() {
+function getScriptLocation() {
   try {
     yo = dog;  // eslint-disable-line
   } catch (e) {
@@ -120,10 +120,10 @@ let methods = [
 ];
 
 class Counter {
-  constructor({globalObj, methods, scriptLocation, onFingerPrinting, threshold}) {
+  constructor({globalObj, methods, getScriptLocation, onFingerPrinting, threshold}) {
     this.globalObj = globalObj;
     this.methods = methods;
-    this.scriptLocation = scriptLocation
+    this.getScriptLocation = getScriptLocation
     this.onFingerPrinting = onFingerPrinting;
     this.threshold = threshold;
 
@@ -148,7 +148,7 @@ class Counter {
 
     Object.defineProperty(baseObj, propName, {
       get: function() {
-        self.addCall(dottedPropName, self.scriptLocation());
+        self.addCall(dottedPropName, self.getScriptLocation());
         return before;
       }
     });
@@ -193,7 +193,7 @@ if (typeof exports === 'undefined') {
   let config = {
     globalObj: window,
     methods,
-    scriptLocation,
+    getScriptLocation,
     onFingerPrinting,
     threshold
   };
