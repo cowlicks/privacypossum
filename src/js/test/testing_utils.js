@@ -1,4 +1,7 @@
-'use strict'
+"use strict"
+
+const {splitter} = require('../suffixtree'),
+  {DomainTree} = require('../store');
 
 async function asyncify(func) {
   return new Promise(resolve => setTimeout(() => resolve(func())));
@@ -14,6 +17,10 @@ class FakeDisk extends Map {
     let setter = super.set.bind(this);
     return asyncify(() => cb(setter(key, value)));
   }
+}
+
+function setupDomainTree(name) {
+  return new DomainTree(name, new FakeDisk(), splitter);
 }
 
 function Mock(retval) {
@@ -47,4 +54,4 @@ function stubber(namesValues) {
   });
 }
 
-Object.assign(exports, {Mock, stub, stubber, FakeDisk});
+Object.assign(exports, {Mock, stub, stubber, FakeDisk, setupDomainTree});
