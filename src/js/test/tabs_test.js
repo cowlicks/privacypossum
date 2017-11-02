@@ -3,15 +3,16 @@
 const assert = require('chai').assert,
   {Tabs, Frame} = require('../tabs');
 
-const main_frame_details = {frameId: 0, url: 'https://google.com/', tabId: 1, parentFrameId: -1, type: 'main_frame'},
-  sub_frame_details = {frameId: 1, url: 'about:blank', tabId: 1, parentFrameId: 0, type: 'sub_frame'};
+const tabId = 1,
+  main_frame = {frameId: 0, url: 'https://google.com/', tabId, parentFrameId: -1, type: 'main_frame'},
+  sub_frame = {frameId: 1, url: 'about:blank', tabId, parentFrameId: 0, type: 'sub_frame'};
 
 describe('tabs.js', function() {
   describe('Tabs', function() {
     beforeEach(function() {
       this.tabs = new Tabs();
-      this.tabs.addResource(main_frame_details);
-      this.tabs.addResource(sub_frame_details);
+      this.tabs.addResource(main_frame);
+      this.tabs.addResource(sub_frame);
     });
 
     it('#getTabUrl', function() {
@@ -24,8 +25,19 @@ describe('tabs.js', function() {
     });
 
     it('#removeTab', function() {
-      this.tabs.addResource(main_frame_details);
-      assert.isTrue(this.tabs.removeTab(main_frame_details.tabId));
+      assert.isTrue(this.tabs.removeTab(main_frame.tabId));
     });
+
+    describe('#hasResource', function() {
+      let resource = {tabId, frameId: 0, url: 'https://google.com/foo.js', type: 'script'}
+      it('no resource', function() {
+        assert.isFalse(this.tabs.hasResource(resource));
+      });
+
+      it('with resource', function() {
+        this.tabs.addResource(resource);
+        assert.isTrue(this.tabs.hasResource(resource));
+      });
+    })
   });
 });

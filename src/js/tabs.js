@@ -25,12 +25,16 @@ class Frame {
     }
   }
 
-  hasResource(details) {
+  hasUrl(details) {
     return this.resources.has(details.url);
   }
 
+  hasResource(details) {
+    return this.resources.get(details.url).type === details.type;
+  }
+
   recordResource(details) {
-    if (this.hasResource(details)) {
+    if (!this.hasUrl(details)) {
       this.resources.set(details.url, new Resource(details));
     }
   }
@@ -40,6 +44,22 @@ class Frame {
 class Tabs {
   constructor() {
     this._data = new Map();
+  }
+
+  getTab(tabId) {
+    return this._data.get(tabId);
+  }
+
+  hasTab(tabId) {
+    return this._data.has(tabId);
+  }
+
+  setTab(tabId, value) {
+    return this._data.set(tabId, value);
+  }
+
+  removeTab(tabId) {
+    return this._data.delete(tabId);
   }
 
   getTabUrl(tabId) {
@@ -59,15 +79,23 @@ class Tabs {
   }
 
   getFrame(tabId, frameId) {
-    return this._data.get(tabId).get(frameId);
+    return this.getTab(tabId).get(frameId);
+  }
+
+  hasResource({tabId, frameId, url, type}) {
+    try {
+      return this.getTab(tabId).get(frameId).hasResource({url, type});
+    } catch (e) {
+      return false;
+    }
   }
 
   addResource(details) {
     // if new tab, or new main_frame for existing tab
-    if (!this._data.has(details.tabId) || (details.frameId === 0)) {
-      this._data.set(details.tabId, new Map());
+    if (!this.hasTab(details.tabId) || (details.type === 'main_frame')) {
+      this.setTab(details.tabId, new Map());
     }
-    let tab = this._data.get(details.tabId);
+    let tab = this.getTab(details.tabId);
 
     // if new frame
     if (!tab.has(details.frameId)) {
@@ -86,10 +114,6 @@ class Tabs {
       tab.set(details.parentFrameId, new Frame({frameId: details.parentFrameId}));
     }
     tab.get(details.parentFrameId).children.set(frame.id, frame);
-  }
-
-  removeTab(tabId) {
-    return this._data.delete(tabId);
   }
 };
 
