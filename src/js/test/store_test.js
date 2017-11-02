@@ -1,11 +1,11 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainTree} = require('../domain_actions'),
+  {DomainTree} = require('../store'),
   {splitter} = require('../suffixtree'),
   {FakeDisk} = require('./testing_utils');
 
-describe('domain_actions.js', function() {
+describe('store.js', function() {
   describe('DomainTree', function() {
     let host = 'bar.foo.example.com',
       parts = host.split('.'),

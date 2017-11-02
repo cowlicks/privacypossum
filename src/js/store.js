@@ -44,4 +44,4 @@ class DomainTree {
 
 Object.assign(exports, {DomainTree});
 
-})(typeof exports == 'undefined' ? require.scopes.domain_actions = {} : exports);
+})(typeof exports == 'undefined' ? require.scopes.store = {} : exports);

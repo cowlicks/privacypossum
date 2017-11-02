@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainTree} = require('../domain_actions'),
+  {DomainTree} = require('../store'),
   {splitter} = require('../suffixtree'),
   {FakeDisk} = require('./testing_utils'),
   {Tabs} = require('../tabs'),
