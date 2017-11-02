@@ -3,7 +3,7 @@
 (function(exports) {
 
 const {DiskMap} = require('./store'),
-  {Tree, splitter} = require('./suffixtree');
+  {Tree} = require('./suffixtree');
 
 class DomainTree {
   constructor(name, disk, splitter) {
@@ -33,6 +33,12 @@ class DomainTree {
   async set(key, value) {
     this.tree.set(key, value);
     await this.diskMap.set(key, value);
+  }
+
+  async update(key, obj) {
+    let value = this.get(key) || {};
+    Object.assign(value, obj);
+    await this.set(key, value);
   }
 }
 

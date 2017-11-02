@@ -27,6 +27,13 @@ describe('domain_actions.js', function() {
       }
     });
 
+    it('updates', async function(){
+      await this.dtree.set(host, {a: 1});
+      await this.dtree.update(host, {b: 2});
+
+      assert.deepEqual(this.dtree.get(host), {a: 1, b: 2});
+    });
+
     it('loads from disk', async function() {
       for (let i = 2; i <= len; i++) {
         let name = parts.slice(-i).join('.');
