@@ -1,4 +1,15 @@
 "use strict";
+/**
+ * DiskMap wraps an asynchronous get/set api, and prefixes its keys with a
+ * string, effectively giving each instance of DiskMap a namespace. This allows
+ * us to store arbitrary keys without having to worry about collisions with
+ * keys from other things.
+ *
+ * Another way to acheive namespacing like this is to store a nested object.
+ * But everytime you update an entry in the object this way, it updates the
+ * whole thing. So storing large frequently updated objects can potentially be
+ * resource intensive. So instead we do this.
+ */
 
 (function(exports) {
 
