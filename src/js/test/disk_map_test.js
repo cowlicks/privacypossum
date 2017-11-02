@@ -1,10 +1,10 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {DiskMap} = require('../store'),
+  {DiskMap} = require('../disk_map'),
   {FakeDisk} = require('./testing_utils');
 
-describe('store.js', function() {
+describe('disk_map.js', function() {
   describe('DiskMap', function() {
     beforeEach(function() {
       let disk = new FakeDisk(),

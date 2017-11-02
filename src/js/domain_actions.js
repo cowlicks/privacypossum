@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-const {DiskMap} = require('./store'),
+const {DiskMap} = require('./disk_map'),
   {Tree} = require('./suffixtree');
 
 class DomainTree {

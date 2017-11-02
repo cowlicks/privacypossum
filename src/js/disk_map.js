@@ -63,4 +63,4 @@ class DiskMap {
 
 Object.assign(exports, {DiskMap});
 
-})(typeof exports == 'undefined' ? require.scopes.store = {} : exports);
+})(typeof exports == 'undefined' ? require.scopes.disk_map = {} : exports);
