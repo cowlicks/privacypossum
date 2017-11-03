@@ -3,9 +3,10 @@
 (function(exports) {
 
 const {DiskMap} = require('./disk_map'),
-  {Tree} = require('./suffixtree');
+  {Tree} = require('./suffixtree'),
+  {URL} = require('./shim');
 
-class DomainTree {
+class StoreTree {
   constructor(name, disk, splitter) {
     this.tree = new Tree(splitter);
     this.diskMap = new DiskMap(name, disk);
@@ -30,6 +31,10 @@ class DomainTree {
     this.getBranchData = this.tree.getBranchData.bind(this.tree);
   }
 
+  has(key) {
+    return this.keys.has(key);
+  }
+
   async set(key, value) {
     this.tree.set(key, value);
     await this.diskMap.set(key, value);
@@ -39,6 +44,22 @@ class DomainTree {
     let value = this.get(key) || {};
     Object.assign(value, obj);
     await this.set(key, value);
+  }
+}
+
+class DomainTree extends StoreTree {
+  getUrl(url) {
+    url = new URL(url);
+    return this.get(url.hostname);
+  }
+
+  async setUrl(url, value) {
+    url = new URL(url);
+    await this.set(url.hostname, value);
+  }
+
+  async updateUrl(url, callback) {
+    await this.setUrl(url, callback(this.getUrl(url)));
   }
 }
 
