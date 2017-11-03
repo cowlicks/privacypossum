@@ -12,7 +12,6 @@ describe('messages.js', function() {
   describe('MessageListener', function() {
     beforeEach(function() {
       this.ml = new MessageListener(
-        ()=>{},
         new Tabs(),
         new DomainTree('name'),
       );
