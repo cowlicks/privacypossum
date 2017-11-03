@@ -2,12 +2,12 @@
 
 (function(exports) {
 
-const {Frame} = require('./tabs');
+const {URL} = require('./shim');
 
 class WebRequest {
-  constructor(tabs, storage) {
+  constructor(tabs, store) {
     this.tabs = tabs;
-    this.storage = storage;
+    this.store = store;
   }
 
   recordRequest(details) {

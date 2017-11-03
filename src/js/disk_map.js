@@ -70,6 +70,10 @@ class DiskMap {
       this.disk.get((this.name + key), keyValue => resolve(keyValue[1]));
     });
   }
+
+  has(key) {
+    return this.keys.has(key);
+  }
 }
 
 Object.assign(exports, {DiskMap});
