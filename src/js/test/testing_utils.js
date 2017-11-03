@@ -1,13 +1,5 @@
 "use strict"
 
-const {splitter} = require('../suffixtree'),
-  {DomainTree} = require('../store'),
-  {Disk} = require('../shim');
-
-function setupDomainTree(name) {
-  return new DomainTree(name, Disk.newDisk(), splitter);
-}
-
 function Mock(retval) {
   let out = function() {
     out.calledWith = Array.from(arguments);
@@ -39,4 +31,4 @@ function stubber(namesValues) {
   });
 }
 
-Object.assign(exports, {Mock, stub, stubber, setupDomainTree});
+Object.assign(exports, {Mock, stub, stubber});

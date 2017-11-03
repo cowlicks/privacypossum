@@ -1,9 +1,7 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainTree} = require('../store'),
-  {splitter} = require('../suffixtree'),
-  {Disk} = require('../shim');
+  {DomainTree} = require('../store');
 
 describe('store.js', function() {
   describe('DomainTree', function() {
@@ -12,9 +10,7 @@ describe('store.js', function() {
       len = parts.length;
 
     beforeEach(function() {
-      let disk = Disk.newDisk(),
-        name = 'name';
-      this.dtree = new DomainTree(name, disk, splitter);
+      this.dtree = new DomainTree('name');
     });
 
     it('gets and sets', async function(){

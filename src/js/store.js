@@ -3,8 +3,8 @@
 (function(exports) {
 
 const {DiskMap} = require('./disk_map'),
-  {Tree} = require('./suffixtree'),
-  {URL} = require('./shim');
+  {Tree, splitter} = require('./suffixtree'),
+  {URL, Disk} = require('./shim');
 
 class StoreTree {
   constructor(name, disk, splitter) {
@@ -14,7 +14,7 @@ class StoreTree {
   }
 
   static async load(name, disk, splitter) {
-    let out = new DomainTree(name, disk, splitter);
+    let out = new StoreTree(name, disk, splitter);
     await out.diskMap.loadKeys();
     for (let key of out.keys) {
       out.set(key, await out.diskMap.get(key));
@@ -48,6 +48,10 @@ class StoreTree {
 }
 
 class DomainTree extends StoreTree {
+  constructor(name) {
+    super(name, Disk.newDisk(), splitter);
+  }
+
   getUrl(url) {
     url = new URL(url);
     return this.get(url.hostname);

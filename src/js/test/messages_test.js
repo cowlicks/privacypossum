@@ -3,10 +3,8 @@
 const assert = require('chai').assert,
   constants = require('../constants'),
   {URL} = require('../shim'),
-  {DomainTree} = require('../store'),
-  {splitter} = require('../suffixtree'),
-  {Disk} = require('../shim'),
   {Tabs} = require('../tabs'),
+  {DomainTree} = require('../store'),
   {Context} = require('../schemes'),
   {MessageListener} = require('../messages');
 
@@ -16,7 +14,7 @@ describe('messages.js', function() {
       this.ml = new MessageListener(
         ()=>{},
         new Tabs(),
-        new DomainTree('name', Disk.newDisk(), splitter),
+        new DomainTree('name'),
       );
     });
     describe('#onFingerPrinting', function() {
