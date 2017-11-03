@@ -2,7 +2,8 @@
 
 (function(exports) {
 
-const {URL} = require('./shim');
+const {URL} = require('./shim'),
+  constants = require('./constants');
 
 class WebRequest {
   constructor(tabs, store) {
@@ -11,13 +12,17 @@ class WebRequest {
   }
 
   recordRequest(details) {
-    if (details.type.endsWith('_frame')) {
-      this.tabs.addResource(details);
-    }
+    this.tabs.addResource(details);
   }
 
-  commitRequest() {
-    return {};
+  commitRequest(details) {
+    let action = constants.NO_ACTION,
+      url = new URL(details.url);
+
+    if (this.store.has(url.hostname)) {
+      action = this.store.get(url.hostname).getAction(url.path);
+    }
+    return action;
   }
 
   onBeforeRequest(details) {

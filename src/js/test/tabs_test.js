@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {Tabs, Frame} = require('../tabs');
+  {Tabs} = require('../tabs');
 
 const tabId = 1,
   main_frame = {frameId: 0, url: 'https://google.com/', tabId, parentFrameId: -1, type: 'main_frame'},
