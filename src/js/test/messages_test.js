@@ -6,12 +6,12 @@ const assert = require('chai').assert,
   {Tabs} = require('../tabs'),
   {DomainTree} = require('../store'),
   {Context} = require('../schemes'),
-  {MessageListener} = require('../messages');
+  {MessageDispatcher} = require('../messages');
 
 describe('messages.js', function() {
-  describe('MessageListener', function() {
+  describe('MessageDispatcher', function() {
     beforeEach(function() {
-      this.ml = new MessageListener(
+      this.ml = new MessageDispatcher(
         new Tabs(),
         new DomainTree('name'),
       );

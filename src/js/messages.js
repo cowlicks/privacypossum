@@ -6,7 +6,7 @@ const {Context, updateDomainPath} = require('./schemes'),
   constants = require('./constants'),
   {URL} = require('./shim');
 
-class MessageListener {
+class MessageDispatcher {
   constructor(tabs, store) {
     this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting]];
     this.onMessageMap = new Map(this.defaults);
@@ -48,6 +48,6 @@ class MessageListener {
   }
 }
 
-Object.assign(exports, {MessageListener});
+Object.assign(exports, {MessageDispatcher});
 
 })(typeof exports == 'undefined' ? require.scopes.messages = {} : exports);
