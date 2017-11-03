@@ -6,7 +6,8 @@ const assert = require('chai').assert,
   {Tabs} = require('../tabs'),
   {DomainTree} = require('../store'),
   {Context} = require('../schemes'),
-  {MessageDispatcher} = require('../messages');
+  {MessageDispatcher} = require('../messages'),
+  {Mock} = require('./testing_utils');
 
 describe('messages.js', function() {
   describe('MessageDispatcher', function() {
@@ -19,16 +20,14 @@ describe('messages.js', function() {
 
     describe('#onMessage', function() {
       it('dispatches messages', function() {
-        let called = false,
+        let func = new Mock(),
           type = 'test msg';
 
         this.ml.start(onMessage);
-        this.ml.addListener(type, () => {
-          called = true;
-        });
+        this.ml.addListener(type, func);
 
         sendMessage({type});
-        assert.isTrue(called);
+        assert.isTrue(func.called);
       })
     })
     describe('#onFingerPrinting', function() {
