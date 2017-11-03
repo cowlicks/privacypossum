@@ -8,7 +8,7 @@ const {Context, updateDomainPath} = require('./schemes'),
 
 class MessageDispatcher {
   constructor(tabs, store) {
-    this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting]];
+    this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting.bind(this)]];
     this.dispatchMap = new Map(this.defaults);
     this.tabs = tabs;
     this.store = store;
