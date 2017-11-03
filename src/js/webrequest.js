@@ -11,6 +11,10 @@ class WebRequest {
     this.store = store;
   }
 
+  start(onBeforeRequest) {
+    onBeforeRequest(this.onBeforeRequest, {urls: ["<all_urls>"]}, ["blocking"]);
+  }
+
   recordRequest(details) {
     this.tabs.addResource(details);
   }
