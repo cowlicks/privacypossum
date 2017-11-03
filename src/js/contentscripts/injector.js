@@ -1,3 +1,5 @@
+"use strict";
+
 let event_id = Math.random();
 
 // listen for messages from the script we are about to insert
