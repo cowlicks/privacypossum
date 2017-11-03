@@ -32,7 +32,7 @@ function stubber(namesValues) {
 }
 
 
-class Resource {
+class Details {
   constructor (details) {
     Object.assign(this, details);
   }
@@ -44,21 +44,21 @@ class Resource {
   }
 }
 
-const main_frame = new Resource({
+const main_frame = new Details({
     frameId: 0,
     url: 'https://google.com/',
     tabId: 1,
     parentFrameId: -1,
     type: 'main_frame',
   }),
-  sub_frame = new Resource({
+  sub_frame = new Details({
     frameId: 1,
     url: 'about:blank',
     tabId: 1,
     parentFrameId: 0,
     type: 'sub_frame',
   }),
-  script = new Resource({
+  script = new Details({
     frameId: 0,
     url: 'https://foo.com/somescript.js',
     tabId: 1,
