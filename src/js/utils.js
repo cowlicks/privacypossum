@@ -27,8 +27,10 @@ class FakeMessages {
     this.funcs.push(func);
   }
 
-  sendMessage() {
-    this.funcs.forEach(func => func(...arguments));
+  async sendMessage() {
+    for (let func of this.funcs) {
+      await func(...arguments);
+    }
   }
 }
 
