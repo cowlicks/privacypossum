@@ -13,7 +13,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "lint": "eslint",
+    "lint": "git ls-files | grep \".js$\" | xargs eslint",
     "cover": "nyc --reporter=html --reporter=text mocha",
     "report": "nyc report --reporter=text-lcov | coveralls"
   },
