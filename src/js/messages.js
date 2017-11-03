@@ -9,23 +9,24 @@ const {Context, updateDomainPath} = require('./schemes'),
 class MessageDispatcher {
   constructor(tabs, store) {
     this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting]];
-    this.onMessageMap = new Map(this.defaults);
+    this.dispatchMap = new Map(this.defaults);
     this.tabs = tabs;
     this.store = store;
   }
 
-  onMessage(message, sender) {
-    if (this.onMessageMap.has(message.type)) {
-      return this.onMessageMap.get(message.type)(message, sender);
+  dispatcher(message, sender) {
+    if (this.dispatchMap.has(message.type)) {
+      return this.dispatchMap.get(message.type)(message, sender);
     }
   }
 
   addListener(type, callback) {
-    this.onMessageMap.set(type, callback);
+    this.dispatchMap.set(type, callback);
   }
 
   start(onMessage) {
-    onMessage.addListener(this.onMessage.bind(this));
+    this.onMessage = onMessage;
+    onMessage.addListener(this.dispatcher.bind(this));
   }
 
   async onFingerPrinting(message, sender) {
