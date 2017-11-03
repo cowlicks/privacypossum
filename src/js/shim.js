@@ -34,7 +34,7 @@ Object.assign(exports, {
   URL: url_,
   Disk: disk_,
   onMessage: onMessage_,
-  sendMessage_: sendMessage_,
+  sendMessage: sendMessage_,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);

@@ -2,7 +2,7 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {URL} = require('../shim'),
+  {URL, onMessage, sendMessage} = require('../shim'),
   {Tabs} = require('../tabs'),
   {DomainTree} = require('../store'),
   {Context} = require('../schemes'),
@@ -16,6 +16,21 @@ describe('messages.js', function() {
         new DomainTree('name'),
       );
     });
+
+    describe('#onMessage', function() {
+      it('dispatches messages', function() {
+        let called = false,
+          type = 'test msg';
+
+        this.ml.start(onMessage);
+        this.ml.addListener(type, () => {
+          called = true;
+        });
+
+        sendMessage({type});
+        assert.isTrue(called);
+      })
+    })
     describe('#onFingerPrinting', function() {
       let tabId = 1, frameId = 0, type = 'script',
         url = new URL('https://foo.bar/fingerprint.js'),

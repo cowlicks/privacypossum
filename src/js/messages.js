@@ -8,7 +8,8 @@ const {Context, updateDomainPath} = require('./schemes'),
 
 class MessageListener {
   constructor(tabs, store) {
-    this.onMessageMap = new Map();
+    this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting]];
+    this.onMessageMap = new Map(this.defaults);
     this.tabs = tabs;
     this.store = store;
   }
@@ -19,9 +20,12 @@ class MessageListener {
     }
   }
 
+  addListener(type, callback) {
+    this.onMessageMap.set(type, callback);
+  }
+
   start(onMessage) {
-    this.onMessageMap.set(constants.FINGERPRINTING, this.onFingerPrinting);
-    onMessage.addListener(this.onMessage);
+    onMessage.addListener(this.onMessage.bind(this));
   }
 
   async onFingerPrinting(message, sender) {
