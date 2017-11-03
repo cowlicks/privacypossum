@@ -24,7 +24,7 @@ class WebRequest {
       url = new URL(details.url);
 
     if (this.store.has(url.hostname)) {
-      action = this.store.get(url.hostname).getAction(url.path);
+      action = this.store.get(url.hostname).getAction(url.pathname);
     }
     return action;
   }
