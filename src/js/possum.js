@@ -19,6 +19,13 @@ class Possum {
     this.messageListener = new MessageDispatcher(this.tabs, this.store),
     this.messageListener.start(onMessage);
   }
+
+  static async load(disk) {
+    let out = new Possum();
+    out.store = await DomainTree.load(constants.DISK_NAME, disk);
+    return out;
+  }
+
 }
 
 Object.assign(exports, {Possum});

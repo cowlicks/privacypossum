@@ -37,7 +37,7 @@ describe('store.js', function() {
       }
 
       let loadedTree = await DomainTree.load(
-        this.dtree.diskMap.name, this.dtree.diskMap.disk, this.dtree.tree.splitter);
+        this.dtree.diskMap.name, this.dtree.diskMap.disk);
 
       this.dtree.keys.forEach(key => {
         assert.equal(loadedTree.get(key), this.dtree.get(key));

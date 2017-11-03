@@ -48,6 +48,10 @@ class StoreTree {
 }
 
 class DomainTree extends StoreTree {
+  static async load(name, disk) {
+    return super.load(name, disk, splitter);
+  }
+
   constructor(name) {
     super(name, Disk.newDisk(), splitter);
   }
