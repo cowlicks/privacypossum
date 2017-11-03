@@ -1,42 +1,54 @@
 "use strict";
 
 const assert = require('chai').assert,
+  constants = require('../constants'),
+  {URL} = require('../shim'),
   {DomainTree} = require('../store'),
   {splitter} = require('../suffixtree'),
   {FakeDisk} = require('./testing_utils'),
   {Tabs} = require('../tabs'),
+  {Context} = require('../schemes'),
   {MessageListener} = require('../messages');
 
-function setupMessageEmitter() {
-  let disk = new FakeDisk(),
-    name = 'name',
-    store = new DomainTree(name, disk, splitter),
-    tabs = new Tabs();
-
-  let messageEmitter = {
-    addListener: function(func) {
-      this.func = func;
-    }
-  };
-  return [messageEmitter, tabs, store];
-}
-
-
 describe('messages.js', function() {
-  it('constructs', async function() {
-    let tabId = 1,
-      frameId = 0,
-      url = 'fingerprint.js',
-      type = 'script',
-      resource = {tabId, frameId, url, type};
+  describe('MessageListener', function() {
+    beforeEach(function() {
+      this.ml = new MessageListener(
+        ()=>{},
+        new Tabs(),
+        new DomainTree('name', new FakeDisk(), splitter),
+      );
+    });
+    describe('#onFingerPrinting', function() {
+      let tabId = 1, frameId = 0, type = 'script',
+        url = new URL('https://foo.bar/fingerprint.js'),
+        resource = {tabId, frameId, url: url.href, type},
+        message = {url: url.href},
+        sender = {tab: {id: tabId}, frameId};
 
-    let [messageEmitter, tabs, store] = setupMessageEmitter();
+      it('updates storage', async function() {
+        this.ml.tabs.addResource(resource); // add the resource
+        await this.ml.onFingerPrinting(message, sender);
 
-    tabs.addResource(resource);
+        let domain = await this.ml.store.getUrl(url.href);
+        assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
 
-    let ml = new MessageListener(messageEmitter, tabs, store);
-    await ml.onFingerPrinting({url}, {tab: {id: tabId}, frameId});
-    let res = await ml.store.get(url);
-    assert.equal(res, 'block');
+        let path = domain.paths[url.pathname];
+        assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
+
+        let ctx = new Context({
+          reason: constants.FINGERPRINTING,
+          url: url.href,
+          frameUrl: undefined,
+          tabUrl: undefined,
+        });
+        assert.deepEqual(path.context, ctx, 'correct context set');
+      })
+
+      it('rejects unknown resources', async function() {
+        await this.ml.onFingerPrinting(message, sender);
+        assert.isUndefined(await this.ml.store.getUrl(url.href), 'no domain gets set');
+      });
+    });
   });
 });
