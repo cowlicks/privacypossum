@@ -14,6 +14,7 @@
     "no-unused-vars": "error",
     "no-undef": "error",
     "no-trailing-spaces": "error",
+    "no-debugger": "error",
     "strict": ["error", "global"]
   },
   "globals": {
