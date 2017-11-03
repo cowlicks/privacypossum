@@ -31,4 +31,40 @@ function stubber(namesValues) {
   });
 }
 
-Object.assign(exports, {Mock, stub, stubber});
+
+class Resource {
+  constructor (details) {
+    Object.assign(this, details);
+  }
+  toSender(url) {
+    if (typeof url === 'undefined') {
+      url = this.url;
+    }
+    return {tab: {id: this.tabId}, url, frameId: this.frameId};
+  }
+}
+
+const main_frame = new Resource({
+    frameId: 0,
+    url: 'https://google.com/',
+    tabId: 1,
+    parentFrameId: -1,
+    type: 'main_frame',
+  }),
+  sub_frame = new Resource({
+    frameId: 1,
+    url: 'about:blank',
+    tabId: 1,
+    parentFrameId: 0,
+    type: 'sub_frame',
+  }),
+  script = new Resource({
+    frameId: 0,
+    url: 'https://foo.com/somescript.js',
+    tabId: 1,
+    type: 'script',
+  });
+
+const details = {main_frame, sub_frame, script};
+
+Object.assign(exports, {Mock, stub, stubber, details});
