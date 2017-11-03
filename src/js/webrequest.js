@@ -12,7 +12,7 @@ class WebRequest {
   }
 
   start(onBeforeRequest) {
-    onBeforeRequest(this.onBeforeRequest, {urls: ["<all_urls>"]}, ["blocking"]);
+    onBeforeRequest.addListener(this.onBeforeRequest.bind(this), {urls: ["<all_urls>"]}, ["blocking"]);
   }
 
   recordRequest(details) {
