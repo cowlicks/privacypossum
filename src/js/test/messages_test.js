@@ -7,7 +7,7 @@ const assert = require('chai').assert,
   {DomainTree} = require('../store'),
   {Context} = require('../schemes'),
   {MessageDispatcher} = require('../messages'),
-  {Mock} = require('./testing_utils');
+  {Mock, details} = require('./testing_utils');
 
 describe('messages.js', function() {
   describe('MessageDispatcher', function() {
@@ -31,15 +31,12 @@ describe('messages.js', function() {
       })
     })
     describe('#onFingerPrinting', function() {
-      let tabId = 1, frameId = 0, type = 'script',
-        url = new URL('https://foo.bar/fingerprint.js'),
-        resource = {tabId, frameId, url: url.href, type},
-        message = {url: url.href},
-        sender = {tab: {id: tabId}, frameId};
+      let url = new URL(details.script.url),
+        message = {url: url.href};
 
       it('updates storage', async function() {
-        this.ml.tabs.addResource(resource); // add the resource
-        await this.ml.onFingerPrinting(message, sender);
+        this.ml.tabs.addResource(details.script); // add the resource
+        await this.ml.onFingerPrinting(message, details.script.toSender());
 
         let domain = await this.ml.store.getUrl(url.href);
         assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
@@ -57,7 +54,7 @@ describe('messages.js', function() {
       })
 
       it('rejects unknown resources', async function() {
-        await this.ml.onFingerPrinting(message, sender);
+        await this.ml.onFingerPrinting(message, details.script.toSender());
         assert.isUndefined(await this.ml.store.getUrl(url.href), 'no domain gets set');
       });
     });
