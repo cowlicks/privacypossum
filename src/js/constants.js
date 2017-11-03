@@ -2,6 +2,9 @@
 
 (function(exports) {
 
+// disk name
+const DISK_NAME = 'p055um';
+
 // BlockingResponse types
 const NO_ACTION = {},
   CANCEL = {cancel: true};
@@ -12,6 +15,6 @@ const FRAME_END = '_frame';
 // reasons
 const FINGERPRINTING = 'fingerprinting';
 
-Object.assign(exports, {NO_ACTION, CANCEL, FRAME_END, FINGERPRINTING});
+Object.assign(exports, {NO_ACTION, CANCEL, FRAME_END, FINGERPRINTING, DISK_NAME});
 
 })(typeof exports == 'undefined' ? require.scopes.constants = {} : exports);

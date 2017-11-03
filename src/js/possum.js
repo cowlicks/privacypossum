@@ -2,7 +2,8 @@
 
 (function(exports) {
 
-const {Tabs} = require('./tabs'),
+const constants = require('./constants'),
+  {Tabs} = require('./tabs'),
   {DomainTree} = require('./store'),
   {onMessage} = require('./shim'),
   {MessageDispatcher} = require('./messages'),
@@ -10,8 +11,10 @@ const {Tabs} = require('./tabs'),
 
 class Possum {
   constructor() {
+    this.store = new DomainTree(constants.DISK_NAME);
+
     this.tabs = new Tabs();
-    this.store = new DomainTree('possum');
+
     this.webRequest = new WebRequest(this.tabs, this.store);
     this.messageListener = new MessageDispatcher(this.tabs, this.store),
     this.messageListener.start(onMessage);
