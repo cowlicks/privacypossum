@@ -2,6 +2,10 @@
 
 (function(exports) {
 
+const {Context, updateDomainPath} = require('./schemes'),
+  constants = require('./constants'),
+  {URL} = require('./shim');
+
 class MessageListener {
   constructor(messageEmitter, tabs, store) {
     this.onMessageMap = new Map();
@@ -17,20 +21,26 @@ class MessageListener {
   }
 
   start() {
-    this.onMessageMap.set('fingerprinting', this.onFingerPrinting);
+    this.onMessageMap.set(constants.FINGERPRINTING, this.onFingerPrinting);
     this.messageEmitter.addListener(this.onMessage);
   }
 
   async onFingerPrinting(message, sender) {
+    let tabId = sender.tab.id,
+      {frameId} = sender,
+      {url} = message,
+      type = 'script';
 
-    if (this.tabs.hasResource(
-      {
-        tabId: sender.tab.id,
-        frameId: sender.frameId,
-        url: message.url,
-        type: 'script'
-      })) {
-      await this.store.set(message.url, 'block');
+    if (this.tabs.hasResource({tabId, frameId, url, type})) {
+      let reason = constants.FINGERPRINTING,
+        frameUrl = this.tabs.getFrameUrl(sender.frameId),
+        tabUrl = this.tabs.getTabUrl(sender.tab.id),
+        urlObj = new URL(url);
+
+      let ctx = new Context({reason, url, frameUrl, tabUrl});
+      await this.store.updateUrl(url, (domain) => {
+        return updateDomainPath(domain, urlObj.pathname, constants.CANCEL, ctx)
+      });
     }
   }
 }
