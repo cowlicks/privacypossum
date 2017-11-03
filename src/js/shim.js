@@ -2,6 +2,8 @@
 
 (function(exports) {
 
+const {FakeDisk, FakeMessages} = require('./utils');
+
 let url_;
 try {
   url_ = URL;
@@ -9,6 +11,30 @@ try {
   url_ = require('url').URL;
 }
 
-Object.assign(exports, {URL: url_});
+let disk_;
+try {
+  disk_ = chrome.storage.sync;
+  disk_.newDisk = () => disk_;
+} catch (e) {
+  disk_ = FakeDisk;
+  disk_.newDisk = () => new FakeDisk();
+}
+
+let onMessage_, sendMessage_;
+try {
+  onMessage_ = chrome.runtime.onMessage;
+  sendMessage_ = chrome.runtime.sendMessage;
+} catch (e) {
+  let fm = new FakeMessages();
+  onMessage_ = fm;
+  sendMessage_ = fm.sendMessage.bind(fm);
+}
+
+Object.assign(exports, {
+  URL: url_,
+  Disk: disk_,
+  onMessage: onMessage_,
+  sendMessage_: sendMessage_,
+});
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
