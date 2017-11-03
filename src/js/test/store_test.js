@@ -3,7 +3,7 @@
 const assert = require('chai').assert,
   {DomainTree} = require('../store'),
   {splitter} = require('../suffixtree'),
-  {FakeDisk} = require('./testing_utils');
+  {Disk} = require('../shim');
 
 describe('store.js', function() {
   describe('DomainTree', function() {
@@ -12,7 +12,7 @@ describe('store.js', function() {
       len = parts.length;
 
     beforeEach(function() {
-      let disk = new FakeDisk(),
+      let disk = Disk.newDisk(),
         name = 'name';
       this.dtree = new DomainTree(name, disk, splitter);
     });

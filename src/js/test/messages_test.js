@@ -5,7 +5,7 @@ const assert = require('chai').assert,
   {URL} = require('../shim'),
   {DomainTree} = require('../store'),
   {splitter} = require('../suffixtree'),
-  {FakeDisk} = require('./testing_utils'),
+  {Disk} = require('../shim'),
   {Tabs} = require('../tabs'),
   {Context} = require('../schemes'),
   {MessageListener} = require('../messages');
@@ -16,7 +16,7 @@ describe('messages.js', function() {
       this.ml = new MessageListener(
         ()=>{},
         new Tabs(),
-        new DomainTree('name', new FakeDisk(), splitter),
+        new DomainTree('name', Disk.newDisk(), splitter),
       );
     });
     describe('#onFingerPrinting', function() {

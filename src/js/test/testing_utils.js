@@ -1,26 +1,11 @@
 "use strict"
 
 const {splitter} = require('../suffixtree'),
-  {DomainTree} = require('../store');
-
-async function asyncify(func) {
-  return new Promise(resolve => setTimeout(() => resolve(func())));
-}
-
-class FakeDisk extends Map {
-  async get(key, cb) {
-    let getter = super.get.bind(this);
-    return asyncify(() => cb(getter(key)));
-  }
-
-  async set(key, value, cb) {
-    let setter = super.set.bind(this);
-    return asyncify(() => cb(setter(key, value)));
-  }
-}
+  {DomainTree} = require('../store'),
+  {Disk} = require('../shim');
 
 function setupDomainTree(name) {
-  return new DomainTree(name, new FakeDisk(), splitter);
+  return new DomainTree(name, Disk.newDisk(), splitter);
 }
 
 function Mock(retval) {
@@ -54,4 +39,4 @@ function stubber(namesValues) {
   });
 }
 
-Object.assign(exports, {Mock, stub, stubber, FakeDisk, setupDomainTree});
+Object.assign(exports, {Mock, stub, stubber, setupDomainTree});

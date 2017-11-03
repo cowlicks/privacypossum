@@ -2,12 +2,12 @@
 
 const assert = require('chai').assert,
   {DiskMap} = require('../disk_map'),
-  {FakeDisk} = require('./testing_utils');
+  {Disk} = require('../shim');
 
 describe('disk_map.js', function() {
   describe('DiskMap', function() {
     beforeEach(function() {
-      let disk = new FakeDisk(),
+      let disk = Disk.newDisk(),
         name = 'name';
       this.dmap = new DiskMap(name, disk);
     });
