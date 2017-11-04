@@ -37,7 +37,7 @@ class MessageDispatcher {
 
     if (this.tabs.hasResource({tabId, frameId, url, type})) {
       let reason = constants.FINGERPRINTING,
-        frameUrl = this.tabs.getFrameUrl(sender.frameId),
+        frameUrl = this.tabs.getFrameUrl(tabId, frameId),
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
         urlObj = new URL(url);
 
