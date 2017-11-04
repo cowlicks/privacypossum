@@ -32,18 +32,18 @@ class MessageDispatcher {
   async onFingerPrinting(message, sender) {
     let tabId = sender.tab.id,
       {frameId} = sender,
-      {url} = message,
+      {url} = message, // NB: the url could be dangerous user input
       type = 'script';
 
     if (this.tabs.hasResource({tabId, frameId, url, type})) {
       let reason = constants.FINGERPRINTING,
         frameUrl = this.tabs.getFrameUrl(tabId, frameId),
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
-        urlObj = new URL(url);
+        {href, pathname} = new URL(url);
 
-      let ctx = new Context({reason, url, frameUrl, tabUrl});
-      await this.store.updateUrl(url, (domain) => {
-        return updateDomainPath(domain, urlObj.pathname, constants.CANCEL, ctx)
+      let ctx = new Context({reason, href, frameUrl, tabUrl});
+      await this.store.updateUrl(href, (domain) => {
+        return updateDomainPath(domain, pathname, constants.CANCEL, ctx)
       });
     }
   }
