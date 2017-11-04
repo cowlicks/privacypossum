@@ -6,15 +6,26 @@ const {DiskMap} = require('./disk_map'),
   {Tree, splitter} = require('./suffixtree'),
   {URL, Disk} = require('./shim');
 
-class StoreTree {
-  constructor(name, disk, splitter) {
+class DomainTree {
+  constructor(name, disk, splitter_) {
+    if (typeof disk === 'undefined') {
+      disk = Disk.newDisk();
+    }
+
+    if (typeof splitter_ === 'undefined') {
+      splitter_ = splitter;
+    }
+    this.init(name, disk, splitter_);
+  }
+
+  init(name, disk, splitter) {
     this.tree = new Tree(splitter);
     this.diskMap = new DiskMap(name, disk);
     this.attachMethods();
   }
 
-  static async load(name, disk, splitter) {
-    let out = new StoreTree(name, disk, splitter);
+  static async load(name, disk) {
+    let out = new DomainTree(name, disk);
     await out.diskMap.loadKeys();
     for (let key of out.keys) {
       out.set(key, await out.diskMap.get(key));
@@ -45,17 +56,8 @@ class StoreTree {
     Object.assign(value, obj);
     await this.set(key, value);
   }
-}
 
-class DomainTree extends StoreTree {
-  static async load(name, disk) {
-    return super.load(name, disk, splitter);
-  }
-
-  constructor(name) {
-    super(name, Disk.newDisk(), splitter);
-  }
-
+  /* URL specific stuff */
   getUrl(url) {
     url = new URL(url);
     return this.get(url.hostname);

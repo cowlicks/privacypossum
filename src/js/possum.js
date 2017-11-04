@@ -10,8 +10,11 @@ const constants = require('./constants'),
   {WebRequest} = require('./webrequest');
 
 class Possum {
-  constructor() {
-    this.store = new DomainTree(constants.DISK_NAME);
+  constructor(store) {
+    if (typeof store === 'undefined') {
+      store = new DomainTree(constants.DISK_NAME);
+    }
+    this.store = store;
 
     this.tabs = new Tabs();
 
@@ -23,11 +26,8 @@ class Possum {
   }
 
   static async load(disk) {
-    let out = new Possum();
-    out.store = await DomainTree.load(constants.DISK_NAME, disk);
-    return out;
+    return new Possum(await DomainTree.load(constants.DISK_NAME, disk));
   }
-
 }
 
 Object.assign(exports, {Possum});
