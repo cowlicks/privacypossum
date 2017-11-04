@@ -16,7 +16,7 @@ class MessageDispatcher {
 
   async dispatcher(message, sender) {
     if (this.dispatchMap.has(message.type)) {
-      return await this.dispatchMap.get(message.type)(message, sender);
+      return await (this.dispatchMap.get(message.type))(message, sender);
     }
   }
 
