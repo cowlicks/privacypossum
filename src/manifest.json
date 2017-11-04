@@ -24,11 +24,20 @@
   "background": {
     "scripts": [
       "js/bootstrap.js",
+      "js/constants.js",
+      "js/disk_map.js",
+      "js/utils.js",
       "js/suffixtree.js",
-      "js/store.js",
       "js/tabs.js",
-      "js/domain_actions.js",
-      "js/webrequest.js"
+
+      "js/shim.js",
+      "js/schemes.js",
+
+      "js/messages.js",
+      "js/webrequest.js",
+      "js/store.js",
+      "js/possum.js",
+      "js/start.js"
     ]
   },
   "content_scripts": [
