@@ -41,7 +41,7 @@ let event_id;
 
 function onFingerPrinting(loc) {
   document.dispatchEvent(new CustomEvent(event_id, {
-    detail: {fingerprinting: true, location: loc},
+    detail: {type: 'fingerprinting', url: loc},
   }));
 }
 
