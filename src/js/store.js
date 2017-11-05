@@ -7,7 +7,7 @@ const {DiskMap} = require('./disk_map'),
   {Domain} = require('./schemes'),
   {URL, Disk} = require('./shim');
 
-class TreeWrapper extends Tree {
+class DomainTree extends Tree {
   beforeSet(val) {
     return (val instanceof Domain) ? val : new Domain(val);
   }
@@ -30,7 +30,7 @@ class DomainStore {
   }
 
   init(name, disk, splitter) {
-    this.tree = new TreeWrapper(splitter);
+    this.tree = new DomainTree(splitter);
     this.diskMap = new DiskMap(name, disk);
     this.attachMethods();
   }
