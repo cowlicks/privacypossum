@@ -41,7 +41,7 @@ class MessageDispatcher {
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
         {href, pathname} = new URL(url);
 
-      let ctx = new Context({reason, href, frameUrl, tabUrl});
+      let ctx = new Context({reason, url: href, frameUrl, tabUrl});
       await this.store.updateUrl(href, (domain) => {
         return updateDomainPath(domain, pathname, constants.CANCEL, ctx)
       });

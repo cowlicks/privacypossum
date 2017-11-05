@@ -17,6 +17,7 @@ const PATHS = 'paths';
 
 class Context {
   // todo: add `old` property of previous contexts?
+  // change name of `url` to `href`
   constructor({reason, url, frameUrl, tabUrl}) {
     this.reason = reason;
     this.url = url;
