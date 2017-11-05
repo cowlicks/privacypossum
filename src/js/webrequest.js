@@ -23,6 +23,10 @@ class WebRequest {
     let action = constants.NO_ACTION,
       url = new URL(details.url);
 
+    if (details.type === constants.TYPES.main_frame) {
+      return action;
+    }
+
     if (this.store.has(url.hostname)) {
       action = this.store.get(url.hostname).getAction(url.pathname);
     }
