@@ -30,7 +30,7 @@ class BrowserDisk {
   }
 
   set(key, value, cb) {
-    return this.disk.set({key: value}, cb);
+    return this.disk.set({[key]: value}, cb);
   }
 }
 
