@@ -4,7 +4,7 @@
 
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
-  {DomainTree} = require('./store'),
+  {DomainStore} = require('./store'),
   {onMessage, onBeforeRequest} = require('./shim'),
   {MessageDispatcher} = require('./messages'),
   {WebRequest} = require('./webrequest');
@@ -12,7 +12,7 @@ const constants = require('./constants'),
 class Possum {
   constructor(store) {
     if (typeof store === 'undefined') {
-      store = new DomainTree(constants.DISK_NAME);
+      store = new DomainStore(constants.DISK_NAME);
     }
     this.store = store;
 
@@ -26,7 +26,7 @@ class Possum {
   }
 
   static async load(disk) {
-    return new Possum(await DomainTree.load(constants.DISK_NAME, disk));
+    return new Possum(await DomainStore.load(constants.DISK_NAME, disk));
   }
 }
 

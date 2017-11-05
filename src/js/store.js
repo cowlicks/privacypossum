@@ -7,7 +7,7 @@ const {DiskMap} = require('./disk_map'),
   {Domain} = require('./schemes'),
   {URL, Disk} = require('./shim');
 
-class DomainTree {
+class DomainStore {
   constructor(name, disk, splitter_) {
     if (typeof disk === 'undefined') {
       disk = Disk.newDisk();
@@ -26,7 +26,7 @@ class DomainTree {
   }
 
   static async load(name, disk) {
-    let out = new DomainTree(name, disk);
+    let out = new DomainStore(name, disk);
     await out.diskMap.loadKeys();
     for (let key of out.keys) {
       out.tree.set(key, new Domain(await out.diskMap.get(key)));
@@ -74,6 +74,6 @@ class DomainTree {
   }
 }
 
-Object.assign(exports, {DomainTree});
+Object.assign(exports, {DomainStore});
 
 })(typeof exports == 'undefined' ? require.scopes.store = {} : exports);

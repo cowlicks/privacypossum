@@ -4,7 +4,7 @@ const assert = require('chai').assert,
   constants = require('../constants'),
   {URL, onMessage, sendMessage} = require('../shim'),
   {Tabs} = require('../tabs'),
-  {DomainTree} = require('../store'),
+  {DomainStore} = require('../store'),
   {Context} = require('../schemes'),
   {MessageDispatcher} = require('../messages'),
   {Mock, details} = require('./testing_utils');
@@ -14,7 +14,7 @@ describe('messages.js', function() {
     beforeEach(function() {
       this.ml = new MessageDispatcher(
         new Tabs(),
-        new DomainTree('name'),
+        new DomainStore('name'),
       );
     });
 

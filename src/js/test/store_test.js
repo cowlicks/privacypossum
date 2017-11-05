@@ -1,16 +1,16 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainTree} = require('../store');
+  {DomainStore} = require('../store');
 
 describe('store.js', function() {
-  describe('DomainTree', function() {
+  describe('DomainStore', function() {
     let host = 'bar.foo.example.com',
       parts = host.split('.'),
       len = parts.length;
 
     beforeEach(function() {
-      this.dtree = new DomainTree('name');
+      this.dtree = new DomainStore('name');
     });
 
     it('gets and sets', async function(){
@@ -36,7 +36,7 @@ describe('store.js', function() {
         await this.dtree.set(name, i);
       }
 
-      let loadedTree = await DomainTree.load(
+      let loadedTree = await DomainStore.load(
         this.dtree.diskMap.name, this.dtree.diskMap.disk);
 
       assert.deepEqual(loadedTree.keys, this.dtree.keys);

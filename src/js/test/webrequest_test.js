@@ -3,7 +3,7 @@
 const assert = require('chai').assert,
   {WebRequest} = require('../webrequest'),
   {Tabs} = require('../tabs'),
-  {DomainTree} = require('../store'),
+  {DomainStore} = require('../store'),
   {details} = require('./testing_utils');
 
 
@@ -12,7 +12,7 @@ describe('webrequest.js', function() {
     describe('#onBeforeRequest', function() {
       it('adds frames', function() {
         let tabs = new Tabs(),
-          wr = new WebRequest(tabs, new DomainTree());
+          wr = new WebRequest(tabs, new DomainStore());
 
         wr.onBeforeRequest(details.main_frame);
         assert.equal(
