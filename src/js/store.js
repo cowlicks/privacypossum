@@ -62,10 +62,8 @@ class DomainStore {
     await this.diskMap.set(key, value);
   }
 
-  async update(key, obj) {
-    let value = this.get(key) || {};
-    Object.assign(value, obj);
-    await this.set(key, value);
+  async update(key, callback) {
+    await this.set(key, callback(this.get(key)));
   }
 
   /* URL specific stuff */

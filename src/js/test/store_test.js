@@ -1,7 +1,8 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainStore} = require('../store');
+  {DomainStore} = require('../store'),
+  {Domain} = require('../schemes');
 
 describe('store.js', function() {
   describe('DomainStore', function() {
@@ -17,17 +18,19 @@ describe('store.js', function() {
       for (let i = 2; i <= len; i++) {
         let name = parts.slice(-i).join('.');
 
-        await this.dtree.set(name, i);
+        let val = new Domain(i);
 
-        assert.equal(this.dtree.get(name), i);
+        await this.dtree.set(name, val);
+
+        assert.deepEqual(this.dtree.get(name), val);
       }
     });
 
     it('updates', async function(){
-      await this.dtree.set(host, {a: 1});
-      await this.dtree.update(host, {b: 2});
+      await this.dtree.set(host, new Domain());
+      await this.dtree.update(host, (domain) => domain.setPath('a', 'b', 'c'));
 
-      assert.deepEqual(this.dtree.get(host), {a: 1, b: 2});
+      assert.deepEqual(this.dtree.get(host), new Domain().setPath('a', 'b', 'c'));
     });
 
     it('loads from disk', async function() {
@@ -41,7 +44,7 @@ describe('store.js', function() {
 
       assert.deepEqual(loadedTree.keys, this.dtree.keys);
       this.dtree.keys.forEach(key => {
-        assert.equal(loadedTree.get(key), this.dtree.get(key));
+        assert.deepEqual(loadedTree.get(key), this.dtree.get(key));
       });
     });
   });
