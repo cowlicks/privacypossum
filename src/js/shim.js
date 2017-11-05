@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-const {FakeDisk, FakeMessages} = require('./utils');
+const {FakeDisk, BrowserDisk, FakeMessages} = require('./utils');
 
 let url_;
 try {
@@ -14,8 +14,7 @@ try {
 let disk_ = {};
 try {
   chrome.storage.sync;
-  disk_.set = (key, value, callback) => chrome.storage.sync.set({key, value}, callback);
-  disk_.get = (key, callback) => chrome.storage.sync.get(key, callback);
+  disk_ = new BrowserDisk(chrome.storage.sync);
   disk_.newDisk = () => disk_;
 } catch (e) {
   disk_ = FakeDisk;

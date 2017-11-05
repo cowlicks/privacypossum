@@ -18,6 +18,22 @@ class FakeDisk extends Map {
   }
 }
 
+class BrowserDisk {
+  constructor(disk) {
+    this.disk = disk;
+  }
+
+  get(key, cb) {
+    this.disk.get(key, (res) => {
+      return (res.hasOwnProperty(key)) ? cb(res[key]) : cb();
+    });
+  }
+
+  set(key, value, cb) {
+    return this.disk.set({key: value}, cb);
+  }
+}
+
 class FakeMessages {
   constructor() {
     this.funcs = [];
@@ -34,6 +50,6 @@ class FakeMessages {
   }
 }
 
-Object.assign(exports, {FakeDisk, FakeMessages});
+Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages});
 
 })(typeof exports == 'undefined' ? require.scopes.utils = {} : exports);
