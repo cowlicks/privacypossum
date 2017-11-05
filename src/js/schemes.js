@@ -49,6 +49,7 @@ class Domain {
 
   setPath(path, action, context) {
     this.paths[path] = new Path(action, context);
+    return this;
   }
 }
 
