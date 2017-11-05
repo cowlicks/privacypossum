@@ -1,2 +1,6 @@
+"use strict";
+
 const {Possum} = require('./possum'),
-  possum = new Possum();
+  {Disk} = require('./shim');
+
+Possum.load(Disk).then(possum => window['possum'] = possum);
