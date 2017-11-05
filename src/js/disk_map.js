@@ -29,13 +29,13 @@ class DiskMap {
 
   async loadKeys() {
     this.keys = await this.getKeys();
-
   }
 
   async getKeys() {
     return new Promise(resolve => {
       this.disk.get(this.keys_key, keys => {
-        resolve(keys ? new Set(keys) : new Set([]));
+        keys = (typeof keys === 'undefined') ? [] : keys;
+        resolve(new Set(keys));
       });
     });
   }
@@ -46,7 +46,7 @@ class DiskMap {
         return resolve();
       }
       this.keys.add(key);
-      return this.disk.set(this.keys_key, this.keys, resolve);
+      return this.disk.set(this.keys_key, Array.from(this.keys), resolve);
     });
   }
 
