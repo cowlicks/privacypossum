@@ -11,9 +11,11 @@ try {
   url_ = require('url').URL;
 }
 
-let disk_;
+let disk_ = {};
 try {
-  disk_ = chrome.storage.sync;
+  chrome.storage.sync;
+  disk_.set = (key, value, callback) => chrome.storage.sync.set({key, value}, callback);
+  disk_.get = (key, callback) => chrome.storage.sync.get(key, callback);
   disk_.newDisk = () => disk_;
 } catch (e) {
   disk_ = FakeDisk;
