@@ -36,7 +36,7 @@
  * http://www.dixipay.com/
  */
 
-let threshold = 0.75;
+const threshold = 0.75;
 let event_id;
 
 function onFingerPrinting(loc) {
@@ -54,7 +54,7 @@ function getScriptLocation() {
   }
 }
 
-let urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
+const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
 function getUrlFromStackLine(line) {
   return line.slice(line.indexOf('http')) // http://foo.bar/path?q=p#frag:somestuff
     .match(urlEndRegex)[0];
@@ -67,7 +67,7 @@ function getUrlFromStackLine(line) {
  *
  * I'll try to catch each of these
  */
-let methods = [
+const methods = [
   //    keys = this.userAgentKey(keys);
   'navigator.userAgent',
   //    keys = this.languageKey(keys);
@@ -130,21 +130,22 @@ class Counter {
     this.locations = {};
     this.nMethods = methods.length;
     this.isFingerprinting = false;
-    for (let m of methods) {
+    for (const m of methods) {
       this.wrapMethod(m);
     }
   }
 
   // wrap a dotted method name with a counter
   wrapMethod(dottedPropName) {
-    let self = this,
+    const self = this,
       arr = dottedPropName.split('.'),
-      propName = arr.pop(),
-      baseObj = this.globalObj[arr.shift()];
+      propName = arr.pop();
+
+    let baseObj = this.globalObj[arr.shift()];
     if (arr) {
       baseObj = arr.reduce((o, i) => o[i], baseObj);
     }
-    let before = baseObj[propName];
+    const before = baseObj[propName];
 
     Object.defineProperty(baseObj, propName, {
       get: function() {
@@ -158,8 +159,8 @@ class Counter {
   }
 
   addLocation() {
-    let out = {counts: {}, nnzCounts: 0};
-    for (let m of this.methods) {
+    const out = {counts: {}, nnzCounts: 0};
+    for (const m of this.methods) {
       out.counts[m] = 0;
     }
     return out;
@@ -196,7 +197,7 @@ if (typeof exports === 'undefined') {
   event_id = document.currentScript.getAttribute('data');
 
   /* start 'em up */
-  let config = {
+  const config = {
     globalObj: window,
     methods,
     getScriptLocation,
@@ -204,7 +205,7 @@ if (typeof exports === 'undefined') {
     threshold
   };
 
-  let counter = new Counter(config); // eslint-disable-line
+  const counter = new Counter(config); // eslint-disable-line
 } else {
   Object.assign(exports, {Counter});
 }
