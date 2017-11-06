@@ -148,8 +148,11 @@ class Counter {
 
     Object.defineProperty(baseObj, propName, {
       get: function() {
-        self.addCall(dottedPropName, self.getScriptLocation());
-        return before;
+        try {
+          self.addCall(dottedPropName, self.getScriptLocation());
+        } finally {
+          return before;
+        }
       }
     });
   }
@@ -167,6 +170,9 @@ class Counter {
    * counter.isFingerPrinting.
    */
   addCall(name, loc) {
+    if (!loc) {
+      return;
+    }
     // register location if we haven't seen it
     if (!this.locations.hasOwnProperty(loc)) {
       this.locations[loc] = this.addLocation();
