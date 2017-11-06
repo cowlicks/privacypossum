@@ -1,10 +1,11 @@
 "use strict";
 
 function require(module) {
-  if (module.startsWith('./') && require.scopes.hasOwnProperty(module.slice(2))) {
-    return require.scopes[module.slice(2)];
+  if (module.startsWith('.')) {
+    module = module.split('.').slice(-1)[0].split('/').slice(-1)[0];
   }
-  else if (require.scopes.hasOwnProperty(module)) {
+
+  if (require.scopes.hasOwnProperty(module)) {
     return require.scopes[module];
   }
   throw new Error('module: ' + module + ' not found.');
