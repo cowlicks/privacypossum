@@ -37,7 +37,7 @@
       "js/webrequest.js",
       "js/store.js",
       "js/possum.js",
-      "js/start.js"
+      "js/initialize.js"
     ]
   },
   "content_scripts": [
