@@ -38,12 +38,20 @@ try {
   onBeforeRequest = new FakeMessages();
 }
 
+let onBeforeSendHeaders;
+try {
+  onBeforeSendHeaders = chrome.webRequest.onBeforeSendHeaders;
+} catch (e) {
+  onBeforeSendHeaders = new FakeMessages();
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
   onMessage: onMessage_,
   sendMessage: sendMessage_,
   onBeforeRequest,
+  onBeforeSendHeaders,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
