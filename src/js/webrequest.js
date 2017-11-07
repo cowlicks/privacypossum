@@ -11,8 +11,30 @@ class WebRequest {
     this.store = store;
   }
 
-  start(onBeforeRequest) {
-    onBeforeRequest.addListener(this.onBeforeRequest.bind(this), {urls: ["<all_urls>"]}, ["blocking"]);
+  isThirdParty(details) {
+    let host = new URL(details.url).hostname,
+      taburl = this.tabs.getTabUrl(details.tabId);
+    if (taburl) {
+      let tabhost = new URL(taburl).hostname;
+      return host.endsWith(tabhost) ?
+        (tabhost.length === host.length || host.substr(-tabhost.length - 1, 1) === '.') :
+        false;
+    }
+    return false;
+  }
+
+  start(onBeforeRequest, onBeforeSendHeaders) {
+    onBeforeRequest.addListener(
+      this.onBeforeRequest.bind(this),
+      {urls: ["<all_urls>"]},
+      ["blocking"]
+    );
+
+    onBeforeSendHeaders.addListener(
+      this.onBeforeSendHeaders.bind(this),
+      {urls: ["<all_urls>"]},
+      ["blocking", "requestHeaders"]
+    );
   }
 
   recordRequest(details) {
@@ -37,8 +59,30 @@ class WebRequest {
     this.recordRequest(details);
     return this.commitRequest(details);
   }
+
+  onBeforeSendHeaders(details) {
+    let action = constants.NO_ACTION;
+
+    if (!this.isThirdParty(details)) {
+      if (removeCookies(details.requestHeaders)) {
+        action = {requestHeaders: details.requestHeaders};
+      }
+    }
+    return action;
+  }
 }
 
-Object.assign(exports, {WebRequest});
+function removeCookies(headers) {
+  let mutated = false
+  for (let i = 0; i < headers.length; i++) {
+    while (i < headers.length && headers[i].name.toLowerCase() === "cookie") {
+      headers.splice(i, 1);
+      mutated = true;
+    }
+  }
+  return mutated;
+}
+
+Object.assign(exports, {WebRequest, removeCookies});
 
 })(typeof exports == 'undefined' ? require.scopes.webrequest = {} : exports);
