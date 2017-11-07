@@ -5,7 +5,7 @@
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
   {DomainStore} = require('./store'),
-  {onMessage, onBeforeRequest} = require('./shim'),
+  {onMessage, onBeforeRequest, onBeforeSendHeaders} = require('./shim'),
   {MessageDispatcher} = require('./messages'),
   {WebRequest} = require('./webrequest');
 
@@ -19,7 +19,7 @@ class Possum {
     this.tabs = new Tabs();
 
     this.webRequest = new WebRequest(this.tabs, this.store);
-    this.webRequest.start(onBeforeRequest);
+    this.webRequest.start(onBeforeRequest, onBeforeSendHeaders);
 
     this.messageListener = new MessageDispatcher(this.tabs, this.store),
     this.messageListener.start(onMessage);
