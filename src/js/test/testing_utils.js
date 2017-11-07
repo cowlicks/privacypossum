@@ -1,5 +1,9 @@
 "use strict"
 
+function clone(val) {
+  return JSON.parse(JSON.stringify(val));
+}
+
 function Mock(retval) {
   let out = function() {
     out.calledWith = Array.from(arguments);
@@ -67,4 +71,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, script};
 
-Object.assign(exports, {Mock, stub, stubber, details});
+Object.assign(exports, {Mock, stub, stubber, details, clone});
