@@ -28,9 +28,14 @@
       "js/disk_map.js",
       "js/utils.js",
       "js/suffixtree.js",
-      "js/tabs.js",
 
       "js/shim.js",
+
+      "js/basedomain/psl.js",
+      "js/basedomain/basedomain.js",
+
+      "js/tabs.js",
+
       "js/schemes.js",
 
       "js/messages.js",
