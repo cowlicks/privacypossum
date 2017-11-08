@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert,
+  {onRemoved} = require('../shim'),
   {Tabs} = require('../tabs');
 
 const tabId = 1,
@@ -26,6 +27,15 @@ describe('tabs.js', function() {
 
     it('#removeTab', function() {
       assert.isTrue(this.tabs.removeTab(main_frame.tabId));
+    });
+
+    describe('#startListeners', function() {
+      it('removes tabs on message', async function() {
+        this.tabs.startListeners(onRemoved);
+        assert.isTrue(this.tabs.hasTab(main_frame.tabId));
+        await onRemoved.sendMessage(main_frame.tabId)
+        assert.isFalse(this.tabs.hasTab(main_frame.tabId));
+      })
     });
 
     describe('#hasResource', function() {

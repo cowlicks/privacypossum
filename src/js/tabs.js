@@ -53,6 +53,10 @@ class Tabs {
     this._data = new Map();
   }
 
+  startListeners(onRemoved) {
+    onRemoved.addListener(this.removeTab.bind(this));
+  };
+
   getTab(tabId) {
     return this._data.get(tabId);
   }

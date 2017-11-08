@@ -45,6 +45,13 @@ try {
   onBeforeSendHeaders = new FakeMessages();
 }
 
+let onRemoved;
+try {
+  onRemoved = chrome.tabs.onRemoved;
+} catch (e) {
+  onRemoved = new FakeMessages();
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
@@ -52,6 +59,7 @@ Object.assign(exports, {
   sendMessage: sendMessage_,
   onBeforeRequest,
   onBeforeSendHeaders,
+  onRemoved,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
