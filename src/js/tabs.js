@@ -1,6 +1,8 @@
 "use strict";
 
 (function(exports) {
+const {URL} = require('./shim'),
+  {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
   constructor({url, method, type}) {
@@ -11,7 +13,7 @@ class Resource {
 }
 
 class Frame {
-  constructor({frameId, url, tabId, parentFrameId, requestId, type}) {
+  constructor({frameId, url, tabId, parentFrameId, requestId, type, urlObj}) {
     this.id = frameId;
     this.tabId = tabId;
     this.parentId = parentFrameId;
@@ -19,9 +21,15 @@ class Frame {
     this.resources = new Map();
     this.children = new Map();
 
+    // Sometimes we get resources, but don't have their frames, so we don't
+    // always have the frame url and stuff
     if (type && type.endsWith('_frame')) {
       this.url = url;
       this.type = type;
+      if (!(urlObj instanceof URL)) {
+        urlObj = new URL(url);
+      }
+      this.basedomain = getBaseDomain(urlObj.hostname);
     }
   }
 
@@ -39,7 +47,6 @@ class Frame {
     }
   }
 }
-
 
 class Tabs {
   constructor() {
@@ -82,6 +89,14 @@ class Tabs {
     return this.getTab(tabId).get(frameId);
   }
 
+  getBaseDomain(tabId) {
+    try {
+      return this.getFrame(tabId, 0).basedomain;
+    } catch(e) {
+      return undefined;
+    }
+  }
+
   hasResource({tabId, frameId, url, type}) {
     try {
       return this.getTab(tabId).get(frameId).hasResource({url, type});
@@ -107,7 +122,7 @@ class Tabs {
     frame.recordResource(details);
 
     if (details.parentFrameId === -1) {
-      return // main_frame request
+      return; // main_frame request
     }
     // add this frame to its parent, but make new parent if it doesn't exist first
     if (!tab.has(details.parentFrameId)) {
