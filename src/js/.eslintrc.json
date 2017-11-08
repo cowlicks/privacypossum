@@ -15,6 +15,7 @@
     "no-undef": "error",
     "no-trailing-spaces": "error",
     "no-debugger": "error",
+    "no-console": "error",
     "strict": ["error", "global"]
   },
   "globals": {
