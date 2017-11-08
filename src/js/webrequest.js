@@ -5,6 +5,13 @@
 const {URL} = require('./shim'),
   constants = require('./constants');
 
+// check if hostname has the given basename
+function isBaseOfHostname(base, host) {
+  return host.endsWith(base) ?
+    (base.length === host.length || host.substr(-base.length - 1, 1) === '.') :
+    false;
+}
+
 class WebRequest {
   constructor(tabs, store) {
     this.tabs = tabs;
@@ -12,13 +19,9 @@ class WebRequest {
   }
 
   isThirdParty(details) {
-    let host = new URL(details.url).hostname,
-      taburl = this.tabs.getTabUrl(details.tabId);
-    if (taburl) {
-      let tabhost = new URL(taburl).hostname;
-      return host.endsWith(tabhost) ?
-        (tabhost.length === host.length || host.substr(-tabhost.length - 1, 1) === '.') :
-        false;
+    let basename = this.tabs.getBaseDomain(details.tabId);
+    if (basename) {
+      return !isBaseOfHostname(basename, details.urlObj.hostname);
     }
     return false;
   }
@@ -43,27 +46,29 @@ class WebRequest {
 
   commitRequest(details) {
     let action = constants.NO_ACTION,
-      url = new URL(details.url);
+      {hostname, pathname} = details.urlObj;
 
     if (details.type === constants.TYPES.main_frame) {
       return action;
     }
 
-    if (this.store.has(url.hostname)) {
-      action = this.store.get(url.hostname).getAction(url.pathname);
+    if (this.store.has(hostname)) {
+      action = this.store.get(hostname).getAction(pathname);
     }
     return action;
   }
 
   onBeforeRequest(details) {
+    details.urlObj = new URL(details.url);
     this.recordRequest(details);
     return this.commitRequest(details);
   }
 
   onBeforeSendHeaders(details) {
     let action = constants.NO_ACTION;
+    details.urlObj = new URL(details.url);
 
-    if (!this.isThirdParty(details)) {
+    if (this.isThirdParty(details)) {
       if (removeCookies(details.requestHeaders)) {
         action = {requestHeaders: details.requestHeaders};
       }
@@ -72,10 +77,12 @@ class WebRequest {
   }
 }
 
+const badHeaders = new Set(['cookie', 'referer', 'set-cookie']);
+
 function removeCookies(headers) {
-  let mutated = false
+  let mutated = false;
   for (let i = 0; i < headers.length; i++) {
-    while (i < headers.length && headers[i].name.toLowerCase() === "cookie") {
+    while (i < headers.length && badHeaders.has(headers[i].name.toLowerCase())) {
       headers.splice(i, 1);
       mutated = true;
     }
