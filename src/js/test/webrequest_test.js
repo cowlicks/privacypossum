@@ -4,10 +4,7 @@ const assert = require('chai').assert,
   {WebRequest, removeCookies} = require('../webrequest'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
-  {details, clone} = require('./testing_utils');
-
-let notCookie = {name: 'a', value: 'b'},
-  cookie = {name: 'Cookie', value: 'c'};
+  {details, clone, cookie, notCookie} = require('./testing_utils');
 
 
 describe('webrequest.js', function() {

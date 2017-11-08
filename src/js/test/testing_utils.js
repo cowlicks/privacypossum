@@ -1,5 +1,8 @@
 "use strict"
 
+const notCookie = {name: 'a', value: 'b'},
+  cookie = {name: 'Cookie', value: 'c'};
+
 function clone(val) {
   return JSON.parse(JSON.stringify(val));
 }
@@ -71,4 +74,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, script};
 
-Object.assign(exports, {Mock, stub, stubber, details, clone});
+Object.assign(exports, {Mock, stub, stubber, details, clone, cookie, notCookie});
