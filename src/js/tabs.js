@@ -1,7 +1,8 @@
 "use strict";
 
 (function(exports) {
-const {URL} = require('./shim'),
+const {URL, setBadgeText} = require('./shim'),
+  constants = require('./constants'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -148,6 +149,12 @@ class Tabs {
       tab.set(details.parentFrameId, new Frame({frameId: details.parentFrameId}));
     }
     tab.get(details.parentFrameId).children.set(frame.id, frame);
+  }
+
+  markAction(action, tabId) {
+    if (action == constants.CANCEL) {
+      this.getTab(tabId).addBlocked();
+    }
   }
 };
 
