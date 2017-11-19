@@ -48,6 +48,21 @@ class Frame {
   }
 }
 
+class Tab extends Map {
+  constructor(id) {
+    super();
+    this.id = id;
+    this.count = 0;
+  }
+
+  addBlocked() {
+    this.count += 1;
+    if (this.count > 0) {
+      setBadgeText({text: '' + this.count, tabId: this.id});
+    }
+  }
+}
+
 class Tabs {
   constructor() {
     this._data = new Map();
@@ -112,7 +127,7 @@ class Tabs {
   addResource(details) {
     // if new tab, or new main_frame for existing tab
     if (!this.hasTab(details.tabId) || (details.type === 'main_frame')) {
-      this.setTab(details.tabId, new Map());
+      this.setTab(details.tabId, new Tab(details.tabId));
     }
     let tab = this.getTab(details.tabId);
 
