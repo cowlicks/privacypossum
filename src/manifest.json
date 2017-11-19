@@ -26,6 +26,14 @@
     "96": "media/icon96.png",
     "96": "media/icon256.png"
   },
+  "browser_action": {
+     "default_icon": {
+       "48": "media/icon48.png",
+       "96": "media/icon96.png",
+       "256": "media/icon256.png"
+     },
+     "default_title": "Privacy Possum"
+  },
   "background": {
     "scripts": [
       "js/bootstrap.js",
