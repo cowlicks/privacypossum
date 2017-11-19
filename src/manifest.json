@@ -21,6 +21,11 @@
     "cookies",
     "privacy"
   ],
+  "icons": {
+    "48": "media/icon48.png",
+    "96": "media/icon96.png",
+    "96": "media/icon256.png"
+  },
   "background": {
     "scripts": [
       "js/bootstrap.js",
