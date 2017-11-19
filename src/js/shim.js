@@ -52,6 +52,19 @@ try {
   onRemoved = new FakeMessages();
 }
 
+let setBadgeText, getBadgeText;
+try {
+  setBadgeText = chrome.browserAction.setBadgeText;
+} catch(e) {
+  setBadgeText = ({text, tabId}) => {
+    setBadgeText.data[tabId] = text;
+  };
+  setBadgeText.data = {};
+  getBadgeText = ({tabId}, callback) => {
+    callback(setBadgeText.data[tabId]);
+  };
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
@@ -60,6 +73,8 @@ Object.assign(exports, {
   onBeforeRequest,
   onBeforeSendHeaders,
   onRemoved,
+  setBadgeText,
+  getBadgeText,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
