@@ -44,6 +44,10 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
+  markAction(action, {tabId}) {
+    this.tabs.markAction(action, tabId);
+  }
+
   commitRequest(details) {
     let action = constants.NO_ACTION,
       {hostname, pathname} = details.urlObj;
@@ -54,6 +58,7 @@ class WebRequest {
 
     if (this.store.has(hostname)) {
       action = this.store.get(hostname).getAction(pathname);
+      this.markAction(action, details);
     }
     return action;
   }
