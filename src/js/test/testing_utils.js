@@ -74,4 +74,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, script};
 
-Object.assign(exports, {Mock, stub, stubber, details, clone, cookie, notCookie});
+Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie});

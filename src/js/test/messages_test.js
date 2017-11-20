@@ -7,7 +7,7 @@ const assert = require('chai').assert,
   {DomainStore} = require('../store'),
   {Context} = require('../schemes'),
   {MessageDispatcher} = require('../messages'),
-  {Mock, details} = require('./testing_utils');
+  {Mock, Details, details} = require('./testing_utils');
 
 describe('messages.js', function() {
   describe('MessageDispatcher', function() {
@@ -32,12 +32,19 @@ describe('messages.js', function() {
     })
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
-        message = {url: url.href};
+        message = {url: url.href},
+        details2 = new Details(Object.assign({}, details.script));
 
-      it('updates storage', async function() {
+      details2.url = 'https://second.com/script.js';
+      let url2 = new URL(details2.url),
+        message2 = {url: url2.href};
+
+      beforeEach(async function() {
         this.ml.tabs.addResource(details.script); // add the resource
         await this.ml.onFingerPrinting(message, details.script.toSender());
+      });
 
+      it('updates storage', async function() {
         let domain = await this.ml.store.getUrl(url.href);
         assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
 
@@ -54,8 +61,8 @@ describe('messages.js', function() {
       })
 
       it('rejects unknown resources', async function() {
-        await this.ml.onFingerPrinting(message, details.script.toSender());
-        assert.isUndefined(await this.ml.store.getUrl(url.href), 'no domain gets set');
+        await this.ml.onFingerPrinting(message2, details2.toSender());
+        assert.isUndefined(await this.ml.store.getUrl(url2.href), 'no domain gets set');
       });
     });
   });
