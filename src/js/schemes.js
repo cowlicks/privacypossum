@@ -7,8 +7,6 @@
 
 const constants = require('./constants');
 
-const PATHS = 'paths';
-
 // domain {
 //   paths {
 //     path {
@@ -34,8 +32,12 @@ class Path {
 }
 
 class Domain {
-  constructor(paths) {
-    this.paths = paths || {};
+  constructor(data) {
+    if (typeof data === 'undefined') {
+      this.paths = {};
+    } else {
+      this.paths = data.paths;
+    }
   }
 
   // todo add context like, 3rd party, subframe, etc
@@ -54,7 +56,7 @@ class Domain {
 }
 
 function updateDomainPath(domain, path, action, context) {
-  if (typeof domain === 'undefined' || !domain.hasOwnProperty(PATHS)) {
+  if (typeof domain === 'undefined' || !(domain instanceof Domain)) {
     domain = new Domain();
   }
   domain.setPath(path, action, context);

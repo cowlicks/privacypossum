@@ -39,7 +39,7 @@ class DomainStore {
     let out = new DomainStore(name, disk);
     await out.diskMap.loadKeys();
     for (let key of out.keys) {
-      out.tree.set(key, await out.diskMap.get(key));
+      out.tree.set(key, new Domain(await out.diskMap.get(key)));
     }
     return out;
   }
