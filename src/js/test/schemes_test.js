@@ -20,7 +20,7 @@ describe('schemes.js', function() {
         let [k1, k2] = ['path1', 'path2'],
           p1 = new Path(constants.CANCEL, new makeContext(...('abcd'.split('')))),
           p2 = new Path(constants.CANCEL, new makeContext(...('efgh'.split('')))),
-          d = new Domain({[k1]: p1});
+          d = new Domain({paths: {[k1]: p1}});
 
         assert.equal(d.getAction(k1), p1.action);
 
