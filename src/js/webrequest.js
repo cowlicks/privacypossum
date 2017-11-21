@@ -44,8 +44,8 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markAction(action, {tabId}) {
-    this.tabs.markAction(action, tabId);
+  markAction(action, {url, tabId}) {
+    this.tabs.markAction(action, url, tabId);
   }
 
   commitRequest(details) {

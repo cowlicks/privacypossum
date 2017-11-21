@@ -53,13 +53,18 @@ class Tab extends Map {
   constructor(id) {
     super();
     this.id = id;
-    this.count = 0;
+    this.blocked = new Set();
+    setBadgeText({text: '', tabId: id}); // clear badge
   }
 
-  addBlocked() {
-    this.count += 1;
-    if (this.count > 0) {
-      setBadgeText({text: '' + this.count, tabId: this.id});
+  markAction(action, url) {
+    if (action === constants.NO_ACTION) {
+      return;
+    }
+
+    this.blocked.add(url);
+    if (this.blocked.size > 0) {
+      setBadgeText({text: '' + this.blocked.size, tabId: this.id});
     }
   }
 }
@@ -151,10 +156,8 @@ class Tabs {
     tab.get(details.parentFrameId).children.set(frame.id, frame);
   }
 
-  markAction(action, tabId) {
-    if (action == constants.CANCEL) {
-      this.getTab(tabId).addBlocked();
-    }
+  markAction(action, url, tabId) {
+    this.getTab(tabId).markAction(action, url);
   }
 };
 
