@@ -2,7 +2,7 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {onBeforeRequest, sendMessage, URL} = require('../shim'),
+  {onBeforeRequest, sendMessage, URL, getBadgeText} = require('../shim'),
   {details, Details} = require('./testing_utils'),
   {Possum} = require('../possum');
 
@@ -26,6 +26,7 @@ describe('possum.js', function() {
       // another request for the fingerprinting script is made
       let result = this.possum.webRequest.onBeforeRequest(details.script);
       assert.deepEqual(result, constants.CANCEL);
+      getBadgeText({tabId: details.script.tabId}, (text) => assert.equal(text, '1'));
     });
 
     it('still blocks fingerprinting after loading from disk', async function() {
@@ -53,6 +54,7 @@ describe('possum.js', function() {
         result2 =  possum2.webRequest.onBeforeRequest(details2);
       assert.deepEqual(result, constants.CANCEL);
       assert.deepEqual(result2, constants.CANCEL);
+      getBadgeText({tabId: details2.tabId}, (text) => assert.equal(text, '2'));
     })
 
   });
