@@ -2,8 +2,8 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {onBeforeRequest, sendMessage} = require('../shim'),
-  {details} = require('./testing_utils'),
+  {onBeforeRequest, sendMessage, URL} = require('../shim'),
+  {details, Details} = require('./testing_utils'),
   {Possum} = require('../possum');
 
 describe('possum.js', function() {
@@ -34,5 +34,26 @@ describe('possum.js', function() {
       let result = possum2.webRequest.onBeforeRequest(details.script);
       assert.deepEqual(result, constants.CANCEL);
     });
+
+    it('loads 2 blocked paths', async function() {
+      let url2 = new URL(details.script.url);
+      url2.pathname = '/otherpath.js';
+
+      let details2 = new Details(Object.assign({}, details.script, {url: url2.href}))
+      onBeforeRequest.sendMessage(details2);
+
+      await sendMessage(
+        {type: constants.FINGERPRINTING, url: details2.url},
+        details.main_frame.toSender()
+      );
+
+      let possum2 = await Possum.load(this.possum.store.diskMap.disk);
+
+      let result = possum2.webRequest.onBeforeRequest(details.script),
+        result2 =  possum2.webRequest.onBeforeRequest(details2);
+      assert.deepEqual(result, constants.CANCEL);
+      assert.deepEqual(result2, constants.CANCEL);
+    })
+
   });
 });
