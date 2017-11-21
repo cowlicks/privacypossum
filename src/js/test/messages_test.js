@@ -33,11 +33,12 @@ describe('messages.js', function() {
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
         message = {url: url.href},
-        details2 = new Details(Object.assign({}, details.script));
-
-      details2.url = 'https://second.com/script.js';
-      let url2 = new URL(details2.url),
-        message2 = {url: url2.href};
+        ctx = new Context({
+          reason: constants.FINGERPRINTING,
+          url: url.href,
+          frameUrl: undefined,
+          tabUrl: undefined,
+        });
 
       beforeEach(async function() {
         this.ml.tabs.addResource(details.script); // add the resource
@@ -51,18 +52,33 @@ describe('messages.js', function() {
         let path = domain.paths[url.pathname];
         assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
 
-        let ctx = new Context({
-          reason: constants.FINGERPRINTING,
-          url: url.href,
-          frameUrl: undefined,
-          tabUrl: undefined,
-        });
         assert.deepEqual(path.context, ctx, 'correct context set');
       })
 
+      it('adds a second path', async function() {
+        let url2 = new URL(details.script.url);
+        url2.pathname = '/otherpath.js';
+
+        let details2 = new Details(Object.assign({}, details.script, {url: url2.href}))
+
+        this.ml.tabs.addResource(details2); // add the resource
+        await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
+
+        let domain = await this.ml.store.getUrl(url2.href);
+        assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
+
+        let path = domain.paths[url2.pathname];
+        assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
+
+        let ctx2 = new Context(Object.assign({}, ctx, {url: url2.href}));
+
+        assert.deepEqual(path.context, ctx2, 'correct context set');
+      });
+
       it('rejects unknown resources', async function() {
-        await this.ml.onFingerPrinting(message2, details2.toSender());
-        assert.isUndefined(await this.ml.store.getUrl(url2.href), 'no domain gets set');
+        let details2 = new Details(Object.assign({}, details.script, {url: 'https://other.com/foo.js'}));
+        await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
+        assert.isUndefined(await this.ml.store.getUrl(details2.url), 'no domain gets set');
       });
     });
   });
