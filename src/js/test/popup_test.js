@@ -34,7 +34,7 @@ describe('popup.js', function() {
         tab = new Tab(tabId),
         tabs = new Map([[tabId, tab]]);
 
-      connect.sender = tab;
+      connect.sender = {tab};
       let server = new Server(tabs),
         popup = new Popup(tabId);
       server.start();

@@ -34,7 +34,7 @@ class Popup {
   }
 
   connect() {
-    this.port = connect({name: POPUP, sender: {tab: {id: this.tabId}}});
+    this.port = connect({name: POPUP});
     this.view = new View(this.port, (blocked) => {
       this.blocked = blocked;
     });

@@ -70,9 +70,10 @@ try {
   connect = chrome.runtime.connect;
   onConnect = chrome.runtime.onConnect;
 } catch(e) {
-  connect = function({name, sender}) {
+  // to get a `sender` property or ports, assign connect.sender = {tab: {id}}
+  connect = function({name}) {
     let [port, otherPort] = fakePort(name);
-    Object.assign(otherPort, {sender})
+    Object.assign(otherPort, {sender: connect.sender})
     for (let func of onConnect.funcs) {
       func(otherPort);
     }
