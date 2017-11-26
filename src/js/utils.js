@@ -50,6 +50,29 @@ class FakeMessages {
   }
 }
 
-Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages});
+// this should be cleaned up, and probably moved into shim.js
+function fakePort(name) {
+  let a = {name, onMessage: {}, funcs: []}, b = {name, onMessage: {}, funcs: []};
+  a.onMessage.addListener = (func) => {
+    a.funcs.push(func);
+  };
+  b.onMessage.addListener = (func) => {
+    b.funcs.push(func);
+  };
+
+  a.postMessage = async function() {
+    for (let func of b.funcs) {
+      await func(...arguments);
+    }
+  }
+  b.postMessage = async function() {
+    for (let func of a.funcs) {
+      await func(...arguments);
+    }
+  }
+  return [a, b];
+}
+
+Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages, fakePort});
 
 })(typeof exports == 'undefined' ? require.scopes.utils = {} : exports);
