@@ -54,7 +54,18 @@ class Tab extends Map {
     super();
     this.id = id;
     this.blocked = new Set();
+    this.funcs = [];
     setBadgeText({text: '', tabId: id}); // clear badge
+  }
+
+  // todo make an event listener mixin
+  // todo remove funcs when appropriate
+  addEventListener(func) {
+    this.funcs.push(func);
+  }
+
+  onChange() {
+    this.funcs.forEach(func => func(this.blocked));
   }
 
   markAction(action, url) {
@@ -62,7 +73,11 @@ class Tab extends Map {
       return;
     }
 
-    this.blocked.add(url);
+    if (!this.blocked.has(url)) {
+      this.blocked.add(url);
+      this.onChange();
+    }
+
     if (this.blocked.size > 0) {
       setBadgeText({text: '' + this.blocked.size, tabId: this.id});
     }
@@ -161,6 +176,6 @@ class Tabs {
   }
 };
 
-Object.assign(exports, {Frame, Tabs});
+Object.assign(exports, {Frame, Tabs, Tab});
 
 })(typeof exports == 'undefined' ? require.scopes.tabs = {} : exports);
