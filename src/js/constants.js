@@ -20,6 +20,9 @@ const FRAME_END = '_frame';
 // reasons
 const FINGERPRINTING = 'fingerprinting';
 
-Object.assign(exports, {NO_ACTION, CANCEL, TYPES, FRAME_END, FINGERPRINTING, DISK_NAME});
+// ports
+const POPUP = 'popup';
+
+Object.assign(exports, {NO_ACTION, CANCEL, TYPES, FRAME_END, FINGERPRINTING, DISK_NAME, POPUP});
 
 })(typeof exports == 'undefined' ? require.scopes.constants = {} : exports);
