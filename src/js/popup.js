@@ -38,6 +38,7 @@ class Popup {
     this.view = new View(this.port, (blocked) => {
       this.blocked = blocked;
     });
+    return this;
   }
 }
 
