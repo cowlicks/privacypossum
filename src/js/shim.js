@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-const {FakeDisk, BrowserDisk, FakeMessages} = require('./utils');
+const {FakeDisk, BrowserDisk, FakeMessages, fakePort} = require('./utils');
 
 let url_;
 try {
@@ -65,6 +65,26 @@ try {
   };
 }
 
+let connect, onConnect;
+try {
+  connect = chrome.runtime.connect;
+  onConnect = chrome.runtime.onConnect;
+} catch(e) {
+  connect = function({name, sender}) {
+    let [port, otherPort] = fakePort(name);
+    Object.assign(otherPort, {sender})
+    for (let func of onConnect.funcs) {
+      func(otherPort);
+    }
+    return port;
+  };
+
+  onConnect = {funcs: []};
+  onConnect.addListener = (func) => {
+    onConnect.funcs.push(func);
+  }
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
@@ -75,6 +95,8 @@ Object.assign(exports, {
   onRemoved,
   setBadgeText,
   getBadgeText,
+  connect,
+  onConnect,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
