@@ -32,7 +32,8 @@
        "96": "media/icon96.png",
        "256": "media/icon256.png"
      },
-     "default_title": "Privacy Possum"
+     "default_title": "Privacy Possum",
+     "default_popup": "skin/popup.html"
   },
   "background": {
     "scripts": [
@@ -54,6 +55,8 @@
       "js/messages.js",
       "js/webrequest.js",
       "js/store.js",
+      "js/popup.js",
+
       "js/possum.js",
       "js/initialize.js"
     ]
