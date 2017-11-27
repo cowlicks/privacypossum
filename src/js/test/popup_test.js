@@ -4,7 +4,7 @@ const assert = require('chai').assert,
   constants = require('../constants'),
   {fakePort} = require('../utils'),
   {Tab, Tabs} = require('../tabs'),
-  {connect} = require('../shim'),
+  {connect, tabsQuery} = require('../shim'),
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
@@ -12,18 +12,21 @@ describe('popup.js', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
         result,
-        data = {
-          onChange: {
-            addEventListener: func => data.func = func,
-            doChange: (change) => data.func(change),
+        changer = {
+          addEventListener: func => changer.func = func,
+          onChange: () => changer.func(changer.data),
+          data: [1, 2, 3],
+          change: (x) => {
+            changer.data = x;
+            changer.onChange();
           }
         };
 
-      new Model(aPort, data.onChange),
-      new View(bPort, out => result = out, ()=>{});
+      new Model(aPort, changer),
+      new View(bPort, out => result = out);
 
-      data.onChange.doChange('result');
-      assert.equal(result, 'result');
+      changer.change('hello');
+      assert.equal(result, 'hello');
     });
   });
 
@@ -35,9 +38,9 @@ describe('popup.js', function() {
         tab = new Tab(tabId),
         tabs = new Tabs();
 
+      tabsQuery.tabs = [{id: tabId}]; // mock current tab
       tab.markAction(constants.CANCEL, url1);
       tabs.setTab(tab.id, tab);
-      connect.sender = {tab};
 
       let server = new Server(tabs),
         popup = new Popup(tabId);
