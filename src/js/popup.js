@@ -10,33 +10,28 @@ let {connect, onConnect} = require('./shim'),
  * View of some remote data represented by a `Model`.
  */
 class View {
-  constructor(port, onChange, initFunc) {
-    port.onMessage.addListener(({change, init}) => {
-      if (change) {
-        onChange(change);
-      } else if (init) {
-        initFunc(init);
-      }
+  constructor(port, onChange) {
+    this.ready = new Promise(resolve => {
+      port.onMessage.addListener(obj => {
+        if (obj.change) {
+          onChange(obj.change);
+          resolve();
+        }
+      });
     });
-    port.postMessage({init: true});
   }
 }
 
 /* 
  * Model that sends data changes to a corresponding view.
  *
- * Takes a `port` and an `onChange` object representing some data that has an interface like:
- * onChange = {addEventListener: (change) => ...};
- *
+ * Takes a `port` and an object with an `onChange` and `addEventListener`
+ * methods. `onChange` is called directly first to send the initial data.
  */
 class Model {
   constructor(port, data) {
-    port.onMessage.addListener(({init}) => {
-      if (init) {
-        port.postMessage({init: data});
-      }
-    });
     data.addEventListener(change => port.postMessage({change}));
+    data.onChange(); // send initial data
   }
 }
 
