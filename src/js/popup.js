@@ -48,6 +48,10 @@ class Popup {
     });
     return this.view.ready;
   }
+
+  show() {
+    $('blocked').innerHTML = Array.from(this.blocked);
+  }
 }
 
 class Server {
