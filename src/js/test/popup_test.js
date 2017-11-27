@@ -20,7 +20,7 @@ describe('popup.js', function() {
         };
 
       new Model(aPort, data.onChange),
-      new View(bPort, out => result = out);
+      new View(bPort, out => result = out, ()=>{});
 
       data.onChange.doChange('result');
       assert.equal(result, 'result');
