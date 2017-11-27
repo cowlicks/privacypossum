@@ -65,7 +65,7 @@ class Tab extends Map {
   }
 
   onChange() {
-    this.funcs.forEach(func => func(this.blocked));
+    this.funcs.forEach(func => func(Array.from(this.blocked)));
   }
 
   markAction(action, url) {
