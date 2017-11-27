@@ -50,7 +50,19 @@ class FakeMessages {
   }
 }
 
-// this should be cleaned up, and probably moved into shim.js
+function makeTrap() {
+  let target = () => {};
+  let lol = () => {
+    return new Proxy(target, descriptor);
+  };
+  let descriptor = {
+    apply: lol,
+    get: lol,
+  };
+  return lol();
+}
+
+// this should be cleaned up, and probably moved into shim.js or testing_utils.js
 function fakePort(name) {
   let a = {name, onMessage: {}, funcs: []}, b = {name, onMessage: {}, funcs: []};
   a.onMessage.addListener = (func) => {
@@ -73,6 +85,6 @@ function fakePort(name) {
   return [a, b];
 }
 
-Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages, fakePort});
+Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages, fakePort, makeTrap});
 
 })(typeof exports == 'undefined' ? require.scopes.utils = {} : exports);

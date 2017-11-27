@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-const {FakeDisk, BrowserDisk, FakeMessages, fakePort} = require('./utils');
+const {FakeDisk, BrowserDisk, FakeMessages, fakePort, makeTrap} = require('./utils');
 
 let url_;
 try {
@@ -94,6 +94,15 @@ try {
   tabsQuery.tabs = [];
 }
 
+let getDocument;
+try {
+  document;
+  getDocument = () => document;
+} catch (e) {
+  getDocument = makeTrap();
+
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
@@ -107,6 +116,7 @@ Object.assign(exports, {
   connect,
   onConnect,
   tabsQuery,
+  getDocument,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
