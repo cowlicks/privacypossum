@@ -1,5 +1,9 @@
 "use strict";
 
-const {Popup} = require('./popup');
+const {Popup, currentTab} = require('./popup');
 
-chrome.tabs.getCurrent(tab => window['popup'] = new Popup(tab.id).connect());
+let popup;
+currentTab().then(tab => {
+  popup = new Popup(tab.id);
+  popup.connect();
+});
