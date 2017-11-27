@@ -86,6 +86,14 @@ try {
   }
 }
 
+let tabsQuery;
+try {
+  tabsQuery = chrome.tabs.query;
+}  catch (e) {
+  tabsQuery = (obj, callback) => callback(tabsQuery.tabs);
+  tabsQuery.tabs = [];
+}
+
 Object.assign(exports, {
   URL: url_,
   Disk: disk_,
@@ -98,6 +106,7 @@ Object.assign(exports, {
   getBadgeText,
   connect,
   onConnect,
+  tabsQuery,
 });
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);

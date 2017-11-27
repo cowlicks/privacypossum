@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-let {connect, onConnect} = require('./shim'),
+let {connect, onConnect, tabsQuery} = require('./shim'),
   {POPUP} = require('./constants');
 
 
@@ -64,6 +64,18 @@ class Server {
   }
 }
 
-Object.assign(exports, {Model, View, Popup, Server});
+function currentTab() {
+  return new Promise(resolve => {
+    tabsQuery(
+      {
+        active: true,
+        lastFocusedWindow: true,
+      },
+      (tabs) => resolve(tabs[0])
+    );
+  });
+}
+
+Object.assign(exports, {Model, View, Popup, Server, currentTab});
 
 })(typeof exports == 'undefined' ? require.scopes.popup = {} : exports);
