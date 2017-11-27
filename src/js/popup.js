@@ -41,16 +41,12 @@ class Popup {
   }
 
   connect() {
-    let self = this,
-      onChange = blocked => self.blocked = blocked;
-    return new Promise(resolve => {
-      self.port = connect({name: POPUP});
-      self.view = new View(self.port, onChange,
-        (init) => {
-          self.blocked = init.blocked;
-          resolve();
-        });
+    this.port = connect({name: POPUP});
+    this.view = new View(this.port, blocked => {
+      this.blocked = new Set(blocked);
+      this.show();
     });
+    return this.view.ready;
   }
 }
 
