@@ -2,7 +2,7 @@
 
 (function(exports) {
 
-let {connect, onConnect, tabsQuery} = require('./shim'),
+let {connect, onConnect, tabsQuery, getDocument} = require('./shim'),
   {POPUP} = require('./constants');
 
 
@@ -74,6 +74,10 @@ function currentTab() {
       (tabs) => resolve(tabs[0])
     );
   });
+}
+
+function $(id) {
+  return getDocument().getElementById(id);
 }
 
 Object.assign(exports, {Model, View, Popup, Server, currentTab});
