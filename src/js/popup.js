@@ -53,12 +53,15 @@ class Popup {
 class Server {
   constructor(tabs) {
     this.tabs = tabs;
+    this.connections = new Map();
   }
 
   start() {
     onConnect.addListener(port => {
       if (port.name === POPUP) {
-        new Model(port, this.tabs.getTab(port.sender.tab.id))
+        currentTab().then(tab => {
+          this.connections.set(tab.id, new Model(port, this.tabs.getTab(tab.id)));
+        });
       }
     });
   }
