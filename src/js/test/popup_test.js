@@ -3,7 +3,7 @@
 const assert = require('chai').assert,
   constants = require('../constants'),
   {fakePort} = require('../utils'),
-  {Tab} = require('../tabs'),
+  {Tab, Tabs} = require('../tabs'),
   {connect} = require('../shim'),
   {Model, View, Server, Popup} = require('../popup');
 
@@ -28,20 +28,26 @@ describe('popup.js', function() {
   });
 
   describe('Popup and Server', function() {
-    it('blocked is sent', function() {
+    it('blocked is sent', async function() {
       let tabId = 1,
-        url = 'https://foo.com/stuff',
+        url1 = 'https://foo.com/stuff',
+        url2 = 'https://bar.com/other',
         tab = new Tab(tabId),
-        tabs = new Map([[tabId, tab]]);
+        tabs = new Tabs();
 
+      tab.markAction(constants.CANCEL, url1);
+      tabs.setTab(tab.id, tab);
       connect.sender = {tab};
+
       let server = new Server(tabs),
         popup = new Popup(tabId);
       server.start();
-      popup.connect();
+      await popup.connect();
 
-      tab.markAction(constants.CANCEL, url);
-      assert.isTrue(popup.blocked.has(url));
+      assert.isTrue(popup.blocked.has(url1), 'initial url is blocked');
+
+      tab.markAction(constants.CANCEL, url2);
+      assert.isTrue(popup.blocked.has(url2), 'added url is blocked');
     });
   });
 });
