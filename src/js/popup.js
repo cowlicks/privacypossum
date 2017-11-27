@@ -10,8 +10,15 @@ let {connect, onConnect} = require('./shim'),
  * View of some remote data represented by a `Model`.
  */
 class View {
-  constructor(port, onChange) {
-    port.onMessage.addListener(({change}) => onChange(change));
+  constructor(port, onChange, initFunc) {
+    port.onMessage.addListener(({change, init}) => {
+      if (change) {
+        onChange(change);
+      } else if (init) {
+        initFunc(init);
+      }
+    });
+    port.postMessage({init: true});
   }
 }
 
@@ -23,8 +30,13 @@ class View {
  *
  */
 class Model {
-  constructor(port, onChange) {
-    onChange.addEventListener(change => port.postMessage({change}));
+  constructor(port, data) {
+    port.onMessage.addListener(({init}) => {
+      if (init) {
+        port.postMessage({init: data});
+      }
+    });
+    data.addEventListener(change => port.postMessage({change}));
   }
 }
 
@@ -34,11 +46,16 @@ class Popup {
   }
 
   connect() {
-    this.port = connect({name: POPUP});
-    this.view = new View(this.port, (blocked) => {
-      this.blocked = blocked;
+    let self = this,
+      onChange = blocked => self.blocked = blocked;
+    return new Promise(resolve => {
+      self.port = connect({name: POPUP});
+      self.view = new View(self.port, onChange,
+        (init) => {
+          self.blocked = init.blocked;
+          resolve();
+        });
     });
-    return this;
   }
 }
 
@@ -50,7 +67,7 @@ class Server {
   start() {
     onConnect.addListener(port => {
       if (port.name === POPUP) {
-        new Model(port, this.tabs.get(port.sender.tab.id))
+        new Model(port, this.tabs.getTab(port.sender.tab.id))
       }
     });
   }
