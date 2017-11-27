@@ -2,8 +2,9 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {onBeforeRequest, sendMessage, URL, getBadgeText} = require('../shim'),
+  {connect, onBeforeRequest, sendMessage, URL, getBadgeText} = require('../shim'),
   {details, Details} = require('./testing_utils'),
+  {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
 describe('possum.js', function() {
@@ -57,5 +58,12 @@ describe('possum.js', function() {
       getBadgeText({tabId: details2.tabId}, (text) => assert.equal(text, '2'));
     })
 
+    it('has the fp script blocked in the popup', async function() {
+      let tabId = details.script.tabId;
+      connect.sender = {tab: {id: tabId}};
+      let popup = new Popup(tabId);
+      await popup.connect();
+      assert.isTrue(popup.blocked.has(details.script.url), 'popup has the blocked url');
+    });
   });
 });
