@@ -7,7 +7,8 @@ const constants = require('./constants'),
   {DomainStore} = require('./store'),
   {onMessage, onBeforeRequest, onBeforeSendHeaders, onRemoved} = require('./shim'),
   {MessageDispatcher} = require('./messages'),
-  {WebRequest} = require('./webrequest');
+  {WebRequest} = require('./webrequest'),
+  PopupServer = require('./popup').Server;
 
 class Possum {
   constructor(store) {
@@ -24,6 +25,9 @@ class Possum {
 
     this.messageListener = new MessageDispatcher(this.tabs, this.store),
     this.messageListener.start(onMessage);
+
+    this.popup = new PopupServer(this.tabs);
+    this.popup.start();
   }
 
   static async load(disk) {
