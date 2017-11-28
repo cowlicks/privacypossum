@@ -2,7 +2,8 @@
 
 (function(exports) {
 
-const {FakeDisk, BrowserDisk, FakeMessages, fakePort, makeTrap} = require('./utils');
+const {makeTrap, BrowserDisk} = require('./utils'),
+  {FakeDisk, FakeMessages, fakeConnects} = require('./fakes');
 
 let url_;
 try {
@@ -70,20 +71,7 @@ try {
   connect = chrome.runtime.connect;
   onConnect = chrome.runtime.onConnect;
 } catch(e) {
-  // to get a `sender` property or ports, assign connect.sender = {tab: {id}}
-  connect = function({name}) {
-    let [port, otherPort] = fakePort(name);
-    Object.assign(otherPort, {sender: connect.sender})
-    for (let func of onConnect.funcs) {
-      func(otherPort);
-    }
-    return port;
-  };
-
-  onConnect = {funcs: []};
-  onConnect.addListener = (func) => {
-    onConnect.funcs.push(func);
-  }
+  [connect, onConnect] = fakeConnects();
 }
 
 let tabsQuery;
@@ -100,7 +88,6 @@ try {
   getDocument = () => document;
 } catch (e) {
   getDocument = makeTrap();
-
 }
 
 Object.assign(exports, {
