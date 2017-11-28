@@ -2,22 +2,6 @@
 
 (function(exports) {
 
-async function asyncify(func) {
-  return new Promise(resolve => setTimeout(() => resolve(func())));
-}
-
-class FakeDisk extends Map {
-  async get(key, cb) {
-    let getter = super.get.bind(this);
-    return asyncify(() => cb(getter(key)));
-  }
-
-  async set(key, value, cb) {
-    let setter = super.set.bind(this);
-    return asyncify(() => cb(setter(key, value)));
-  }
-}
-
 class BrowserDisk {
   constructor(disk) {
     this.disk = disk;
@@ -34,22 +18,7 @@ class BrowserDisk {
   }
 }
 
-class FakeMessages {
-  constructor() {
-    this.funcs = [];
-  }
-
-  addListener(func) {
-    this.funcs.push(func);
-  }
-
-  async sendMessage() {
-    for (let func of this.funcs) {
-      await func(...arguments);
-    }
-  }
-}
-
+// move to shim
 function makeTrap() {
   let target = () => {};
   let lol = () => {
@@ -62,29 +31,36 @@ function makeTrap() {
   return lol();
 }
 
-// this should be cleaned up, and probably moved into shim.js or testing_utils.js
-function fakePort(name) {
-  let a = {name, onMessage: {}, funcs: []}, b = {name, onMessage: {}, funcs: []};
-  a.onMessage.addListener = (func) => {
-    a.funcs.push(func);
-  };
-  b.onMessage.addListener = (func) => {
-    b.funcs.push(func);
-  };
+/*
+ * Make a class have an eventListener interface. The base class needs to
+ * implement a `getData` function and call the `onChange` function when
+ * appropriate.
+ */
+let listenerMixin = (Base) => class extends Base {
+  constructor() {
+    super();
+    this.funcs = new Set();
+    this.onChange = this.onEvent;
+  }
 
-  a.postMessage = async function() {
-    for (let func of b.funcs) {
-      await func(...arguments);
-    }
+  addListener(func) {
+    this.funcs.add(func)
   }
-  b.postMessage = async function() {
-    for (let func of a.funcs) {
-      await func(...arguments);
-    }
+
+  removeListener(func) {
+    this.funcs.delete(func);
   }
-  return [a, b];
+
+  onEvent() {
+    this.funcs.forEach(func => func(this.getData()));
+  }
+
+  getData() {
+  }
 }
 
-Object.assign(exports, {FakeDisk, BrowserDisk, FakeMessages, fakePort, makeTrap});
+class Listener extends listenerMixin(Object) {}
+
+Object.assign(exports, {BrowserDisk, makeTrap, listenerMixin, Listener});
 
 })(typeof exports == 'undefined' ? require.scopes.utils = {} : exports);
