@@ -25,13 +25,19 @@ class View {
 /* 
  * Model that sends data changes to a corresponding view.
  *
- * Takes a `port` and an object with an `onChange` and `addEventListener`
+ * Takes a `port` and an object with an `onChange` and `addListener`
  * methods. `onChange` is called directly first to send the initial data.
  */
 class Model {
   constructor(port, data) {
-    data.addEventListener(change => port.postMessage({change}));
+    this.data = data;
+    this.func = change => port.postMessage({change});
+    data.addListener(this.func);
     data.onChange(); // send initial data
+  }
+
+  delete() {
+    this.data.removeListener(this.func);
   }
 }
 
@@ -64,7 +70,12 @@ class Server {
     onConnect.addListener(port => {
       if (port.name === POPUP) {
         currentTab().then(tab => {
-          this.connections.set(tab.id, new Model(port, this.tabs.getTab(tab.id)));
+          let model = new Model(port, this.tabs.getTab(tab.id));
+          this.connections.set(tab.id, model);
+          port.onDisconnect.addListener(() => {
+            this.connections.delete(tab.id);
+            model.delete();
+          });
         });
       }
     });
