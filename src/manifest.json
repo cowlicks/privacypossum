@@ -39,12 +39,12 @@
     "scripts": [
       "js/bootstrap.js",
       "js/constants.js",
+      "js/shim.js",
+
       "js/disk_map.js",
       "js/utils.js",
       "js/fakes.js",
       "js/suffixtree.js",
-
-      "js/shim.js",
 
       "js/basedomain/psl.js",
       "js/basedomain/basedomain.js",

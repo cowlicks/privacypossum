@@ -2,108 +2,119 @@
 
 (function(exports) {
 
-const {makeTrap, BrowserDisk} = require('./utils'),
-  {FakeDisk, FakeMessages, fakeConnects} = require('./fakes');
+/**
+ * we load these lazily.
+ */
 
-let url_;
-try {
-  url_ = URL;
-} catch (e) {
-  url_ = require('url').URL;
+let globalObj = (typeof window === 'object') ? window : global;
+let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
+let passThru = (x) => x;
+let makeFakeMessages = () => {
+  let {FakeMessages} = require('./fakes');
+  return new FakeMessages();
+};
+
+function assign(name, definition) {
+  return Object.defineProperty(exports, name, {
+    get: function() {
+      return definition;
+    }
+  });
 }
 
-let disk_ = {};
-try {
-  chrome.storage.sync;
-  disk_ = new BrowserDisk(chrome.storage.sync);
-  disk_.newDisk = () => disk_;
-} catch (e) {
-  disk_ = FakeDisk;
-  disk_.newDisk = () => new FakeDisk();
+function lazyDef(base, name, define) {
+  Object.defineProperty(base, name, {
+    configurable: true,
+    get: function() {
+      let out = define();
+      Object.defineProperty(base, name, {
+        get: function() {
+          return out;
+        }
+      });
+      return out;
+    }
+  });
 }
 
-let onMessage_, sendMessage_;
-try {
-  onMessage_ = chrome.runtime.onMessage;
-  sendMessage_ = chrome.runtime.sendMessage;
-} catch (e) {
-  let fm = new FakeMessages();
-  onMessage_ = fm;
-  sendMessage_ = fm.sendMessage.bind(fm);
+function shimmer(out_name, real_name, onSuccess, onFail) {
+  lazyDef(exports, out_name, () => {
+    let out;
+    try {
+      out = getter(real_name, globalObj);
+      out = (typeof out !== 'undefined') ? onSuccess(out) : onFail(out_name);
+    } catch(e) {
+      out = onFail(out_name);
+    }
+    return out;
+  });
 }
 
-let onBeforeRequest;
-try {
-  onBeforeRequest = chrome.webRequest.onBeforeRequest;
-} catch (e) {
-  onBeforeRequest = new FakeMessages();
-}
+/**
+ * shims for api's that share state;
+ */
+let onAndSendMessage = (name) => {
+  let fm = makeFakeMessages();
+  assign('onMessage', fm);
+  assign('sendMessage', fm.sendMessage.bind(fm));
+  return getter(name, exports);
+};
 
-let onBeforeSendHeaders;
-try {
-  onBeforeSendHeaders = chrome.webRequest.onBeforeSendHeaders;
-} catch (e) {
-  onBeforeSendHeaders = new FakeMessages();
-}
+let connectAndOnConnect = (name) => {
+  let [con, onCon] = require('./fakes').fakeConnects();
+  assign('onConnect', onCon);
+  assign('connect', con);
+  return getter(name, exports);
+};
 
-let onRemoved;
-try {
-  onRemoved = chrome.tabs.onRemoved;
-} catch (e) {
-  onRemoved = new FakeMessages();
-}
-
-let setBadgeText, getBadgeText;
-try {
-  setBadgeText = chrome.browserAction.setBadgeText;
-} catch(e) {
-  setBadgeText = ({text, tabId}) => {
+let setAndGetBadgeText = (name) => {
+  let setBadgeText = ({text, tabId}) => {
     setBadgeText.data[tabId] = text;
   };
   setBadgeText.data = {};
-  getBadgeText = ({tabId}, callback) => {
+  let getBadgeText = ({tabId}, callback) => {
     callback(setBadgeText.data[tabId]);
   };
+  assign('setBadgeText', setBadgeText);
+  assign('getBadgeText', getBadgeText);
+  return getter(name, exports);
 }
 
-let connect, onConnect;
-try {
-  connect = chrome.runtime.connect;
-  onConnect = chrome.runtime.onConnect;
-} catch(e) {
-  [connect, onConnect] = fakeConnects();
-}
+let shims = [
+  ['URL', 'URL', () => URL, () => require('url').URL],
+  ['Disk', 'chrome.storage.sync',
+    () => {
+      let {BrowserDisk} = require('./utils');
+      let out = new BrowserDisk(chrome.storage.sync);
+      out.newDisk = () => out;
+      return out;
+    },
+    () => {
+      let {FakeDisk} = require('./fakes');
+      let out = FakeDisk;
+      out.newDisk = () => new FakeDisk();
+      return out;
+    },
+  ],
+  ['onMessage', 'chrome.runtime.onMessage', passThru, onAndSendMessage],
+  ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
+  ['onBeforeRequest', 'chrome.webRequest.onBeforeRequest', passThru, makeFakeMessages],
+  ['onBeforeSendHeaders', 'chrome.webRequest.onBeforeSendHeaders', passThru, makeFakeMessages],
+  ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
+  ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
+  ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
+  ['getDocument', 'document', () => () => document, () => require('./utils').makeTrap()],
+  ['tabsQuery', 'chrome.tabs.query', passThru,
+    () => {
+      let out = (obj, callback) => callback(out.tabs);
+      out.tabs = [];
+      return out;
+    },
+  ],
+  ['setBadgeText', 'chrome.browserAction.setBadgeText', passThru, setAndGetBadgeText],
+  ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
+];
 
-let tabsQuery;
-try {
-  tabsQuery = chrome.tabs.query;
-}  catch (e) {
-  tabsQuery = (obj, callback) => callback(tabsQuery.tabs);
-  tabsQuery.tabs = [];
-}
-
-let getDocument;
-try {
-  document;
-  getDocument = () => document;
-} catch (e) {
-  getDocument = makeTrap();
-}
-
-Object.assign(exports, {
-  URL: url_,
-  Disk: disk_,
-  onMessage: onMessage_,
-  sendMessage: sendMessage_,
-  onBeforeRequest,
-  onBeforeSendHeaders,
-  onRemoved,
-  setBadgeText,
-  getBadgeText,
-  connect,
-  onConnect,
-  tabsQuery,
-  getDocument,
-});
+shims.forEach(shim => shimmer.apply(undefined, shim));
 
 })(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
