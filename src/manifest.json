@@ -40,8 +40,8 @@
       "js/bootstrap.js",
       "js/constants.js",
       "js/disk_map.js",
-      "js/fakes.js",
       "js/utils.js",
+      "js/fakes.js",
       "js/suffixtree.js",
 
       "js/shim.js",
