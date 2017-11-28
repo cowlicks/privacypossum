@@ -2,9 +2,10 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {fakePort} = require('../utils'),
+  {fakePort} = require('../fakes'),
   {Tab, Tabs} = require('../tabs'),
-  {connect, tabsQuery} = require('../shim'),
+  {Listener} = require('../utils'),
+  {tabsQuery} = require('../shim'),
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
@@ -12,21 +13,20 @@ describe('popup.js', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
         result,
-        changer = {
-          addEventListener: func => changer.func = func,
-          onChange: () => changer.func(changer.data),
-          data: [1, 2, 3],
-          change: (x) => {
-            changer.data = x;
-            changer.onChange();
-          }
-        };
+        data = new Listener();
 
-      new Model(aPort, changer),
-      new View(bPort, out => result = out);
+      data.getData = () => data.x;
+      data.x = 'initial';
 
-      changer.change('hello');
-      assert.equal(result, 'hello');
+      new View(aPort, out => result = out);
+      new Model(bPort, data),
+
+      assert.equal(result, 'initial');
+
+      data.x = 'new data';
+      data.onChange();
+
+      assert.equal(result, 'new data');
     });
   });
 
