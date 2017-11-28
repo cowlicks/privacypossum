@@ -1,8 +1,10 @@
 "use strict";
 
 (function(exports) {
+
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
+  {listenerMixin} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -49,23 +51,17 @@ class Frame {
   }
 }
 
-class Tab extends Map {
+class Tab extends listenerMixin(Map) {
   constructor(id) {
     super();
     this.id = id;
     this.blocked = new Set();
-    this.funcs = [];
+    this.onChange = this.onEvent;
     setBadgeText({text: '', tabId: id}); // clear badge
   }
 
-  // todo make an event listener mixin
-  // todo remove funcs when appropriate
-  addEventListener(func) {
-    this.funcs.push(func);
-  }
-
-  onChange() {
-    this.funcs.forEach(func => func(Array.from(this.blocked)));
+  getData() {
+    return Array.from(this.blocked);
   }
 
   markAction(action, url) {
