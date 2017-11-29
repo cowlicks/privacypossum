@@ -18,11 +18,23 @@ const TYPES = {
 const FRAME_END = '_frame';
 
 // reasons
-const FINGERPRINTING = 'fingerprinting';
+const FINGERPRINTING = 'fingerprinting',
+  USER_HOST_DEACTIVATE = 'user_host_deactivate',
+  USER_URL_DEACTIVATE = 'user_url_deactivate';
 
 // ports
 const POPUP = 'popup';
 
-Object.assign(exports, {NO_ACTION, CANCEL, TYPES, FRAME_END, FINGERPRINTING, DISK_NAME, POPUP});
+Object.assign(exports, {
+  DISK_NAME,
+  NO_ACTION,
+  CANCEL,
+  TYPES,
+  FRAME_END,
+  FINGERPRINTING,
+  USER_HOST_DEACTIVATE,
+  USER_URL_DEACTIVATE,
+  POPUP,
+});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.constants = func : func(exports));
