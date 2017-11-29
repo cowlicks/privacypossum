@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 class BrowserDisk {
   constructor(disk) {
@@ -63,4 +63,4 @@ class Listener extends listenerMixin(Object) {}
 
 Object.assign(exports, {BrowserDisk, makeTrap, listenerMixin, Listener});
 
-})(typeof exports == 'undefined' ? require.scopes.utils = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));

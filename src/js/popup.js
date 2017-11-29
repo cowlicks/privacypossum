@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 let {connect, onConnect, tabsQuery, getDocument} = require('./shim'),
   {POPUP} = require('./constants');
@@ -100,4 +100,4 @@ function $(id) {
 
 Object.assign(exports, {Model, View, Popup, Server, currentTab});
 
-})(typeof exports == 'undefined' ? require.scopes.popup = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.popup = func : func(exports));

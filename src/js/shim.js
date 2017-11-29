@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 /**
  * we load these lazily.
@@ -117,4 +117,4 @@ let shims = [
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
 
-})(typeof exports == 'undefined' ? require.scopes.shim = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.shim = func : func(exports));

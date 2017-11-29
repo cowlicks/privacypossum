@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {Context, updateDomainPath} = require('./schemes'),
   constants = require('./constants'),
@@ -52,4 +52,4 @@ class MessageDispatcher {
 
 Object.assign(exports, {MessageDispatcher});
 
-})(typeof exports == 'undefined' ? require.scopes.messages = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.messages = func : func(exports));

@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
@@ -174,4 +174,4 @@ class Tabs {
 
 Object.assign(exports, {Frame, Tabs, Tab});
 
-})(typeof exports == 'undefined' ? require.scopes.tabs = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.tabs = func : func(exports));

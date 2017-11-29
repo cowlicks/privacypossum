@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {DiskMap} = require('./disk_map'),
   {Tree, splitter} = require('./suffixtree'),
@@ -84,4 +84,4 @@ class DomainStore {
 
 Object.assign(exports, {DomainStore});
 
-})(typeof exports == 'undefined' ? require.scopes.store = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.store = func : func(exports));

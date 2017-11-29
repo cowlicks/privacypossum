@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {URL} = require('./shim'),
   constants = require('./constants');
@@ -97,4 +97,4 @@ function removeCookies(headers) {
 
 Object.assign(exports, {WebRequest, removeCookies});
 
-})(typeof exports == 'undefined' ? require.scopes.webrequest = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.webrequest = func : func(exports));

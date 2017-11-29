@@ -11,7 +11,7 @@
  * resource intensive. So instead we do this.
  */
 
-(function(exports) {
+[(function(exports) {
 
 class DiskMap {
   constructor(name, disk) {
@@ -78,4 +78,4 @@ class DiskMap {
 
 Object.assign(exports, {DiskMap});
 
-})(typeof exports == 'undefined' ? require.scopes.disk_map = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.disk_map = func : func(exports));

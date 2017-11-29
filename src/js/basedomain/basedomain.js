@@ -10,7 +10,7 @@
 
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {publicSuffixes} = require('./psl');
 
@@ -71,4 +71,4 @@ function getBaseDomain(/**String*/ hostname) {
 
 Object.assign(exports, {getBaseDomain});
 
-})(typeof exports == 'undefined' ? require.scopes.basedomain = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.basedomain = func : func(exports));

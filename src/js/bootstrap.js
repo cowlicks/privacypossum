@@ -6,8 +6,12 @@ function require(module) {
   }
 
   if (require.scopes.hasOwnProperty(module)) {
+    if (typeof require.scopes[module] === 'function') {
+      require.scopes[module](require.scopes[module] = {});
+    }
     return require.scopes[module];
   }
   throw new Error('module: ' + module + ' not found.');
 }
+
 require.scopes = {};

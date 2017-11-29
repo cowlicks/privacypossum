@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 // disk name
 const DISK_NAME = 'p055um';
@@ -25,4 +25,4 @@ const POPUP = 'popup';
 
 Object.assign(exports, {NO_ACTION, CANCEL, TYPES, FRAME_END, FINGERPRINTING, DISK_NAME, POPUP});
 
-})(typeof exports == 'undefined' ? require.scopes.constants = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.constants = func : func(exports));

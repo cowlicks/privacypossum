@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
@@ -37,4 +37,4 @@ class Possum {
 
 Object.assign(exports, {Possum});
 
-})(typeof exports == 'undefined' ? require.scopes.possum = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.possum = func : func(exports));

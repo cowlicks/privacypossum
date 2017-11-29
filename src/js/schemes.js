@@ -3,7 +3,7 @@
 /**
  * These get put in chrome storage, so we can't use Map/Set & stuff that doesn't serialize there.
  */
-(function(exports) {
+[(function(exports) {
 
 const constants = require('./constants');
 
@@ -65,4 +65,4 @@ function updateDomainPath(domain, path, action, context) {
 
 Object.assign(exports, {Domain, Path, Context, updateDomainPath});
 
-})(typeof exports == 'undefined' ? require.scopes.schemes = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.schemes = func : func(exports));

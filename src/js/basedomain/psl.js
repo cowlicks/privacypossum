@@ -2,7 +2,7 @@
 /* eslint-disable */
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const publicSuffixes = new Map(
 [["0.bg", 1],
@@ -6844,4 +6844,4 @@ const publicSuffixes = new Map(
 
 Object.assign(exports, {publicSuffixes});
 
-})(typeof exports == 'undefined' ? require.scopes.psl = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.psl = func : func(exports));

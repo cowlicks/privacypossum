@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const SENTINEL = '.',
   LABEL = 'label',
@@ -88,4 +88,4 @@ function splitter(splitme) {
 
 Object.assign(exports, {Tree, splitter});
 
-})(typeof exports == 'undefined' ? require.scopes.suffixtree = {} : exports);
+})].map(func => typeof exports == 'undefined' ? require.scopes.suffixtree = func : func(exports));
