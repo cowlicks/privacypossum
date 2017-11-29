@@ -14,6 +14,7 @@ describe('tabs.js', function() {
       this.tabs = new Tabs();
       this.tabs.addResource(main_frame);
       this.tabs.addResource(sub_frame);
+      this.tab = this.tabs.getTab(main_frame.tabId);
     });
 
     it('#getTabUrl', function() {
@@ -27,6 +28,41 @@ describe('tabs.js', function() {
 
     it('#removeTab', function() {
       assert.isTrue(this.tabs.removeTab(main_frame.tabId));
+    });
+
+    describe('request handlers', function() {
+      it('add some', function() {
+        this.tab.addRequestHandler((details) =>  {
+          details.result = 'first';
+          return details;
+        });
+        this.tab.addRequestHandler((details) =>  {
+          details.result += ' second';
+          return details;
+        });
+
+        assert.equal(this.tab.handleRequest({}).result, 'first second');
+      });
+
+      it('no handlers does nothing', function() {
+        let noChange = {a: 6};
+        assert.deepEqual(this.tab.handleRequest(noChange), noChange);
+      });
+
+      it('short circuits', function() {
+        this.tab.addRequestHandler((details) =>  {
+          details.shortCircuit = true;
+          return details;
+        });
+        this.tab.addRequestHandler((details) =>  {
+          details.shorted = false;
+          return details;
+        });
+
+        let res = this.tab.handleRequest({shorted: true});
+        assert.isTrue(res.shorted);
+        assert.isTrue(res.shortCircuit);
+      });
     });
 
     describe('#startListeners', function() {
