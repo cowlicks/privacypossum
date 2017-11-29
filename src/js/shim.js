@@ -6,7 +6,7 @@
  * we load these lazily.
  */
 
-let globalObj = (typeof window === 'object') ? window : global;
+let globalObj = (typeof window === 'object') ? window : global; // eslint-disable-line
 let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
 let passThru = (x) => x;
 let makeFakeMessages = () => {
