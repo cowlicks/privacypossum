@@ -78,8 +78,8 @@ class Tab extends listenerMixin(Map) {
     return Array.from(this.blocked);
   }
 
-  markResponse(action, url) {
-    if (action === constants.NO_ACTION) {
+  markResponse(response, url) {
+    if (response === constants.NO_ACTION) {
       return;
     }
 
@@ -181,8 +181,8 @@ class Tabs {
     tab.get(details.parentFrameId).children.set(frame.id, frame);
   }
 
-  markResponse(action, url, tabId) {
-    this.getTab(tabId).markResponse(action, url);
+  markResponse(response, url, tabId) {
+    this.getTab(tabId).markResponse(response, url);
   }
 };
 
