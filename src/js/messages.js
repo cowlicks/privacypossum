@@ -42,7 +42,7 @@ class MessageDispatcher {
         {href, pathname} = new URL(url);
 
       let ctx = new Context({reason, url: href, frameUrl, tabUrl});
-      await this.store.updateUrl(href, (domain) => {
+      await this.store.updateDomain(href, (domain) => {
         this.tabs.markAction(constants.CANCEL, href, sender.tab.id);
         return updateDomainPath(domain, pathname, constants.CANCEL, ctx)
       });

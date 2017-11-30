@@ -46,7 +46,7 @@ describe('messages.js', function() {
       });
 
       it('updates storage', async function() {
-        let domain = await this.ml.store.getUrl(url.href);
+        let domain = await this.ml.store.getDomain(url.href);
         assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
 
         let path = domain.paths[url.pathname];
@@ -64,7 +64,7 @@ describe('messages.js', function() {
         this.ml.tabs.addResource(details2); // add the resource
         await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
 
-        let domain = await this.ml.store.getUrl(url2.href);
+        let domain = await this.ml.store.getDomain(url2.href);
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
 
         let path = domain.paths[url2.pathname];
@@ -78,7 +78,7 @@ describe('messages.js', function() {
       it('rejects unknown resources', async function() {
         let details2 = new Details(Object.assign({}, details.script, {url: 'https://other.com/foo.js'}));
         await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
-        assert.isUndefined(await this.ml.store.getUrl(details2.url), 'no domain gets set');
+        assert.isUndefined(await this.ml.store.getDomain(details2.url), 'no domain gets set');
       });
     });
   });

@@ -67,18 +67,18 @@ class DomainStore {
   }
 
   /* URL specific stuff */
-  getUrl(url) {
+  getDomain(url) {
     url = new URL(url);
     return this.get(url.hostname);
   }
 
-  async setUrl(url, value) {
+  async setDomain(url, value) {
     url = new URL(url);
     await this.set(url.hostname, value);
   }
 
-  async updateUrl(url, callback) {
-    await this.setUrl(url, callback(this.getUrl(url)));
+  async updateDomain(url, callback) {
+    await this.setDomain(url, callback(this.getDomain(url)));
   }
 }
 
