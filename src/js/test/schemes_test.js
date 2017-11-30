@@ -1,12 +1,12 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {Domain, Path, Context} = require('../schemes'),
+  {Domain, Path, Action} = require('../schemes'),
   constants = require('../constants');
 
 
-function makeContext(reason, url, frameUrl, tabUrl) {
-  return new Context({reason, url, frameUrl, tabUrl});
+function makeAction(reason, url, frameUrl, tabUrl) {
+  return new Action({reason, url, frameUrl, tabUrl});
 }
 
 describe('schemes.js', function() {
@@ -18,8 +18,8 @@ describe('schemes.js', function() {
       });
       it('gets added Actions', function() {
         let [k1, k2] = ['path1', 'path2'],
-          p1 = new Path(constants.CANCEL, makeContext(...('abcd'.split('')))),
-          p2 = new Path(constants.CANCEL, makeContext(...('efgh'.split('')))),
+          p1 = new Path(constants.CANCEL, makeAction(...('abcd'.split('')))),
+          p2 = new Path(constants.CANCEL, makeAction(...('efgh'.split('')))),
           d = new Domain({paths: {[k1]: p1}});
 
         assert.equal(d.getResponse(k1), p1.action);

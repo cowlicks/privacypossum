@@ -19,17 +19,6 @@ class Action {
   }
 }
 
-class Context {
-  // todo: add `old` property of previous contexts?
-  // change name of `url` to `href`
-  constructor({reason, url, frameUrl, tabUrl}) {
-    this.reason = reason;
-    this.url = url;
-    this.frameUrl = frameUrl;
-    this.tabUrl = tabUrl;
-  }
-}
-
 class Path {
   constructor(action, context) {
     this.action = action;
@@ -69,6 +58,6 @@ function updateDomainPath(domain, path, action, context) {
   return domain;
 }
 
-Object.assign(exports, {Action, Domain, Path, Context, updateDomainPath});
+Object.assign(exports, {Action, Domain, Path, updateDomainPath});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.schemes = func : func(exports));

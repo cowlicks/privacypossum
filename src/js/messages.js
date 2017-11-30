@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {Context, updateDomainPath} = require('./schemes'),
+const {Action, updateDomainPath} = require('./schemes'),
   constants = require('./constants'),
   {URL} = require('./shim');
 
@@ -41,10 +41,10 @@ class MessageDispatcher {
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
         {href, pathname} = new URL(url);
 
-      let ctx = new Context({reason, url: href, frameUrl, tabUrl});
+      let action = new Action({response: constants.CANCEL, reason, href, frameUrl, tabUrl});
       await this.store.updateDomain(href, (domain) => {
         this.tabs.markResponse(constants.CANCEL, href, sender.tab.id);
-        return updateDomainPath(domain, pathname, constants.CANCEL, ctx)
+        return updateDomainPath(domain, pathname, constants.CANCEL, action)
       });
     }
   }

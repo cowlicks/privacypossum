@@ -5,7 +5,7 @@ const assert = require('chai').assert,
   {URL, onMessage, sendMessage} = require('../shim'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
-  {Context} = require('../schemes'),
+  {Action} = require('../schemes'),
   {MessageDispatcher} = require('../messages'),
   {Mock, Details, details} = require('./testing_utils');
 
@@ -33,9 +33,10 @@ describe('messages.js', function() {
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
         message = {url: url.href},
-        ctx = new Context({
+        action = new Action({
+          response: constants.CANCEL,
           reason: constants.FINGERPRINTING,
-          url: url.href,
+          href: url.href,
           frameUrl: undefined,
           tabUrl: undefined,
         });
@@ -52,7 +53,7 @@ describe('messages.js', function() {
         let path = domain.paths[url.pathname];
         assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
 
-        assert.deepEqual(path.context, ctx, 'correct context set');
+        assert.deepEqual(path.context, action, 'correct action set');
       })
 
       it('adds a second path', async function() {
@@ -70,9 +71,9 @@ describe('messages.js', function() {
         let path = domain.paths[url2.pathname];
         assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
 
-        let ctx2 = new Context(Object.assign({}, ctx, {url: url2.href}));
+        let action2 = new Action(Object.assign({}, action, {href: url2.href}));
 
-        assert.deepEqual(path.context, ctx2, 'correct context set');
+        assert.deepEqual(path.context, action2, 'correct context set');
       });
 
       it('rejects unknown resources', async function() {
