@@ -44,24 +44,24 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markAction(action, {url, tabId}) {
-    this.tabs.markAction(action, url, tabId);
+  markAction(response, {url, tabId}) {
+    this.tabs.markAction(response, url, tabId);
   }
 
   commitRequest(details) {
-    let action = constants.NO_ACTION,
+    let response = constants.NO_ACTION,
       {hostname, pathname} = details.urlObj;
 
     // short circuit
     if (details.type === constants.TYPES.main_frame) {
-      return action;
+      return response;
     }
 
     if (this.store.has(hostname)) {
-      action = this.store.get(hostname).getAction(pathname);
-      this.markAction(action, details);
+      response = this.store.get(hostname).getResponse(pathname);
+      this.markAction(response, details);
     }
-    return action;
+    return response;
   }
 
   onBeforeRequest(details) {
@@ -71,15 +71,15 @@ class WebRequest {
   }
 
   onBeforeSendHeaders(details) {
-    let action = constants.NO_ACTION;
+    let response = constants.NO_ACTION;
     details.urlObj = new URL(details.url);
 
     if (this.isThirdParty(details)) {
       if (removeCookies(details.requestHeaders)) {
-        action = {requestHeaders: details.requestHeaders};
+        response = {requestHeaders: details.requestHeaders};
       }
     }
-    return action;
+    return response;
   }
 }
 
