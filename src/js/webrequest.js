@@ -52,6 +52,7 @@ class WebRequest {
     let action = constants.NO_ACTION,
       {hostname, pathname} = details.urlObj;
 
+    // short circuit
     if (details.type === constants.TYPES.main_frame) {
       return action;
     }
