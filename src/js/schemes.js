@@ -41,7 +41,7 @@ class Domain {
   }
 
   // todo add context like, 3rd party, subframe, etc
-  getAction(path) {
+  getResponse(path) {
     let action = constants.NO_ACTION;
     if (this.paths.hasOwnProperty(path)) {
       action = this.paths[path].action;

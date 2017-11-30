@@ -11,10 +11,10 @@ function makeContext(reason, url, frameUrl, tabUrl) {
 
 describe('schemes.js', function() {
   describe('Domain', function() {
-    describe('#getAction', function() {
+    describe('#getResponse', function() {
       it('returns NO_ACTION', function() {
         let d = new Domain();
-        assert.equal(d.getAction('foo'), constants.NO_ACTION);
+        assert.equal(d.getResponse('foo'), constants.NO_ACTION);
       });
       it('gets added Actions', function() {
         let [k1, k2] = ['path1', 'path2'],
@@ -22,10 +22,10 @@ describe('schemes.js', function() {
           p2 = new Path(constants.CANCEL, makeContext(...('efgh'.split('')))),
           d = new Domain({paths: {[k1]: p1}});
 
-        assert.equal(d.getAction(k1), p1.action);
+        assert.equal(d.getResponse(k1), p1.action);
 
         d.setPath(k2, p2.action, p2.context);
-        assert.equal(d.getAction(k2), p2.action);
+        assert.equal(d.getResponse(k2), p2.action);
       });
     });
   });
