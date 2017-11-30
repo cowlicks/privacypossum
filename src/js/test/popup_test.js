@@ -39,7 +39,7 @@ describe('popup.js', function() {
         tabs = new Tabs();
 
       tabsQuery.tabs = [{id: tabId}]; // mock current tab
-      tab.markAction(constants.CANCEL, url1);
+      tab.markResponse(constants.CANCEL, url1);
       tabs.setTab(tab.id, tab);
 
       let server = new Server(tabs),
@@ -49,7 +49,7 @@ describe('popup.js', function() {
 
       assert.isTrue(popup.blocked.has(url1), 'initial url is blocked');
 
-      tab.markAction(constants.CANCEL, url2);
+      tab.markResponse(constants.CANCEL, url2);
       assert.isTrue(popup.blocked.has(url2), 'added url is blocked');
     });
   });

@@ -44,8 +44,8 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markAction(response, {url, tabId}) {
-    this.tabs.markAction(response, url, tabId);
+  markResponse(response, {url, tabId}) {
+    this.tabs.markResponse(response, url, tabId);
   }
 
   commitRequest(details) {
@@ -59,7 +59,7 @@ class WebRequest {
 
     if (this.store.has(hostname)) {
       response = this.store.get(hostname).getResponse(pathname);
-      this.markAction(response, details);
+      this.markResponse(response, details);
     }
     return response;
   }
