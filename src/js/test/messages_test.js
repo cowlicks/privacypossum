@@ -51,9 +51,9 @@ describe('messages.js', function() {
         assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
 
         let path = domain.paths[url.pathname];
-        assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
+        assert.deepEqual(path.action.response, constants.CANCEL, 'correct response is set');
 
-        assert.deepEqual(path.context, action, 'correct action set');
+        assert.deepEqual(path.action, action, 'correct action set');
       })
 
       it('adds a second path', async function() {
@@ -69,11 +69,11 @@ describe('messages.js', function() {
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
 
         let path = domain.paths[url2.pathname];
-        assert.deepEqual(path.action, constants.CANCEL, 'correct action is set');
+        assert.deepEqual(path.action.response, constants.CANCEL, 'correct response is set');
 
         let action2 = new Action(Object.assign({}, action, {href: url2.href}));
 
-        assert.deepEqual(path.context, action2, 'correct context set');
+        assert.deepEqual(path.action, action2, 'correct action set');
       });
 
       it('rejects unknown resources', async function() {

@@ -37,14 +37,15 @@ class MessageDispatcher {
 
     if (this.tabs.hasResource({tabId, frameId, url, type})) {
       let reason = constants.FINGERPRINTING,
+        response = constants.CANCEL,
         frameUrl = this.tabs.getFrameUrl(tabId, frameId),
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
         {href, pathname} = new URL(url);
 
-      let action = new Action({response: constants.CANCEL, reason, href, frameUrl, tabUrl});
+      let action = new Action({response, reason, href, frameUrl, tabUrl});
       await this.store.updateDomain(href, (domain) => {
-        this.tabs.markResponse(constants.CANCEL, href, sender.tab.id);
-        return updateDomainPath(domain, pathname, constants.CANCEL, action)
+        this.tabs.markResponse(response, href, sender.tab.id);
+        return updateDomainPath(domain, pathname, action)
       });
     }
   }

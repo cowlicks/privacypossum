@@ -28,9 +28,9 @@ describe('store.js', function() {
 
     it('updates', async function(){
       await this.dtree.set(host, new Domain());
-      await this.dtree.update(host, (domain) => domain.setPath('a', 'b', 'c'));
+      await this.dtree.update(host, (domain) => domain.setPath('a', 'b'));
 
-      assert.deepEqual(this.dtree.get(host), new Domain().setPath('a', 'b', 'c'));
+      assert.deepEqual(this.dtree.get(host), new Domain().setPath('a', 'b'));
     });
 
     it('loads from disk', async function() {

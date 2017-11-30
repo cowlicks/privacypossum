@@ -7,11 +7,20 @@
 
 const constants = require('./constants');
 
-// domain {
-//   paths {
-//     path {
-//      action:
-//      context:
+/*
+ * Maybe each `reason should be in charge of creating its own action`
+ *
+ *  domain {
+ *    paths {
+ *      path {
+ *       action {
+ *         respnose: webrequest blockingResponse
+ *         reason: reason for action
+ *         href: the full url in question (this domain + path) (what abt port, protocol, etc?)
+ *         frameUrl: url of frame this happened in
+ *         tabUrl: url of the tab this happened in
+ *
+ */
 
 class Action {
   constructor({response, reason, href, frameUrl, tabUrl}) {
@@ -20,9 +29,8 @@ class Action {
 }
 
 class Path {
-  constructor(action, context) {
+  constructor(action) {
     this.action = action;
-    this.context = context;
   }
 }
 
@@ -35,26 +43,25 @@ class Domain {
     }
   }
 
-  // todo add context like, 3rd party, subframe, etc
   getResponse(path) {
-    let action = constants.NO_ACTION;
+    let response = constants.NO_ACTION;
     if (this.paths.hasOwnProperty(path)) {
-      action = this.paths[path].action;
+      response = this.paths[path].action.response;
     }
-    return action;
+    return response;
   }
 
-  setPath(path, action, context) {
-    this.paths[path] = new Path(action, context);
+  setPath(path, action) {
+    this.paths[path] = new Path(action);
     return this;
   }
 }
 
-function updateDomainPath(domain, path, action, context) {
+function updateDomainPath(domain, path, action) {
   if (typeof domain === 'undefined' || !(domain instanceof Domain)) {
     domain = new Domain();
   }
-  domain.setPath(path, action, context);
+  domain.setPath(path, action);
   return domain;
 }
 
