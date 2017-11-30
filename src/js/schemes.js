@@ -13,6 +13,12 @@ const constants = require('./constants');
 //      action:
 //      context:
 
+class Action {
+  constructor({response, reason, href, frameUrl, tabUrl}) {
+    Object.assign(this, {response, reason, href, frameUrl, tabUrl});
+  }
+}
+
 class Context {
   // todo: add `old` property of previous contexts?
   // change name of `url` to `href`
@@ -63,6 +69,6 @@ function updateDomainPath(domain, path, action, context) {
   return domain;
 }
 
-Object.assign(exports, {Domain, Path, Context, updateDomainPath});
+Object.assign(exports, {Action, Domain, Path, Context, updateDomainPath});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.schemes = func : func(exports));
