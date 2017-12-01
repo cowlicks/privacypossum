@@ -14,7 +14,7 @@
   "scripts": {
     "test": "mocha",
     "lint": "git ls-files | grep \".js$\" | xargs eslint",
-    "loc": "git ls-files | xargs cat | wc -l",
+    "loc": "git ls-files | grep -v 'psl.js' | xargs cat | wc -l",
     "cover": "nyc --reporter=html --reporter=text mocha",
     "report": "nyc report --reporter=text-lcov | coveralls"
   },
