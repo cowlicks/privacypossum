@@ -6,6 +6,49 @@ const {Action} = require('./schemes'),
   constants = require('./constants'),
   {URL} = require('./shim');
 
+async function onFingerPrinting(message, sender, {store, tabs}) {
+  let tabId = sender.tab.id,
+    {frameId} = sender,
+    {url} = message,
+    type = 'script';
+
+  // NB: the url could be dangerous user input, so we check it is an existing resource.
+  if (tabs.hasResource({tabId, frameId, url, type})) {
+    let reason = constants.FINGERPRINTING,
+      response = constants.CANCEL,
+      frameUrl = tabs.getFrameUrl(tabId, frameId),
+      tabUrl = tabs.getTabUrl(sender.tab.id),
+      {href} = new URL(url);
+
+    let action = new Action({response, reason, href, frameUrl, tabUrl});
+    tabs.markResponse(response, href, sender.tab.id);
+    await store.setDomainPath(href, action);
+  }
+}
+
+async function onUserUrlDeactivate({url}, sender, {store}) {
+  let action = new Action({
+    response: constants.NO_ACTION,
+    reason: constants.USER_URL_DEACTIVATE,
+    href: url});
+  await store.setDomainPath(url, action);
+}
+
+async function onUserHostDeactivate({url}, sender, {store}) {
+  let action = new Action({
+    response: constants.NO_ACTION,
+    reason: constants.USER_HOST_DEACTIVATE,
+    href: url});
+  await store.updateDomain(url, (domain) => Object.assign(domain, {action}));
+}
+
+const reasons = [
+  [constants.USER_URL_DEACTIVATE, onUserUrlDeactivate],
+  [constants.USER_HOST_DEACTIVATE, onUserHostDeactivate],
+  [constants.FINGERPRINTING, onFingerPrinting],
+]
+
+
 class MessageDispatcher {
   constructor(tabs, store) {
     this.tabs = tabs;
