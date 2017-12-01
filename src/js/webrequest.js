@@ -58,10 +58,6 @@ class WebRequest {
       {hostname, pathname} = details.urlObj;
     details.response = constants.NO_ACTION;
 
-    if (details.type === constants.TYPES.main_frame) {
-      return details.response;
-    }
-
     // we check actions in tab -> domain -> path
     this.handleRequest(this.tabs.getTab(tabId), details);
     if (!details.shortCircuit && this.store.has(hostname)) {
