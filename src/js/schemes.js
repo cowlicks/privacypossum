@@ -22,30 +22,20 @@ const constants = require('./constants');
  *
  */
 
-class RequestHandler {
-  handleRequest(details) {
-    if (this.hasOwnProperty('action')) {
-      details.response = this.action.response;
-    }
-  }
-}
-
 class Action {
   constructor({response, reason, href, frameUrl, tabUrl}) {
     Object.assign(this, {response, reason, href, frameUrl, tabUrl});
   }
 }
 
-class Path extends RequestHandler {
+class Path {
   constructor(action) {
-    super();
     this.action = action;
   }
 }
 
-class Domain extends RequestHandler {
+class Domain {
   constructor(data) {
-    super();
     if (typeof data === 'undefined') {
       this.paths = {};
     } else {
