@@ -44,7 +44,7 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markResponse(response, {url, tabId}) {
+  markResponse({response, url, tabId}) {
     this.tabs.markResponse(response, url, tabId);
   }
 
@@ -59,7 +59,7 @@ class WebRequest {
 
     if (this.store.has(hostname)) {
       details.response = this.store.get(hostname).getResponse(pathname);
-      this.markResponse(details.response, details);
+      this.markResponse(details);
     }
     return details.response;
   }
