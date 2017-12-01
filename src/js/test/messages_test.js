@@ -30,6 +30,26 @@ describe('messages.js', function() {
         assert.isTrue(func.called);
       })
     })
+
+    describe('Deactivate', function() {
+      let {href} = new URL(details.script.url),
+        response = constants.NO_ACTION,
+        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href, response}),
+        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href, response});
+
+      it('url deactivate updates storage', async function() {
+        await this.ml.onUserUrlDeactivate({url: href});
+        let path = this.ml.store.getDomainPath(href);
+        assert.deepEqual(path.action, urlAction);
+      });
+
+      it('host deactivate updates storage', async function() {
+        await this.ml.onUserHostDeactivate({url: href});
+        let domain = this.ml.store.getDomain(href);
+        assert.deepEqual(domain.action, hostAction);
+      });
+    });
+
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
         message = {url: url.href},
