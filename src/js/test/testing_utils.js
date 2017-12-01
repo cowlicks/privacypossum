@@ -39,15 +39,19 @@ function stubber(namesValues) {
 }
 
 
+function toSender(details, url) {
+  if (typeof url === 'undefined') {
+    url = details.url;
+  }
+  return {tab: {id: details.tabId}, url, frameId: details.frameId};
+}
+
 class Details {
   constructor (details) {
     Object.assign(this, details);
   }
   toSender(url) {
-    if (typeof url === 'undefined') {
-      url = this.url;
-    }
-    return {tab: {id: this.tabId}, url, frameId: this.frameId};
+    return toSender(this, url);
   }
 }
 
@@ -74,4 +78,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, script};
 
-Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie});
+Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});
