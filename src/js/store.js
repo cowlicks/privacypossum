@@ -85,6 +85,11 @@ class DomainStore {
     return await this.setDomain(url, callback(domain));
   }
 
+  getDomainPath(url) {
+    let {pathname} = new URL(url);
+    return this.getDomain(url).getPath(pathname);
+  }
+
   async setDomainPath(url, action) {
     await this.updateDomain(url, (domain) => {
       let {pathname} = new URL(url);
