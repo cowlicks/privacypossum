@@ -23,6 +23,19 @@ describe('possum.js', function() {
       );
     });
 
+    describe('deactivates', function() {
+      it('deactivate url', async function() {
+        let d = Object.assign({}, details.script);
+
+        // assure it is blocked
+        assert.deepEqual(this.possum.webRequest.onBeforeRequest(d), constants.CANCEL);
+
+        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: d.url});
+
+        assert.deepEqual(this.possum.webRequest.onBeforeRequest(d), constants.NO_ACTION);
+      });
+    });
+
     it('blocks fingerprinting after it is detected', function() {
       // another request for the fingerprinting script is made
       let result = this.possum.webRequest.onBeforeRequest(details.script);
