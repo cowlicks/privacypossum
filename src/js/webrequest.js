@@ -3,7 +3,8 @@
 [(function(exports) {
 
 const {URL} = require('./shim'),
-  constants = require('./constants');
+  constants = require('./constants'),
+  {Handler} = require('./reasons');
 
 // check if hostname has the given basename
 function isBaseOfHostname(base, host) {
@@ -14,6 +15,8 @@ function isBaseOfHostname(base, host) {
 
 class WebRequest {
   constructor(tabs, store) {
+    this.handler = new Handler(tabs);
+    this.handleRequest = this.handler.handleRequest.bind(this.handler);
     this.tabs = tabs;
     this.store = store;
   }
@@ -45,20 +48,29 @@ class WebRequest {
   }
 
   markResponse({response, url, tabId}) {
-    this.tabs.markResponse(response, url, tabId);
+    if (response !== constants.NO_ACTION) {
+      return this.tabs.markResponse(response, url, tabId);
+    }
   }
 
   commitRequest(details) {
-    let {hostname, pathname} = details.urlObj;
+    let {tabId} = details,
+      {hostname, pathname} = details.urlObj;
     details.response = constants.NO_ACTION;
 
-    // short circuit
     if (details.type === constants.TYPES.main_frame) {
       return details.response;
     }
 
-    if (this.store.has(hostname)) {
-      details.response = this.store.get(hostname).getResponse(pathname);
+    // we check actions in tab -> domain -> path
+    this.handleRequest(this.tabs.getTab(tabId), details);
+    if (!details.shortCircuit && this.store.has(hostname)) {
+      let domain = this.store.get(hostname);
+      this.handleRequest(domain, details);
+      if (!details.shortCircuit && domain.hasPath(pathname)) {
+        let path = domain.getPath(pathname);
+        this.handleRequest(path, details);
+      }
     }
 
     this.markResponse(details);
