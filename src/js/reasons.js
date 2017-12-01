@@ -25,6 +25,7 @@ function makeReasonMap(tabs) {
   ]);
 }
 
+// todo wrap handler requests to assure main_frame's are not blocked.
 class Handler {
   constructor(tabs) {
     this.tabs = tabs;

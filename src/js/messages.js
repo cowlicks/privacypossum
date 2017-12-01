@@ -8,10 +8,14 @@ const {Action} = require('./schemes'),
 
 class MessageDispatcher {
   constructor(tabs, store) {
-    this.defaults = [[constants.FINGERPRINTING, this.onFingerPrinting.bind(this)]];
-    this.dispatchMap = new Map(this.defaults);
     this.tabs = tabs;
     this.store = store;
+    this.defaults = [
+      [constants.FINGERPRINTING, this.onFingerPrinting.bind(this)],
+      [constants.USER_URL_DEACTIVATE, this.onUserUrlDeactivate.bind(this)],
+      [constants.USER_HOST_DEACTIVATE, this.onUserHostDeactivate.bind(this)]
+    ];
+    this.dispatchMap = new Map(this.defaults);
   }
 
   async dispatcher(message, sender) {
@@ -27,6 +31,22 @@ class MessageDispatcher {
   start(onMessage) {
     this.onMessage = onMessage;
     onMessage.addListener(this.dispatcher.bind(this));
+  }
+
+  async onUserUrlDeactivate({url}) {
+    let action = new Action({
+      response: constants.NO_ACTION,
+      reason: constants.USER_URL_DEACTIVATE,
+      href: url});
+    await this.store.setDomainPath(url, action);
+  }
+
+  async onUserHostDeactivate({url}) {
+    let action = new Action({
+      response: constants.NO_ACTION,
+      reason: constants.USER_HOST_DEACTIVATE,
+      href: url});
+    await this.store.updateDomain(url, (domain) => domain.action = action);
   }
 
   async onFingerPrinting(message, sender) {
