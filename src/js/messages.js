@@ -4,6 +4,7 @@
 
 const {Action} = require('./schemes'),
   constants = require('./constants'),
+  {Reason} = require('./reasons'),
   {URL} = require('./shim');
 
 async function onFingerPrinting(message, sender, {store, tabs}) {
@@ -53,18 +54,18 @@ class MessageDispatcher {
   constructor(tabs, store) {
     this.tabs = tabs;
     this.store = store;
-    this.defaults = [
-      [constants.FINGERPRINTING, this.onFingerPrinting.bind(this)],
-      [constants.USER_URL_DEACTIVATE, this.onUserUrlDeactivate.bind(this)],
-      [constants.USER_HOST_DEACTIVATE, this.onUserHostDeactivate.bind(this)]
-    ];
-    this.dispatchMap = new Map(this.defaults);
+    this.dispatchMap = new Map();
+    reasons.forEach(([name, onMessage]) => this.addReason(new Reason(name, {messageHandler: onMessage})));
   }
 
   async dispatcher(message, sender) {
     if (this.dispatchMap.has(message.type)) {
-      return await (this.dispatchMap.get(message.type))(message, sender);
+        return await (this.dispatchMap.get(message.type))(message, sender, {tabs: this.tabs, store: this.store});
     }
+  }
+
+  addReason(reason) {
+    return this.addListener(reason.name, reason.messageHandler);
   }
 
   addListener(type, callback) {
