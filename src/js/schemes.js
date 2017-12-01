@@ -39,7 +39,7 @@ class Domain {
     if (typeof data === 'undefined') {
       this.paths = {};
     } else {
-      this.paths = data.paths;
+      Object.assign(this, data);
     }
   }
 
@@ -63,16 +63,12 @@ class Domain {
   getPath(path) {
     return this.paths[path];
   }
-}
 
-function updateDomainPath(domain, path, action) {
-  if (typeof domain === 'undefined' || !(domain instanceof Domain)) {
-    domain = new Domain();
+  updatePath(path, callback) {
+    return this.setPath(path, callback(this.getPath));
   }
-  domain.setPath(path, action);
-  return domain;
 }
 
-Object.assign(exports, {Action, Domain, Path, updateDomainPath});
+Object.assign(exports, {Action, Domain, Path});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.schemes = func : func(exports));

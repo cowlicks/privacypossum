@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {Action, updateDomainPath} = require('./schemes'),
+const {Action} = require('./schemes'),
   constants = require('./constants'),
   {URL} = require('./shim');
 
@@ -32,21 +32,20 @@ class MessageDispatcher {
   async onFingerPrinting(message, sender) {
     let tabId = sender.tab.id,
       {frameId} = sender,
-      {url} = message, // NB: the url could be dangerous user input
+      {url} = message,
       type = 'script';
 
+    // NB: the url could be dangerous user input, so we check it is an existing resource.
     if (this.tabs.hasResource({tabId, frameId, url, type})) {
       let reason = constants.FINGERPRINTING,
         response = constants.CANCEL,
         frameUrl = this.tabs.getFrameUrl(tabId, frameId),
         tabUrl = this.tabs.getTabUrl(sender.tab.id),
-        {href, pathname} = new URL(url);
+        {href} = new URL(url);
 
       let action = new Action({response, reason, href, frameUrl, tabUrl});
-      await this.store.updateDomain(href, (domain) => {
-        this.tabs.markResponse(response, href, sender.tab.id);
-        return updateDomainPath(domain, pathname, action)
-      });
+      this.tabs.markResponse(response, href, sender.tab.id);
+      await this.store.setDomainPath(href, action);
     }
   }
 }

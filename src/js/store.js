@@ -78,7 +78,18 @@ class DomainStore {
   }
 
   async updateDomain(url, callback) {
-    await this.setDomain(url, callback(this.getDomain(url)));
+    let domain = this.getDomain(url);
+    if (typeof domain === 'undefined' || !(domain instanceof Domain)) {
+      domain = new Domain();
+    }
+    return await this.setDomain(url, callback(domain));
+  }
+
+  async setDomainPath(url, action) {
+    await this.updateDomain(url, (domain) => {
+      let {pathname} = new URL(url);
+      return domain.setPath(pathname, action);
+    });
   }
 }
 
