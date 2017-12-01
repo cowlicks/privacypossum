@@ -49,19 +49,19 @@ class WebRequest {
   }
 
   commitRequest(details) {
-    let response = constants.NO_ACTION,
-      {hostname, pathname} = details.urlObj;
+    let {hostname, pathname} = details.urlObj;
+    details.response = constants.NO_ACTION;
 
     // short circuit
     if (details.type === constants.TYPES.main_frame) {
-      return response;
+      return details.response;
     }
 
     if (this.store.has(hostname)) {
-      response = this.store.get(hostname).getResponse(pathname);
-      this.markResponse(response, details);
+      details.response = this.store.get(hostname).getResponse(pathname);
+      this.markResponse(details.response, details);
     }
-    return response;
+    return details.response;
   }
 
   onBeforeRequest(details) {
