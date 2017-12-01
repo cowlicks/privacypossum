@@ -30,41 +30,6 @@ describe('tabs.js', function() {
       assert.isTrue(this.tabs.removeTab(main_frame.tabId));
     });
 
-    describe('request handlers', function() {
-      it('add some', function() {
-        this.tab.addRequestHandler((details) =>  {
-          details.result = 'first';
-          return details;
-        });
-        this.tab.addRequestHandler((details) =>  {
-          details.result += ' second';
-          return details;
-        });
-
-        assert.equal(this.tab.handleRequest({}).result, 'first second');
-      });
-
-      it('no handlers does nothing', function() {
-        let noChange = {a: 6};
-        assert.deepEqual(this.tab.handleRequest(noChange), noChange);
-      });
-
-      it('short circuits', function() {
-        this.tab.addRequestHandler((details) =>  {
-          details.shortCircuit = true;
-          return details;
-        });
-        this.tab.addRequestHandler((details) =>  {
-          details.shorted = false;
-          return details;
-        });
-
-        let res = this.tab.handleRequest({shorted: true});
-        assert.isTrue(res.shorted);
-        assert.isTrue(res.shortCircuit);
-      });
-    });
-
     describe('#startListeners', function() {
       it('removes tabs on message', async function() {
         this.tabs.startListeners(onRemoved);

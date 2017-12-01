@@ -62,18 +62,6 @@ class Tab extends listenerMixin(Map) {
     setBadgeText({text: '', tabId: id}); // clear badge
   }
 
-  addRequestHandler(func) {
-    this.requestHandlers.add(func);
-  }
-
-  handleRequest(details) {
-    details.shortCircuit = false
-    return Array.from(this.requestHandlers).reduce(
-      (d, func) => d.shortCircuit ? d : func(d),
-      details
-    );
-  }
-
   getData() {
     return Array.from(this.blocked);
   }
