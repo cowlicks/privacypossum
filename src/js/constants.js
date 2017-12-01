@@ -22,6 +22,8 @@ const FINGERPRINTING = 'fingerprinting',
   USER_HOST_DEACTIVATE = 'user_host_deactivate',
   USER_URL_DEACTIVATE = 'user_url_deactivate';
 
+const TAB_DEACTIVATE = 'tab_deactivate';
+
 // ports
 const POPUP = 'popup';
 
