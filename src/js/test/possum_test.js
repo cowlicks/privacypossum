@@ -37,6 +37,16 @@ describe('possum.js', function() {
 
         assert.deepEqual(this.possum.webRequest.onBeforeRequest(details), constants.NO_ACTION);
       });
+
+      it('deactivate host', async function() {
+        await sendMessage({type: constants.USER_HOST_DEACTIVATE, url: this.main_frame.url});
+
+        let host_result = this.possum.webRequest.onBeforeRequest(this.main_frame);
+        assert.deepEqual(host_result, constants.NO_ACTION);
+
+        let script_result = this.possum.webRequest.onBeforeRequest(this.script);
+        assert.deepEqual(script_result, constants.NO_ACTION);
+      });
     });
 
     it('blocks fingerprinting after it is detected', function() {
