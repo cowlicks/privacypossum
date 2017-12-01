@@ -46,7 +46,7 @@ class MessageDispatcher {
       response: constants.NO_ACTION,
       reason: constants.USER_HOST_DEACTIVATE,
       href: url});
-    await this.store.updateDomain(url, (domain) => domain.action = action);
+    await this.store.updateDomain(url, (domain) => Object.assign(domain, {action}));
   }
 
   async onFingerPrinting(message, sender) {
