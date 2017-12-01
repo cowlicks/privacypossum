@@ -49,6 +49,7 @@
       "js/basedomain/psl.js",
       "js/basedomain/basedomain.js",
 
+      "js/reasons.js",
       "js/tabs.js",
 
       "js/schemes.js",
