@@ -59,8 +59,9 @@ class WebRequest {
 
     if (this.store.has(hostname)) {
       details.response = this.store.get(hostname).getResponse(pathname);
-      this.markResponse(details);
     }
+
+    this.markResponse(details);
     return details.response;
   }
 
