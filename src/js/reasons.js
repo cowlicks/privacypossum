@@ -7,7 +7,7 @@ const {Action} = require('./schemes'),
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = require('./constants');
 
 function setResponse(response, shortCircuit) {
-  return (details) => Object.assign(details, {response, shortCircuit});
+  return ({}, details) => Object.assign(details, {response, shortCircuit});
 }
 
 const tabDeactivate = new Action({response: NO_ACTION, reason: TAB_DEACTIVATE});
@@ -16,7 +16,7 @@ const reasons = [
   [FINGERPRINTING, setResponse(CANCEL, false)],
   [USER_URL_DEACTIVATE, setResponse(NO_ACTION, false)],
   [TAB_DEACTIVATE, setResponse(NO_ACTION, true)],
-  [USER_HOST_DEACTIVATE, (details, {tabs}) => {
+  [USER_HOST_DEACTIVATE, ({tabs}, details) => {
     details.shortCircuit = true;
     details.response = NO_ACTION;
     tabs.getTab(details.tabId).action = tabDeactivate;
@@ -35,12 +35,13 @@ class Handler {
 
   handleRequest(obj, details) {
     if (obj.hasOwnProperty('action')) {
-      this.funcs.get(obj.action.reason)(details, {tabs: this.tabs, store: this.store});
+      this.funcs.get(obj.action.reason)(details);
     }
   }
 
   addReason(reason) {
-    this.funcs.set(reason.name, reason.requestHandler);
+    this.funcs.set(reason.name,
+      reason.requestHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
   }
 }
 
