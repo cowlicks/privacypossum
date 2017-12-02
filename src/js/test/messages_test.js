@@ -6,15 +6,18 @@ const assert = require('chai').assert,
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {Action} = require('../schemes'),
-  {MessageDispatcher} = require('../messages'),
+  {MessageDispatcher, onFingerPrinting, onUserUrlDeactivate,
+    onUserHostDeactivate} = require('../messages'),
   {Mock, Details, details} = require('./testing_utils');
 
 describe('messages.js', function() {
   describe('MessageDispatcher', function() {
     beforeEach(function() {
+      this.tabs = new Tabs();
+      this.store = new DomainStore('name');
       this.ml = new MessageDispatcher(
-        new Tabs(),
-        new DomainStore('name'),
+        this.tabs,
+        this.store,
       );
     });
 
@@ -38,13 +41,13 @@ describe('messages.js', function() {
         hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href, response});
 
       it('url deactivate updates storage', async function() {
-        await this.ml.onUserUrlDeactivate({url: href});
+        await onUserUrlDeactivate({store: this.store}, {url: href}, undefined);
         let path = this.ml.store.getDomainPath(href);
         assert.deepEqual(path.action, urlAction);
       });
 
       it('host deactivate updates storage', async function() {
-        await this.ml.onUserHostDeactivate({url: href});
+        await onUserHostDeactivate({store: this.store}, {url: href}, undefined);
         let domain = this.ml.store.getDomain(href);
         assert.deepEqual(domain.action, hostAction);
       });
@@ -63,7 +66,8 @@ describe('messages.js', function() {
 
       beforeEach(async function() {
         this.ml.tabs.addResource(details.script); // add the resource
-        await this.ml.onFingerPrinting(message, details.script.toSender());
+        await onFingerPrinting({store: this.store, tabs: this.tabs},
+          message, details.script.toSender());
       });
 
       it('updates storage', async function() {
@@ -83,7 +87,8 @@ describe('messages.js', function() {
         let details2 = new Details(Object.assign({}, details.script, {url: url2.href}))
 
         this.ml.tabs.addResource(details2); // add the resource
-        await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
+        await onFingerPrinting({store: this.store, tabs: this.tabs},
+          {url: details2.url}, details2.toSender());
 
         let domain = await this.ml.store.getDomain(url2.href);
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
@@ -98,7 +103,8 @@ describe('messages.js', function() {
 
       it('rejects unknown resources', async function() {
         let details2 = new Details(Object.assign({}, details.script, {url: 'https://other.com/foo.js'}));
-        await this.ml.onFingerPrinting({url: details2.url}, details2.toSender());
+        await onFingerPrinting({store: this.store, tabs: this.tabs},
+          {url: details2.url}, details2.toSender());
         assert.isUndefined(await this.ml.store.getDomain(details2.url), 'no domain gets set');
       });
     });
