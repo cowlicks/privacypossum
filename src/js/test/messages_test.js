@@ -41,13 +41,13 @@ describe('messages.js', function() {
         hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href, response});
 
       it('url deactivate updates storage', async function() {
-        await onUserUrlDeactivate({store: this.store}, {url: href}, undefined);
+        await this.ml.dispatcher({type: constants.USER_URL_DEACTIVATE, url: href}, undefined);
         let path = this.ml.store.getDomainPath(href);
         assert.deepEqual(path.action, urlAction);
       });
 
       it('host deactivate updates storage', async function() {
-        await onUserHostDeactivate({store: this.store}, {url: href}, undefined);
+        await this.ml.dispatcher({type: constants.USER_HOST_DEACTIVATE, url: href}, undefined);
         let domain = this.ml.store.getDomain(href);
         assert.deepEqual(domain.action, hostAction);
       });
@@ -55,7 +55,7 @@ describe('messages.js', function() {
 
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
-        message = {url: url.href},
+        message = {type: constants.FINGERPRINTING, url: url.href},
         action = new Action({
           response: constants.CANCEL,
           reason: constants.FINGERPRINTING,
@@ -66,8 +66,7 @@ describe('messages.js', function() {
 
       beforeEach(async function() {
         this.ml.tabs.addResource(details.script); // add the resource
-        await onFingerPrinting({store: this.store, tabs: this.tabs},
-          message, details.script.toSender());
+        await this.ml.dispatcher(message, details.script.toSender());
       });
 
       it('updates storage', async function() {
@@ -87,8 +86,7 @@ describe('messages.js', function() {
         let details2 = new Details(Object.assign({}, details.script, {url: url2.href}))
 
         this.ml.tabs.addResource(details2); // add the resource
-        await onFingerPrinting({store: this.store, tabs: this.tabs},
-          {url: details2.url}, details2.toSender());
+        await this.ml.dispatcher({type: constants.FINGERPRINTING, url: details2.url}, details2.toSender());
 
         let domain = await this.ml.store.getDomain(url2.href);
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
@@ -103,8 +101,7 @@ describe('messages.js', function() {
 
       it('rejects unknown resources', async function() {
         let details2 = new Details(Object.assign({}, details.script, {url: 'https://other.com/foo.js'}));
-        await onFingerPrinting({store: this.store, tabs: this.tabs},
-          {url: details2.url}, details2.toSender());
+        await this.ml.dispatcher({type: constants.FINGERPRINTING, url: details2.url}, details2.toSender());
         assert.isUndefined(await this.ml.store.getDomain(details2.url), 'no domain gets set');
       });
     });
