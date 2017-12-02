@@ -2,10 +2,7 @@
 
 [(function(exports) {
 
-const {Action} = require('./schemes'),
-  constants = require('./constants'),
-  {reasons} = require('./reasons'),
-  {URL} = require('./shim');
+const {reasons} = require('./reasons');
 
 // todo remove reason methods here.
 class MessageDispatcher {

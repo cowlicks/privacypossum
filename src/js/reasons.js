@@ -41,7 +41,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
   }
 }
 
-async function onUserUrlDeactivate({store}, {url}, sender) {
+async function onUserUrlDeactivate({store}, {url}) {
   let action = new Action({
     response: constants.NO_ACTION,
     reason: constants.USER_URL_DEACTIVATE,
@@ -55,7 +55,7 @@ function userHostDeactivateRequestHandler({tabs}, details) {
   tabs.getTab(details.tabId).action = tabDeactivate;
 }
 
-async function onUserHostDeactivate({store}, {url}, sender) {
+async function onUserHostDeactivate({store}, {url}) {
   let action = new Action({
     response: constants.NO_ACTION,
     reason: constants.USER_HOST_DEACTIVATE,

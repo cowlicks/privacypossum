@@ -6,8 +6,7 @@ const assert = require('chai').assert,
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {Action} = require('../schemes'),
-  {MessageDispatcher, onFingerPrinting, onUserUrlDeactivate,
-    onUserHostDeactivate} = require('../messages'),
+  {MessageDispatcher} = require('../messages'),
   {Mock, Details, details} = require('./testing_utils');
 
 describe('messages.js', function() {
