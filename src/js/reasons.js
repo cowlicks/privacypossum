@@ -19,7 +19,7 @@ class Reason {
   }
 }
 
-const tabDeactivate = new Action({response: NO_ACTION, reason: TAB_DEACTIVATE});
+const tabDeactivate = new Action({reason: TAB_DEACTIVATE});
 
 async function onFingerPrinting({store, tabs}, message, sender) {
   let tabId = sender.tab.id,
@@ -30,20 +30,18 @@ async function onFingerPrinting({store, tabs}, message, sender) {
   // NB: the url could be dangerous user input, so we check it is an existing resource.
   if (tabs.hasResource({tabId, frameId, url, type})) {
     let reason = constants.FINGERPRINTING,
-      response = constants.CANCEL,
       frameUrl = tabs.getFrameUrl(tabId, frameId),
       tabUrl = tabs.getTabUrl(sender.tab.id),
       {href} = new URL(url);
 
-    let action = new Action({response, reason, href, frameUrl, tabUrl});
-    tabs.markResponse(response, href, sender.tab.id);
+    let action = new Action({reason, href, frameUrl, tabUrl});
+    tabs.markResponse(CANCEL, href, sender.tab.id);
     await store.setDomainPath(href, action);
   }
 }
 
 async function onUserUrlDeactivate({store}, {url}) {
   let action = new Action({
-    response: constants.NO_ACTION,
     reason: constants.USER_URL_DEACTIVATE,
     href: url});
   await store.setDomainPath(url, action);
@@ -57,7 +55,6 @@ function userHostDeactivateRequestHandler({tabs}, details) {
 
 async function onUserHostDeactivate({store}, {url}) {
   let action = new Action({
-    response: constants.NO_ACTION,
     reason: constants.USER_HOST_DEACTIVATE,
     href: url});
   await store.updateDomain(url, (domain) => Object.assign(domain, {action}));
