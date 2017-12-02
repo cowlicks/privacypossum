@@ -4,7 +4,7 @@
 
 const {Action} = require('./schemes'),
   constants = require('./constants'),
-  {Reason} = require('./reasons'),
+  {reasons} = require('./reasons'),
   {URL} = require('./shim');
 
 // todo remove reason methods here.
@@ -13,7 +13,7 @@ class MessageDispatcher {
     this.tabs = tabs;
     this.store = store;
     this.dispatchMap = new Map();
-    reasons.forEach(([name, onMessage]) => this.addReason(new Reason(name, {messageHandler: onMessage})));
+    reasons.forEach(reason => this.addReason(reason));
   }
 
   async dispatcher(message, sender) {
@@ -23,7 +23,9 @@ class MessageDispatcher {
   }
 
   addReason(reason) {
-    return this.addListener(reason.name, reason.messageHandler.bind(undefined, {store: this.store, tabs: this.tabs}));
+    if (reason.messageHandler) {
+      return this.addListener(reason.name, reason.messageHandler.bind(undefined, {store: this.store, tabs: this.tabs}));
+    }
   }
 
   addListener(type, callback) {
@@ -36,6 +38,6 @@ class MessageDispatcher {
   }
 }
 
-Object.assign(exports, {MessageDispatcher, onFingerPrinting, onUserUrlDeactivate, onUserHostDeactivate});
+Object.assign(exports, {MessageDispatcher});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.messages = func : func(exports));
