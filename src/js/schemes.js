@@ -23,8 +23,8 @@ const constants = require('./constants');
  */
 
 class Action {
-  constructor({response, reason, href, frameUrl, tabUrl}) {
-    Object.assign(this, {response, reason, href, frameUrl, tabUrl});
+  constructor({reason, href, frameUrl, tabUrl}) {
+    Object.assign(this, {reason, href, frameUrl, tabUrl});
   }
 }
 
@@ -41,14 +41,6 @@ class Domain {
     } else {
       Object.assign(this, data);
     }
-  }
-
-  getResponse(path) {
-    let response = constants.NO_ACTION;
-    if (this.paths.hasOwnProperty(path)) {
-      response = this.paths[path].action.response;
-    }
-    return response;
   }
 
   setPath(path, action) {
