@@ -3,33 +3,101 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
-    USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = require('./constants');
+  {URL} = require('./shim'),
+  constants = require('./constants');
+
+const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
+    USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = constants;
 
 function setResponse(response, shortCircuit) {
   return ({}, details) => Object.assign(details, {response, shortCircuit});
 }
 
+class Reason {
+  constructor(name, {messageHandler, requestHandler}) {
+    Object.assign(this, {name, messageHandler, requestHandler});
+  }
+}
+
 const tabDeactivate = new Action({response: NO_ACTION, reason: TAB_DEACTIVATE});
 
+async function onFingerPrinting({store, tabs}, message, sender) {
+  let tabId = sender.tab.id,
+    {frameId} = sender,
+    {url} = message,
+    type = 'script';
+
+  // NB: the url could be dangerous user input, so we check it is an existing resource.
+  if (tabs.hasResource({tabId, frameId, url, type})) {
+    let reason = constants.FINGERPRINTING,
+      response = constants.CANCEL,
+      frameUrl = tabs.getFrameUrl(tabId, frameId),
+      tabUrl = tabs.getTabUrl(sender.tab.id),
+      {href} = new URL(url);
+
+    let action = new Action({response, reason, href, frameUrl, tabUrl});
+    tabs.markResponse(response, href, sender.tab.id);
+    await store.setDomainPath(href, action);
+  }
+}
+
+async function onUserUrlDeactivate({store}, {url}, sender) {
+  let action = new Action({
+    response: constants.NO_ACTION,
+    reason: constants.USER_URL_DEACTIVATE,
+    href: url});
+  await store.setDomainPath(url, action);
+}
+
+function userHostDeactivateRequestHandler({tabs}, details) {
+  details.shortCircuit = true;
+  details.response = NO_ACTION;
+  tabs.getTab(details.tabId).action = tabDeactivate;
+}
+
+async function onUserHostDeactivate({store}, {url}, sender) {
+  let action = new Action({
+    response: constants.NO_ACTION,
+    reason: constants.USER_HOST_DEACTIVATE,
+    href: url});
+  await store.updateDomain(url, (domain) => Object.assign(domain, {action}));
+}
+
 const reasons = [
-  [FINGERPRINTING, setResponse(CANCEL, false)],
-  [USER_URL_DEACTIVATE, setResponse(NO_ACTION, false)],
-  [TAB_DEACTIVATE, setResponse(NO_ACTION, true)],
-  [USER_HOST_DEACTIVATE, ({tabs}, details) => {
-    details.shortCircuit = true;
-    details.response = NO_ACTION;
-    tabs.getTab(details.tabId).action = tabDeactivate;
-  }],
-];
+  {
+    name: FINGERPRINTING,
+    funcs: {
+      requestHandler: setResponse(CANCEL, false),
+      messageHandler: onFingerPrinting,
+    },
+  },
+  {
+    name: USER_URL_DEACTIVATE,
+    funcs: {
+      requestHandler: setResponse(NO_ACTION, false),
+      messageHandler: onUserUrlDeactivate,
+    },
+  },
+  {
+    name: TAB_DEACTIVATE,
+    funcs: {requestHandler: setResponse(NO_ACTION, true)}
+  },
+  {
+    name: USER_HOST_DEACTIVATE,
+    funcs: {
+      requestHandler: userHostDeactivateRequestHandler,
+      messageHandler: onUserHostDeactivate,
+    },
+  },
+].map(({name, funcs}) => new Reason(name, funcs));
 
 // todo wrap handler requests to assure main_frame's are not blocked.
 class Handler {
   constructor(tabs, store) {
     Object.assign(this, {tabs, store});
     this.funcs = new Map();
-    reasons.forEach(([name, func]) => {
-      this.addReason(new Reason(name, {requestHandler: func}));
+    reasons.forEach(reason => {
+      this.addReason(reason);
     });
   }
 
@@ -45,12 +113,6 @@ class Handler {
   }
 }
 
-class Reason {
-  constructor(name, {messageHandler, requestHandler}) {
-    Object.assign(this, {name, messageHandler, requestHandler});
-  }
-}
-
-Object.assign(exports, {Handler, tabDeactivate, Reason});
+Object.assign(exports, {Handler, tabDeactivate, Reason, reasons});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.reasons = func : func(exports));
