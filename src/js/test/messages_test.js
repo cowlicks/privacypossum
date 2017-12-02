@@ -35,9 +35,8 @@ describe('messages.js', function() {
 
     describe('Deactivate', function() {
       let {href} = new URL(details.script.url),
-        response = constants.NO_ACTION,
-        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href, response}),
-        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href, response});
+        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href}),
+        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href});
 
       it('url deactivate updates storage', async function() {
         await this.ml.dispatcher({type: constants.USER_URL_DEACTIVATE, url: href}, undefined);
@@ -56,7 +55,6 @@ describe('messages.js', function() {
       let url = new URL(details.script.url),
         message = {type: constants.FINGERPRINTING, url: url.href},
         action = new Action({
-          response: constants.CANCEL,
           reason: constants.FINGERPRINTING,
           href: url.href,
           frameUrl: undefined,
@@ -73,7 +71,6 @@ describe('messages.js', function() {
         assert.isTrue(domain.paths.hasOwnProperty(url.pathname), 'path set on domain');
 
         let path = domain.paths[url.pathname];
-        assert.deepEqual(path.action.response, constants.CANCEL, 'correct response is set');
 
         assert.deepEqual(path.action, action, 'correct action set');
       })
@@ -90,10 +87,8 @@ describe('messages.js', function() {
         let domain = await this.ml.store.getDomain(url2.href);
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
 
-        let path = domain.paths[url2.pathname];
-        assert.deepEqual(path.action.response, constants.CANCEL, 'correct response is set');
-
-        let action2 = new Action(Object.assign({}, action, {href: url2.href}));
+        let path = domain.paths[url2.pathname],
+          action2 = new Action(Object.assign({}, action, {href: url2.href}));
 
         assert.deepEqual(path.action, action2, 'correct action set');
       });
