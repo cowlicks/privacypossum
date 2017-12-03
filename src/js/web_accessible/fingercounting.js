@@ -47,11 +47,7 @@ function onFingerPrinting(loc) {
 
 // get the location of arguments.callee.caller
 function getScriptLocation() {
-  try {
-    yo = dog;  // eslint-disable-line
-  } catch (e) {
-    return getUrlFromStackLine(e.stack.split('\n')[3]);
-  }
+  return getUrlFromStackLine(new Error().stack.split('\n')[3]);
 }
 
 const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
