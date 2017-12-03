@@ -1,3 +1,10 @@
+/**
+ * `possum` is created with a property `possum.popup` which is an instance of
+ * `Server` here. When a popup is openened, it creates an instance of `Popup`,
+ * and connects to `possum.popup`. Once connected, the server sends the data of
+ * that tab to the popup. Changes on the server are pushed to the popup
+ * automatically.
+ */
 "use strict";
 
 [(function(exports) {
