@@ -137,10 +137,7 @@ class Counter {
       arr = dottedPropName.split('.'),
       propName = arr.pop();
 
-    let baseObj = this.globalObj[arr.shift()];
-    if (arr) {
-      baseObj = arr.reduce((o, i) => o[i], baseObj);
-    }
+    let baseObj = arr.reduce((o, i) => o[i], this.globalObj);
     const before = baseObj[propName];
 
     Object.defineProperty(baseObj, propName, {
