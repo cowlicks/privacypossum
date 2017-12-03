@@ -130,15 +130,14 @@ class Counter {
   }
 
   addLocation() {
-    const out = {counts: {}, nnzCounts: 0};
-    return out;
+    return {counts: {}, nnzCounts: 0};
   }
 
   /*
    * Keep a running score/nnzCounts. This lets us avoid polling
    * counter.isFingerPrinting.
    */
-  addCall(name, loc_name) {
+  addCall(prop_name, loc_name) {
     if (!loc_name) {
       return;
     }
@@ -148,16 +147,17 @@ class Counter {
       loc = this.locations[loc_name] = this.addLocation();
     }
 
-    if (!loc.counts.hasOwnProperty(name)) {
-      loc.counts[name] = 0;
+    if (!loc.counts.hasOwnProperty(prop_name)) {
+      loc.counts[prop_name] = 0;
       loc.nnzCounts += 1;
+
       if ((loc.nnzCounts/this.nMethods) > this.threshold &&
           (!this.isFingerprinting)) {
         this.isFingerprinting = true;
         this.onFingerPrinting(loc_name);
       }
     }
-    loc.counts[name] += 1;
+    loc.counts[prop_name] += 1;
   }
 };
 
