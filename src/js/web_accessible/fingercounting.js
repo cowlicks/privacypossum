@@ -2,7 +2,15 @@
 
 (function(exports) {
 /**
- * This sets up a counter on methods that are commonly used for fingerprinting.
+ * This watches methods that are commonly used for fingerprinting, and reports
+ * when a suspicious number of them are used by one script.
+ *
+ * We watch the methods by adding some accounting code to their getters, see `wrapMethod`.
+ *
+ * In the accounting code we track the usage *per script*. We determine which
+ * script is accessing the method by checking the stack, see `getScriptLocation`.
+ *
+ * todo: better name than "method"?
  *
  * # thoughts for a metric over the counts:
  * We can think about each finger printing method a dimension in N dimensional
