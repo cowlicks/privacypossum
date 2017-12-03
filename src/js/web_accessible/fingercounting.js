@@ -153,9 +153,6 @@ class Counter {
 
   addLocation() {
     const out = {counts: {}, nnzCounts: 0};
-    for (const m of this.methods) {
-      out.counts[m] = 0;
-    }
     return out;
   }
 
@@ -163,24 +160,26 @@ class Counter {
    * Keep a running score/nnzCounts. This lets us avoid polling
    * counter.isFingerPrinting.
    */
-  addCall(name, loc) {
-    if (!loc) {
+  addCall(name, loc_name) {
+    if (!loc_name) {
       return;
     }
-    // register location if we haven't seen it
-    if (!this.locations.hasOwnProperty(loc)) {
-      this.locations[loc] = this.addLocation();
+
+    let loc = this.locations[loc_name];
+    if (!loc) {
+      loc = this.locations[loc_name] = this.addLocation();
     }
 
-    if (this.locations[loc].counts[name] === 0) {
-      this.locations[loc].nnzCounts += 1;
-      if ((this.locations[loc].nnzCounts/this.nMethods) > this.threshold &&
+    if (!loc.counts.hasOwnProperty(name)) {
+      loc.counts[name] = 0;
+      loc.nnzCounts += 1;
+      if ((loc.nnzCounts/this.nMethods) > this.threshold &&
           (!this.isFingerprinting)) {
         this.isFingerprinting = true;
-        this.onFingerPrinting(loc);
+        this.onFingerPrinting(loc_name);
       }
     }
-    this.locations[loc].counts[name] += 1;
+    loc.counts[name] += 1;
   }
 };
 
