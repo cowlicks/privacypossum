@@ -8,6 +8,8 @@
 const constants = require('./constants');
 
 /*
+ * These are the objects that get written to disk.
+ *
  * Maybe each `reason should be in charge of creating its own action`
  *
  *  domain {
@@ -22,6 +24,7 @@ const constants = require('./constants');
  *
  */
 
+/* `reason` is from constants.reasons* */
 class Action {
   constructor({reason, href, frameUrl, tabUrl}) {
     Object.assign(this, {reason, href, frameUrl, tabUrl});

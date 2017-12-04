@@ -18,6 +18,7 @@ const TYPES = {
 const FRAME_END = '_frame';
 
 // reasons
+// todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
   USER_HOST_DEACTIVATE = 'user_host_deactivate',
   USER_URL_DEACTIVATE = 'user_url_deactivate';

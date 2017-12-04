@@ -13,6 +13,11 @@ function setResponse(response, shortCircuit) {
   return ({}, details) => Object.assign(details, {response, shortCircuit});
 }
 
+/**
+ * `name` is the string name of this reasons, see constants.reasons.*
+ * `messageHandler` function with signature ({store, tabs}, message, sender)
+ * `requestHandler` function with signature ({store, tabs}, details)
+ */
 class Reason {
   constructor(name, {messageHandler, requestHandler}) {
     Object.assign(this, {name, messageHandler, requestHandler});
