@@ -1,14 +1,7 @@
 "use strict";
 
 /**
- * These get put in chrome storage, so we can't use Map/Set & stuff that doesn't serialize there.
- */
-[(function(exports) {
-
-const constants = require('./constants');
-
-/*
- * These are the objects that get written to disk.
+ * These things get written to disk, so we can't use Map/Set & stuff that doesn't serialize there.
  *
  * Maybe each `reason should be in charge of creating its own action`
  *
@@ -23,6 +16,8 @@ const constants = require('./constants');
  *         tabUrl: url of the tab this happened in
  *
  */
+
+[(function(exports) {
 
 /* `reason` is from constants.reasons* */
 class Action {
