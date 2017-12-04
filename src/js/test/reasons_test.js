@@ -4,12 +4,27 @@ const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
-  {Handler, tabDeactivate} = require('../reasons');
+  {Reason, Handler, tabDeactivate} = require('../reasons');
 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
     this.handler = new Handler(this.tabs);
+  });
+
+  describe('#addReason', function() {
+    it('handler can add reasons and use them', function() {
+      let details = {},
+        name = 'block',
+        assignedToDetails = true,
+        requestHandler = ({}, details) => Object.assign(details, {assignedToDetails}),
+        reason = new Reason(name, {requestHandler}),
+        obj = {action: new Action({reason: name})};
+
+      this.handler.addReason(reason);
+      this.handler.handleRequest(obj, details);
+      assert.isTrue(details.assignedToDetails);
+    });
   });
 
   describe('#handleRequest', function() {
