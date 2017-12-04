@@ -104,6 +104,7 @@ let shims = [
   ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
   ['onBeforeRequest', 'chrome.webRequest.onBeforeRequest', passThru, makeFakeMessages],
   ['onBeforeSendHeaders', 'chrome.webRequest.onBeforeSendHeaders', passThru, makeFakeMessages],
+  ['onHeadersReceived', 'chrome.webRequest.onHeadersReceived', passThru, makeFakeMessages],
   ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],

@@ -52,6 +52,28 @@ describe('webrequest.js', function() {
     });
   });
 
+  // todo DRY with ohBeforeSendHeaders
+  describe('#onHeadersReceived', function() {
+    beforeEach(function() {
+      this.wr.onBeforeRequest(details.main_frame);
+      this.third_party = clone(details.main_frame);
+      this.third_party.url = 'https://third-party.com/';
+    })
+    it('removes cookies from thirdparty requests', function() {
+      this.third_party.responseHeaders = [cookie, notCookie];
+      assert.deepEqual(this.wr.onHeadersReceived(this.third_party), {responseHeaders: [notCookie]});
+    });
+    it('does not effect first party cookies', function() {
+      let first_party = clone(details.main_frame);
+      first_party.responseHeaders = [cookie, notCookie];
+      assert.deepEqual(this.wr.onHeadersReceived(first_party), {});
+    })
+    it('does not effect thirdparty requests with no cookies', function() {
+      this.third_party.responseHeaders = [notCookie, notCookie];
+      assert.deepEqual(this.wr.onHeadersReceived(this.third_party), {});
+    });
+  });
+
   describe('removeCookies', function() {
     it('removes cookies', function() {
       let one = [],

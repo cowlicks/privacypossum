@@ -29,7 +29,7 @@ class WebRequest {
     return false;
   }
 
-  start(onBeforeRequest, onBeforeSendHeaders) {
+  start(onBeforeRequest, onBeforeSendHeaders, onHeadersReceived) {
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
       {urls: ["<all_urls>"]},
@@ -41,6 +41,13 @@ class WebRequest {
       {urls: ["<all_urls>"]},
       ["blocking", "requestHeaders"]
     );
+
+    onHeadersReceived.addListener(
+      this.onHeadersReceived.bind(this),
+      {urls: ["<all_urls>"]},
+      ["blocking", "responseHeaders"]
+    );
+
   }
 
   recordRequest(details) {
@@ -69,7 +76,7 @@ class WebRequest {
       }
     }
 
-    this.markResponse(details);
+    this.markResponse(details);  // record new behavior
     return details.response;
   }
 
@@ -90,10 +97,26 @@ class WebRequest {
     }
     return response;
   }
+
+  // todo DRY with ohBeforeSendHeaders
+  onHeadersReceived(details) {
+    let response = constants.NO_ACTION;
+    details.urlObj = new URL(details.url);
+
+    if (this.isThirdParty(details)) {
+      if (removeCookies(details.responseHeaders)) {
+        response = {responseHeaders: details.responseHeaders};
+      }
+    }
+    return response;
+  }
 }
 
 const badHeaders = new Set(['cookie', 'referer', 'set-cookie']);
 
+// return true if headers are mutated, otherwise false
+// todo, attach response to details object?
+// todo rename to removeBadHeaders?
 function removeCookies(headers) {
   let mutated = false;
   for (let i = 0; i < headers.length; i++) {
