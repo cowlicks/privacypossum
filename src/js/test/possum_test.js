@@ -2,6 +2,8 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
+  {Reason} = require('../reasons'),
+  {Action} = require('../schemes'),
   {connect, onBeforeRequest, sendMessage, URL, getBadgeText} = require('../shim'),
   {details, Details, toSender} = require('./testing_utils'),
   {Popup} = require('../popup'),
@@ -10,15 +12,47 @@ const assert = require('chai').assert,
 describe('possum.js', function() {
   beforeEach(function() {
     this.possum = new Possum();
+    this.onBeforeRequest = this.possum.webRequest.onBeforeRequest.bind(this.possum.webRequest);
     this.script = Object.assign({}, details.script);
     this.main_frame = Object.assign({}, details.main_frame);
+  });
+
+  describe('user deactivates', function() {
+    beforeEach(async function() {
+      let blocker = new Reason('block', {requestHandler: ({}, d) => d.response = constants.CANCEL});
+
+      this.possum.webRequest.handler.addReason(blocker);
+      await this.possum.store.setDomainPath(
+        this.script.url,
+        new Action({reason: blocker.name, href: this.script.url})
+      );
+    });
+    it('unblocked urls', async function() {
+      let details = this.script;
+      // assure it is blocked
+      assert.deepEqual(this.onBeforeRequest(details), constants.CANCEL);
+
+      await sendMessage({type: constants.USER_URL_DEACTIVATE, url: details.url});
+
+      assert.deepEqual(this.onBeforeRequest(details), constants.NO_ACTION);
+    });
+
+    it('unblocks urls on deactivated hosts', async function() {
+      await sendMessage({type: constants.USER_HOST_DEACTIVATE, url: this.main_frame.url});
+
+      let host_result = this.onBeforeRequest(this.main_frame);
+      assert.deepEqual(host_result, constants.NO_ACTION);
+
+      let script_result = this.onBeforeRequest(this.script);
+      assert.deepEqual(script_result, constants.NO_ACTION);
+    });
   });
 
   describe('fingerprinting', function() {
     beforeEach(async function() {
       // load a page, with a script
-      onBeforeRequest.sendMessage(this.main_frame);
-      onBeforeRequest.sendMessage(this.script);
+      this.onBeforeRequest(this.main_frame);
+      this.onBeforeRequest(this.script);
 
       // page see's fingerprinting and sends message
       await sendMessage(
@@ -27,31 +61,9 @@ describe('possum.js', function() {
       );
     });
 
-    describe('deactivates', function() {
-      it('deactivate url', async function() {
-        let details = this.script;
-        // assure it is blocked
-        assert.deepEqual(this.possum.webRequest.onBeforeRequest(details), constants.CANCEL);
-
-        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: details.url});
-
-        assert.deepEqual(this.possum.webRequest.onBeforeRequest(details), constants.NO_ACTION);
-      });
-
-      it('deactivate host', async function() {
-        await sendMessage({type: constants.USER_HOST_DEACTIVATE, url: this.main_frame.url});
-
-        let host_result = this.possum.webRequest.onBeforeRequest(this.main_frame);
-        assert.deepEqual(host_result, constants.NO_ACTION);
-
-        let script_result = this.possum.webRequest.onBeforeRequest(this.script);
-        assert.deepEqual(script_result, constants.NO_ACTION);
-      });
-    });
-
     it('blocks fingerprinting after it is detected', function() {
       // another request for the fingerprinting script is made
-      let result = this.possum.webRequest.onBeforeRequest(this.script);
+      let result = this.onBeforeRequest(this.script);
       assert.deepEqual(result, constants.CANCEL);
       getBadgeText({tabId: this.script.tabId}, (text) => assert.equal(text, '1'));
     });
@@ -68,7 +80,7 @@ describe('possum.js', function() {
       url2.pathname = '/otherpath.js';
 
       let details2 = new Details(Object.assign({}, this.script, {url: url2.href}))
-      onBeforeRequest.sendMessage(details2);
+      this.onBeforeRequest(details2);
 
       await sendMessage(
         {type: constants.FINGERPRINTING, url: details2.url},
