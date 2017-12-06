@@ -94,7 +94,7 @@ const reasons = [
 ].map(({name, funcs}) => new Reason(name, funcs));
 
 // todo wrap handler requests to assure main_frame's are not blocked.
-class Handler {
+class RequestHandler {
   constructor(tabs, store) {
     Object.assign(this, {tabs, store});
     this.funcs = new Map();
@@ -112,6 +112,19 @@ class Handler {
   addReason(reason) {
     this.funcs.set(reason.name,
       reason.requestHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
+  }
+}
+
+class Handler {
+  constructor(tabs, store) {
+    this.requestHandler = new RequestHandler(tabs, store);
+    this.handleRequest = this.requestHandler.handleRequest.bind(this.requestHandler);
+  }
+
+  addReason(reason) {
+    if (reason.requestHandler) {
+      this.requestHandler.addReason(reason);
+    }
   }
 }
 
