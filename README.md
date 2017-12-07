@@ -8,6 +8,7 @@
     inject header for twitter
 
 * evercookie/supercookie protection
+* multiple Reasons on a single thing
 
 
 ## threats
