@@ -59,15 +59,20 @@ class Tab extends listenerMixin(Map) {
     this.blocked = new Set();
 
     this.onChange = this.onEvent;
-    setBadgeText({text: '', tabId: id}); // clear badge
+    this.setBadgeText(''); // clear badge
   }
 
   getData() {
     return Array.from(this.blocked);
   }
 
+  setBadgeText(text) {
+    setBadgeText({text, tabId: this.id});
+  }
+
   deactivate() {
     this.active = false;
+    this.setBadgeText('');
     setIcon({tabId: this.id, path: constants.inactiveIcons});
   }
 
@@ -82,7 +87,7 @@ class Tab extends listenerMixin(Map) {
     }
 
     if (this.blocked.size > 0) {
-      setBadgeText({text: '' + this.blocked.size, tabId: this.id});
+      this.setBadgeText('' + this.blocked.size);
     }
   }
 }
