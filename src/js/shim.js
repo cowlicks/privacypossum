@@ -118,6 +118,7 @@ let shims = [
   ],
   ['setBadgeText', 'chrome.browserAction.setBadgeText', passThru, setAndGetBadgeText],
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
+  ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
 ];
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
