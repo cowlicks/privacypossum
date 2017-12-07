@@ -17,6 +17,12 @@ const TYPES = {
 
 const FRAME_END = '_frame';
 
+const inactiveIcons = {
+  48: "/media/icon-inactive48.png",
+  96: "/media/icon-inactive96.png",
+  256: "/media/icon-inactive256.png",
+}
+
 // reasons
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
@@ -34,6 +40,7 @@ Object.assign(exports, {
   CANCEL,
   TYPES,
   FRAME_END,
+  inactiveIcons,
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
