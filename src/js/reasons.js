@@ -55,7 +55,9 @@ async function onUserUrlDeactivate({store}, {url}) {
 function userHostDeactivateRequestHandler({tabs}, details) {
   details.shortCircuit = true;
   details.response = NO_ACTION;
-  tabs.getTab(details.tabId).action = tabDeactivate;
+  let tab = tabs.getTab(details.tabId)
+  tab.action = tabDeactivate;
+  tab.deactivate();
 }
 
 async function onUserHostDeactivate({store}, {url}) {
