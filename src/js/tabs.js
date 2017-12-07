@@ -56,7 +56,6 @@ class Tab extends listenerMixin(Map) {
     super();
     this.id = id;
     this.blocked = new Set();
-    this.requestHandlers = new Set();
 
     this.onChange = this.onEvent;
     setBadgeText({text: '', tabId: id}); // clear badge
