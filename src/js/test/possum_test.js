@@ -4,7 +4,7 @@ const assert = require('chai').assert,
   constants = require('../constants'),
   {Reason} = require('../reasons'),
   {Action} = require('../schemes'),
-  {connect, sendMessage, URL, getBadgeText} = require('../shim'),
+  {connect, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
   {details, Details, toSender} = require('./testing_utils'),
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
@@ -98,7 +98,7 @@ describe('possum.js', function() {
 
     it('has the fp script blocked in the popup', async function() {
       let tabId = this.script.tabId;
-      connect.sender = {tab: {id: tabId}};
+      tabsQuery.tabs = [{id: tabId}];
       let popup = new Popup(tabId);
       await popup.connect();
       assert.isTrue(popup.blocked.has(this.script.url), 'popup has the blocked url');
