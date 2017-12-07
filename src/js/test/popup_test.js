@@ -9,6 +9,9 @@ const assert = require('chai').assert,
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
+  afterEach(function() {
+    tabsQuery.tabs = [];
+  });
   describe('View and Model', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
