@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {URL, setBadgeText} = require('./shim'),
+const {URL, setIcon, setBadgeText} = require('./shim'),
   constants = require('./constants'),
   {listenerMixin} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain');
@@ -54,6 +54,7 @@ class Frame {
 class Tab extends listenerMixin(Map) {
   constructor(id) {
     super();
+    this.active = true;
     this.id = id;
     this.blocked = new Set();
 
@@ -65,8 +66,13 @@ class Tab extends listenerMixin(Map) {
     return Array.from(this.blocked);
   }
 
+  deactivate() {
+    this.active = false;
+    setIcon({tabId: this.id, path: constants.inactiveIcons});
+  }
+
   markResponse(response, url) {
-    if (response === constants.NO_ACTION) {
+    if (response === constants.NO_ACTION || !this.active) {
       return;
     }
 
