@@ -13,7 +13,10 @@
    height="256"
    viewBox="0 0 256 256"
    sodipodi:docname="icon.svg"
-   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:export-filename="/home/blake/github/possum/src/media/icon64.png"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -32,7 +35,7 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="2.4583333"
-     inkscape:cx="30.287157"
+     inkscape:cx="-97.034879"
      inkscape:cy="150.95798"
      inkscape:window-x="0"
      inkscape:window-y="54"
@@ -46,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
