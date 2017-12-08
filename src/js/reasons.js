@@ -93,7 +93,7 @@ const reasons = [
   },
   {
     name: TAB_DEACTIVATE,
-    funcs: {requestHandler: setResponse(NO_ACTION, true)}
+    funcs: {requestHandler: setResponse(NO_ACTION, true)},
   },
   {
     name: USER_HOST_DEACTIVATE,
@@ -109,9 +109,6 @@ class RequestHandler {
   constructor(tabs, store) {
     Object.assign(this, {tabs, store});
     this.funcs = new Map();
-    reasons.forEach(reason => {
-      this.addReason(reason);
-    });
   }
 
   handleRequest(obj, details) {
@@ -129,6 +126,9 @@ class RequestHandler {
 class Handler {
   constructor(tabs, store) {
     this.requestHandler = new RequestHandler(tabs, store);
+    reasons.forEach(reason => {
+      this.addReason(reason);
+    });
     this.handleRequest = this.requestHandler.handleRequest.bind(this.requestHandler);
   }
 
