@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {URL} = require('./shim'),
+  {URL, tabsQuery} = require('./shim'),
   constants = require('./constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
@@ -52,19 +52,28 @@ async function onUserUrlDeactivate({store}, {url}) {
   await store.setDomainPath(url, action);
 }
 
+function deactivateTab(possumTab) {
+  possumTab.action = tabDeactivate;
+  possumTab.deactivate();
+}
+
 function userHostDeactivateRequestHandler({tabs}, details) {
   details.shortCircuit = true;
   details.response = NO_ACTION;
-  let tab = tabs.getTab(details.tabId)
-  tab.action = tabDeactivate;
-  tab.deactivate();
+  deactivateTab(tabs.getTab(details.tabId));
 }
 
-async function onUserHostDeactivate({store}, {url}) {
+async function onUserHostDeactivate({tabs, store}, {url, tabId}) {
+  url = new URL(url || tabs.getTabUrl(tabId));
   let action = new Action({
-    reason: constants.USER_HOST_DEACTIVATE,
-    href: url});
-  await store.updateDomain(url, (domain) => Object.assign(domain, {action}));
+      reason: constants.USER_HOST_DEACTIVATE,
+      href: url.href
+  });
+  await store.updateDomain(url.href, (domain) => Object.assign(domain, {action}));
+  tabsQuery(
+    {url: `*://${url.hostname}/*`},
+    tabArr => tabArr.forEach(tab => deactivateTab(tabs.getTab(tab.id))),
+  );
 }
 
 const reasons = [
