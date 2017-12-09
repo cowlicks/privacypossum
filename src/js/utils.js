@@ -62,12 +62,10 @@ let listenerMixin = (Base) => class extends Base {
   }
 }
 
-function setTabIconActive(tabId) {
-    setIcon({tabId: tabId, path: activeIcons});
-}
-
-function setTabIconInactive(tabId) {
-    setIcon({tabId: tabId, path: inactiveIcons});
+// todo after setIcon return's a promise, make this return a promise
+function setTabIconActive(tabId, active) {
+  let icons = active ? activeIcons : inactiveIcons;
+  setIcon({tabId: tabId, pah: icons});
 }
 
 class Listener extends listenerMixin(Object) {}
@@ -78,7 +76,6 @@ Object.assign(exports, {
   listenerMixin,
   Listener,
   setTabIconActive,
-  setTabIconInactive
 });
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));

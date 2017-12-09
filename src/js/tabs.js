@@ -1,10 +1,14 @@
+/**
+ * Provides a synchronous record of tabs and their frames. Data is recorded from the
+ * webrequest api.
+ */
 "use strict";
 
 [(function(exports) {
 
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
-  {listenerMixin, setTabIconInactive} = require('./utils'),
+  {listenerMixin, setTabIconActive} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -73,7 +77,7 @@ class Tab extends listenerMixin(Map) {
   deactivate() {
     this.active = false;
     this.setBadgeText('');
-    setTabIconInactive(this.id);
+    setTabIconActive(this.id, false);
   }
 
   markResponse(response, url) {

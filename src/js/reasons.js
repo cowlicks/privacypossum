@@ -4,7 +4,7 @@
 
 const {Action} = require('./schemes'),
   {URL, tabsQuery, onUpdated, onActivated} = require('./shim'),
-  {setTabIconActive, setTabIconInactive} = require('./utils'),
+  {setTabIconActive} = require('./utils'),
   constants = require('./constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
@@ -97,11 +97,7 @@ const reasons = [
     funcs: {
       requestHandler: setResponse(NO_ACTION, true),
       tabHandler: ({}, {tab, info}) => {
-        if (!tab.active) {
-          setTabIconInactive(info.tabId);
-        } else {
-          setTabIconActive(info.tabId);
-        }
+        setTabIconActive(info.tabId, !!tab.active);
       },
     },
   },

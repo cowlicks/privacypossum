@@ -71,6 +71,8 @@ let connectAndOnConnect = (name) => {
   return getter(name, exports);
 };
 
+// todo wrap these callbacks with promises
+// todo DRY these with stuff above
 let setAndGetBadgeText = (name) => {
   let setBadgeText = ({text, tabId}) => {
     setBadgeText.data[tabId] = text;
