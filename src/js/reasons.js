@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {URL, tabsQuery} = require('./shim'),
+  {URL, tabsQuery, onUpdated, onActivated} = require('./shim'),
   {setTabIconActive, setTabIconInactive} = require('./utils'),
   constants = require('./constants');
 
@@ -132,6 +132,34 @@ class RequestHandler {
       reason.requestHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
   }
 }
+
+class TabHandler {
+  constructor(tabs, store) {
+    Object.assign(this, {tabs, store});
+    this.funcs = new Map();
+  }
+
+  startListeners() {
+    onUpdated.addListener(this.handle.bind(this));
+    onActivated.addListener(this.handle.bind(this));
+  }
+
+  handle(info) {
+    if (!this.tabs.hasTab(info.tabId)) {
+      return;
+    }
+    let tab = this.tabs.getTab(info.tabId);
+    if (tab.hasOwnProperty('action')) {
+      return this.funcs.get(tab.action.reason)({tab, info});
+    }
+  }
+
+  addReason(reason) {
+    this.funcs.set(reason.name,
+      reason.tabHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
+  }
+}
+
 
 class Handler {
   constructor(tabs, store) {
