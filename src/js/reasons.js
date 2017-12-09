@@ -4,7 +4,7 @@
 
 const {Action} = require('./schemes'),
   {URL, tabsQuery, onUpdated} = require('./shim'),
-  {setTabIconActive} = require('./utils'),
+  {setTabIconActive, hasAction} = require('./utils'),
   constants = require('./constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
@@ -53,27 +53,49 @@ async function onUserUrlDeactivate({store}, {url}) {
   await store.setDomainPath(url, action);
 }
 
-function deactivateTab(possumTab) {
-  possumTab.action = tabDeactivate;
-  possumTab.deactivate();
+function setActiveState(possumTab, active) {
+  if (possumTab.active === active) {
+    return;
+  }
+  toggleActiveState(possumTab);
+}
+
+function toggleActiveState(possumTab) {
+  if (hasAction(possumTab, constants.TAB_DEACTIVATE)) {
+    delete possumTab.action;
+  } else {
+    possumTab.action = tabDeactivate;
+  }
+  possumTab.toggleActiveState();
 }
 
 function userHostDeactivateRequestHandler({tabs}, details) {
   details.shortCircuit = true;
   details.response = NO_ACTION;
-  deactivateTab(tabs.getTab(details.tabId));
+  setActiveState(tabs.getTab(details.tabId), false);
 }
 
 async function onUserHostDeactivate({tabs, store}, {url, tabId}) {
+  let active;
   url = new URL(url || tabs.getTabUrl(tabId));
-  let action = new Action({
-      reason: constants.USER_HOST_DEACTIVATE,
-      href: url.href
+  await store.updateDomain(url.href, (domain) => {
+    if (hasAction(domain, constants.USER_HOST_DEACTIVATE)) {
+      active = false;
+      delete domain.action
+    } else {
+      active = true;
+      Object.assign(domain, {
+        action: new Action({
+          reason: constants.USER_HOST_DEACTIVATE,
+          href: url.href,
+        }),
+      });
+    }
+    return domain;
   });
-  await store.updateDomain(url.href, (domain) => Object.assign(domain, {action}));
   tabsQuery(
     {url: `*://${url.hostname}/*`},
-    tabArr => tabArr.forEach(tab => deactivateTab(tabs.getTab(tab.id))),
+    tabArr => tabArr.forEach(tab => setActiveState(tabs.getTab(tab.id), active)),
   );
 }
 
