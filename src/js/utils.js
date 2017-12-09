@@ -68,6 +68,10 @@ function setTabIconActive(tabId, active) {
   setIcon({tabId: tabId, path: icons});
 }
 
+function hasAction(obj, reason) {
+  return obj.hasOwnProperty('action') && (obj.action.reason === reason);
+}
+
 class Listener extends listenerMixin(Object) {}
 
 Object.assign(exports, {
@@ -76,6 +80,7 @@ Object.assign(exports, {
   listenerMixin,
   Listener,
   setTabIconActive,
+  hasAction,
 });
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));
