@@ -65,7 +65,7 @@ let listenerMixin = (Base) => class extends Base {
 // todo after setIcon return's a promise, make this return a promise
 function setTabIconActive(tabId, active) {
   let icons = active ? activeIcons : inactiveIcons;
-  setIcon({tabId: tabId, pah: icons});
+  setIcon({tabId: tabId, path: icons});
 }
 
 class Listener extends listenerMixin(Object) {}

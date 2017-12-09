@@ -4,7 +4,7 @@
 
 const {reasons} = require('./reasons');
 
-// todo remove reason methods here.
+// todo move this to reasons.js
 class MessageDispatcher {
   constructor(tabs, store) {
     this.tabs = tabs;
