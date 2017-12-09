@@ -2,9 +2,9 @@
 
 [(function(exports) {
 
-const {URL, setIcon, setBadgeText} = require('./shim'),
+const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
-  {listenerMixin} = require('./utils'),
+  {listenerMixin, setTabIconInactive} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -73,7 +73,7 @@ class Tab extends listenerMixin(Map) {
   deactivate() {
     this.active = false;
     this.setBadgeText('');
-    setIcon({tabId: this.id, path: constants.inactiveIcons});
+    setTabIconInactive(this.id);
   }
 
   markResponse(response, url) {
@@ -99,7 +99,7 @@ class Tabs {
 
   startListeners(onRemoved) {
     onRemoved.addListener(this.removeTab.bind(this));
-  };
+  }
 
   getTab(tabId) {
     return this._data.get(tabId);
