@@ -2,6 +2,9 @@
 
 [(function(exports) {
 
+const {activeIcons, inactiveIcons} = require('./constants'),
+    {setIcon} = require('./shim');
+
 class BrowserDisk {
   constructor(disk) {
     this.disk = disk;
@@ -59,8 +62,23 @@ let listenerMixin = (Base) => class extends Base {
   }
 }
 
+function setTabIconActive(tabId) {
+    setIcon({tabId: tabId, path: activeIcons});
+}
+
+function setTabIconInactive(tabId) {
+    setIcon({tabId: tabId, path: inactiveIcons});
+}
+
 class Listener extends listenerMixin(Object) {}
 
-Object.assign(exports, {BrowserDisk, makeTrap, listenerMixin, Listener});
+Object.assign(exports, {
+  BrowserDisk,
+  makeTrap,
+  listenerMixin,
+  Listener,
+  setTabIconActive,
+  setTabIconInactive
+});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));
