@@ -23,6 +23,13 @@ const inactiveIcons = {
   256: "/media/icon-inactive256.png",
 }
 
+const activeIcons = {
+  48: "/media/icon48.png",
+  64: "/media/icon64.png",
+  96: "/media/icon96.png",
+  256: "/media/icon256.png",
+}
+
 // reasons
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
