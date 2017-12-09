@@ -106,6 +106,8 @@ let shims = [
   ['onBeforeSendHeaders', 'chrome.webRequest.onBeforeSendHeaders', passThru, makeFakeMessages],
   ['onHeadersReceived', 'chrome.webRequest.onHeadersReceived', passThru, makeFakeMessages],
   ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
+  ['onActivated', 'chrome.tabs.onActivated', passThru, makeFakeMessages],
+  ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
   ['getDocument', 'document', () => () => document, () => require('./utils').makeTrap()],
