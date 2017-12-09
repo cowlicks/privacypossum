@@ -74,10 +74,19 @@ class Tab extends listenerMixin(Map) {
     setBadgeText({text, tabId: this.id});
   }
 
-  deactivate() {
-    this.active = false;
-    this.setBadgeText('');
-    setTabIconActive(this.id, false);
+  setActiveState(active) {
+    if (active === this.active) {
+      return;
+    }
+    this.toggleActiveState();
+  }
+
+  toggleActiveState() {
+    this.active = !this.active;
+    if (!this.active) {
+      this.setBadgeText('');
+    }
+    setTabIconActive(this.id, this.active);
   }
 
   markResponse(response, url) {
