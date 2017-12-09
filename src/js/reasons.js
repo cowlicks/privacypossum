@@ -163,8 +163,8 @@ class TabHandler {
   }
 
   handleUpdated(tabId, info) {
-    if (this.tabs.hasTab(info.tabId)) {
-      let tab = this.tabs.getTab(info.tabId);
+    if (this.tabs.hasTab(tabId)) {
+      let tab = this.tabs.getTab(tabId);
       if (tab.hasOwnProperty('action')) {
         return this.funcs.get(tab.action.reason)({tab, info});
       }
