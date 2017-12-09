@@ -19,8 +19,8 @@ function setResponse(response, shortCircuit) {
  * `requestHandler` function with signature ({store, tabs}, details)
  */
 class Reason {
-  constructor(name, {messageHandler, requestHandler}) {
-    Object.assign(this, {name, messageHandler, requestHandler});
+  constructor(name, {messageHandler, requestHandler, tabHandler}) {
+    Object.assign(this, {name, messageHandler, requestHandler, tabHandler});
   }
 }
 
