@@ -164,6 +164,10 @@ class TabHandler {
 class Handler {
   constructor(tabs, store) {
     this.requestHandler = new RequestHandler(tabs, store);
+
+    this.tabHandler = new TabHandler(tabs, store);
+    this.tabHandler.startListeners();
+
     reasons.forEach(reason => {
       this.addReason(reason);
     });
@@ -173,6 +177,9 @@ class Handler {
   addReason(reason) {
     if (reason.requestHandler) {
       this.requestHandler.addReason(reason);
+    }
+    if (reason.tabHandler) {
+      this.tabHandler.addReason(reason);
     }
   }
 }
