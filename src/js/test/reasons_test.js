@@ -29,7 +29,7 @@ describe('reasons.js', function() {
       th.addReason(reason);
       th.startListeners();
 
-      await onUpdated.sendMessage({tabId: main_frame.tabId});
+      await onUpdated.sendMessage(main_frame.tabId, {});
       assert.isTrue(called);
     });
   });
