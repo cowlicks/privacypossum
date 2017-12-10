@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {URL, tabsQuery, onUpdated} = require('./shim'),
+  {URL, onUpdated} = require('./shim'),
   {setTabIconActive, hasAction} = require('./utils'),
   constants = require('./constants');
 
@@ -75,15 +75,15 @@ function userHostDeactivateRequestHandler({tabs}, details) {
   setActiveState(tabs.getTab(details.tabId), false);
 }
 
-async function onUserHostDeactivate({tabs, store}, {url, tabId}) {
-  let active;
-  url = new URL(url || tabs.getTabUrl(tabId));
+async function onUserHostDeactivate({tabs, store}, {tabId}) {
+  let active,
+    url = new URL(tabs.getTabUrl(tabId));
   await store.updateDomain(url.href, (domain) => {
     if (hasAction(domain, constants.USER_HOST_DEACTIVATE)) {
-      active = false;
+      active = true;
       delete domain.action
     } else {
-      active = true;
+      active = false;
       Object.assign(domain, {
         action: new Action({
           reason: constants.USER_HOST_DEACTIVATE,
@@ -93,10 +93,7 @@ async function onUserHostDeactivate({tabs, store}, {url, tabId}) {
     }
     return domain;
   });
-  tabsQuery(
-    {url: `*://${url.hostname}/*`},
-    tabArr => tabArr.forEach(tab => setActiveState(tabs.getTab(tab.id), active)),
-  );
+  return setActiveState(tabs.getTab(tabId), active);
 }
 
 const reasons = [
