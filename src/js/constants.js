@@ -48,6 +48,7 @@ Object.assign(exports, {
   TYPES,
   FRAME_END,
   inactiveIcons,
+  activeIcons,
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
