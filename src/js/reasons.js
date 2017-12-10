@@ -62,11 +62,12 @@ function setActiveState(possumTab, active) {
 
 function toggleActiveState(possumTab) {
   if (hasAction(possumTab, constants.TAB_DEACTIVATE)) {
+    possumTab.setActiveState(true);
     delete possumTab.action;
   } else {
+    possumTab.setActiveState(false);
     possumTab.action = tabDeactivate;
   }
-  possumTab.toggleActiveState();
 }
 
 function userHostDeactivateRequestHandler({tabs}, details) {
