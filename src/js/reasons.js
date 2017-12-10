@@ -115,8 +115,8 @@ const reasons = [
     name: TAB_DEACTIVATE,
     funcs: {
       requestHandler: setResponse(NO_ACTION, true),
-      tabHandler: ({}, {tab, info}) => {
-        setTabIconActive(info.tabId, !!tab.active);
+      tabHandler: ({}, {tab}) => {
+        setTabIconActive(tab.id, !!tab.active);
       },
     },
   },
