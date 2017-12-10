@@ -25,6 +25,10 @@ class FakeMessages {
     this.funcs = [];
   }
 
+  clear() {
+    this.funcs = [];
+  }
+
   addListener(func) {
     this.funcs.push(func);
   }
