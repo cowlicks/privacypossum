@@ -9,8 +9,8 @@
 
 [(function(exports) {
 
-let {connect, onConnect, tabsQuery, getDocument} = require('./shim'),
-  {POPUP} = require('./constants');
+let {connect, onConnect, tabsQuery, getDocument, sendMessage} = require('./shim'),
+  {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
 
 
 /*
@@ -51,6 +51,7 @@ class Model {
 class Popup {
   constructor(tabId) {
     this.tabId = tabId;
+    this.setHandlers();
   }
 
   connect() {
@@ -60,6 +61,14 @@ class Popup {
       this.show();
     });
     return this.view.ready;
+  }
+
+  setHandlers() {
+    $('onOff').onclick = this.onOff.bind(this);
+  }
+
+  onOff() {
+    sendMessage({type: USER_HOST_DEACTIVATE, tabId: this.tabId});
   }
 
   show() {
