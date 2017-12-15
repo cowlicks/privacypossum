@@ -3,11 +3,14 @@
 * add blocker blocking
 * surrogates
 * widgets
+* spoil fingerprints
 * rules like:
-    youtube -> youtube-nocookie
-    inject header for twitter
+    - youtube -> youtube-nocookie
+    - inject header for twitter
 
-* evercookie/supercookie protection
+* t.co unwrapping
+
+* evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
 * multiple Reasons on a single thing
 
 
