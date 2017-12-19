@@ -16,7 +16,7 @@ function isBaseOfHostname(base, host) {
 class WebRequest {
   constructor(tabs, store) {
     this.handler = new Handler(tabs);
-    this.handleRequest = this.handler.handleRequest.bind(this.handler);
+    this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
     this.tabs = tabs;
     this.store = store;
   }
@@ -47,7 +47,6 @@ class WebRequest {
       {urls: ["<all_urls>"]},
       ["blocking", "responseHeaders"]
     );
-
   }
 
   recordRequest(details) {
@@ -60,22 +59,25 @@ class WebRequest {
     }
   }
 
-  commitRequest(details) {
+  checkAllRequestActions(details) {
     let {tabId} = details,
       {hostname, pathname} = details.urlObj;
-    details.response = constants.NO_ACTION;
 
     // we check actions in tab -> domain -> path
-    this.handleRequest(this.tabs.getTab(tabId), details);
+    this.checkRequestAction(this.tabs.getTab(tabId), details);
     if (!details.shortCircuit && this.store.has(hostname)) {
       let domain = this.store.get(hostname);
-      this.handleRequest(domain, details);
+      this.checkRequestAction(domain, details);
       if (!details.shortCircuit && domain.hasPath(pathname)) {
         let path = domain.getPath(pathname);
-        this.handleRequest(path, details);
+        this.checkRequestAction(path, details);
       }
     }
+  }
 
+  commitRequest(details) {
+    details.response = constants.NO_ACTION;
+    this.checkAllRequestActions(details);
     this.markResponse(details);  // record new behavior
     return details.response;
   }
@@ -95,16 +97,17 @@ class WebRequest {
   }
 
   headerHandler(details, headerPropName) {
-    let response = constants.NO_ACTION;
+    details.response = constants.NO_ACTION;
     details.urlObj = new URL(details.url);
 
     if (this.isThirdParty(details)) {
       let headers = details[headerPropName];
-      if (removeCookies(headers)) {
-        response = {[headerPropName]: headers};
+      this.checkAllRequestActions(details);
+      if (!details.shortCircuit && removeCookies(headers)) {
+        details.response = {[headerPropName]: headers};
       }
     }
-    return response;
+    return details.response;
   }
 }
 
