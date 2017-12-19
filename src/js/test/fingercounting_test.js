@@ -2,6 +2,7 @@
 
 const assert = require('chai').assert,
   {Counter, FingerPrintingError} = require('../web_accessible/fingercounting'),
+  {makeTrap} = require('../utils'),
   {Mock} = require('./testing_utils');
 
 describe('fingercounting.js', function() {
@@ -15,6 +16,7 @@ describe('fingercounting.js', function() {
     it('#constructor', function() {
       let scriptLocation = 'some_location.js',
         config = {
+          document: makeTrap(),
           globalObj: global,
           methods: ['testProp.stuff'],
           getScriptLocation: new Mock(scriptLocation),
