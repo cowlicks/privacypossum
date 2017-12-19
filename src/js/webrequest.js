@@ -87,25 +87,21 @@ class WebRequest {
   }
 
   onBeforeSendHeaders(details) {
-    let response = constants.NO_ACTION;
-    details.urlObj = new URL(details.url);
-
-    if (this.isThirdParty(details)) {
-      if (removeCookies(details.requestHeaders)) {
-        response = {requestHeaders: details.requestHeaders};
-      }
-    }
-    return response;
+    return this.headerHandler(details, 'requestHeaders');
   }
 
-  // todo DRY with ohBeforeSendHeaders
   onHeadersReceived(details) {
+    return this.headerHandler(details, 'responseHeaders');
+  }
+
+  headerHandler(details, headerPropName) {
     let response = constants.NO_ACTION;
     details.urlObj = new URL(details.url);
 
     if (this.isThirdParty(details)) {
-      if (removeCookies(details.responseHeaders)) {
-        response = {responseHeaders: details.responseHeaders};
+      let headers = details[headerPropName];
+      if (removeCookies(headers)) {
+        response = {[headerPropName]: headers};
       }
     }
     return response;
