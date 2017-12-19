@@ -5,18 +5,22 @@ const assert = require('chai').assert,
   {Reason} = require('../reasons'),
   {Action} = require('../schemes'),
   {onMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
-  {details, Details, toSender} = require('./testing_utils'),
+  {cookie, notCookie, details, Details, toSender} = require('./testing_utils'),
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
-let newScript = () => Object.assign({}, details.script);
-let newMain = () => Object.assign({}, details.main_frame);
+let newScript = () => Object.assign({}, details.script),
+  newMain = () => Object.assign({}, details.main_frame),
+  reqHeaders = () => Object.assign({}, newScript(), {'requestHeaders': [cookie, notCookie]}),
+  respHeaders = () => Object.assign({}, newScript(), {'responseHeaders': [cookie, notCookie]});
 
 describe('possum.js', function() {
   beforeEach(function() {
     onMessage.clear();
     this.possum = new Possum();
     this.onBeforeRequest = this.possum.webRequest.onBeforeRequest.bind(this.possum.webRequest);
+    this.onBeforeSendHeaders = this.possum.webRequest.onBeforeSendHeaders.bind(this.possum.webRequest);
+    this.onHeadersReceived = this.possum.webRequest.onHeadersReceived.bind(this.possum.webRequest);
   });
 
   describe('user deactivates', function() {
@@ -29,36 +33,63 @@ describe('possum.js', function() {
         new Action({reason: blocker.name, href: details.script.url})
       );
     });
-
-    it('unblocked urls', async function() {
-      // assure it is blocked
-      assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
-
-      await sendMessage({type: constants.USER_URL_DEACTIVATE, url: newScript().url});
-
-      assert.deepEqual(this.onBeforeRequest(newScript()), constants.NO_ACTION);
-    });
-
-    it('unblocks urls on deactivated hosts', async function() {
-      let tabId = details.main_frame.tabId;
-
+    it('ensure we have a blocked stuff', function() {
       // set tab
       this.onBeforeRequest(newMain());
-      // check it is blocked
       assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
+      // assure it strips cookies
+      assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), {'requestHeaders': [notCookie]});
+      assert.deepEqual(this.onHeadersReceived(respHeaders()), {'responseHeaders': [notCookie]});
+    });
 
-      // deactivate tab
-      await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+    describe('unblocked urls', async function() {
+      beforeEach(async function() {
+        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: newScript().url});
+      });
 
-      // not blocked on this tab
-      let script_result = this.onBeforeRequest(newScript());
-      assert.deepEqual(script_result, constants.NO_ACTION);
+      it('unblocks requests', async function() {
+        // assure it is blocked
+        assert.deepEqual(this.onBeforeRequest(newScript()), constants.NO_ACTION);
+      });
 
-      // re-activate tab
-      await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+      it('does not strip third party headers', async function() {
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), constants.NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders()), constants.NO_ACTION);
+      });
+    });
 
-      // blocked again
-      assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
+    describe('deactivated hosts', async function() {
+      let tabId = details.main_frame.tabId;
+      beforeEach(async function() {
+        this.onBeforeRequest(newMain());
+
+        // deactivate tab
+        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+      });
+
+      it('does not block on this tab', async function() {
+        // not blocked on this tab
+        let script_result = this.onBeforeRequest(newScript());
+        assert.deepEqual(script_result, constants.NO_ACTION);
+
+        // re-activate tab
+        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+
+        // blocked again
+        assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
+      });
+
+      it('does not strip headers', async function() {
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), constants.NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders()), constants.NO_ACTION);
+
+        // re-activate tab
+        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+
+        // assure it strips cookies again
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), {'requestHeaders': [notCookie]});
+        assert.deepEqual(this.onHeadersReceived(respHeaders()), {'responseHeaders': [notCookie]});
+      });
     });
   });
 

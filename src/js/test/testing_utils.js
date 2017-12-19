@@ -74,8 +74,14 @@ const main_frame = new Details({
     url: 'https://foo.com/somescript.js',
     tabId: 1,
     type: 'script',
+  }),
+  third_party = new Details({
+    frameId: 0,
+    url: 'https://third-party.com/stuff.js',
+    tabId: 1,
+    type: 'script',
   });
 
-const details = {main_frame, sub_frame, script};
+const details = {main_frame, sub_frame, script, third_party};
 
 Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});
