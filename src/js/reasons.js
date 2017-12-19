@@ -108,7 +108,7 @@ const reasons = [
   {
     name: USER_URL_DEACTIVATE,
     funcs: {
-      requestHandler: setResponse(NO_ACTION, false),
+      requestHandler: setResponse(NO_ACTION, true),
       messageHandler: onUserUrlDeactivate,
     },
   },
