@@ -130,7 +130,7 @@ class Counter {
   }
 
   addLocation() {
-    return {counts: {}, nnzCounts: 0};
+    return {isFingerprinting: false, counts: {}, nnzCounts: 0};
   }
 
   /*
@@ -152,8 +152,8 @@ class Counter {
       loc.nnzCounts += 1;
 
       if ((loc.nnzCounts/this.nMethods) > this.threshold &&
-          (!this.isFingerprinting)) {
-        this.isFingerprinting = true;
+          (!loc.isFingerprinting)) {
+        loc.isFingerprinting = true;
         this.onFingerPrinting(loc_name);
       }
     }
