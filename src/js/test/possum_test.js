@@ -115,6 +115,7 @@ describe('possum.js', function() {
     it('still blocks fingerprinting after loading from disk', async function() {
       let possum2 = await Possum.load(this.possum.store.diskMap.disk);
 
+      possum2.webRequest.onBeforeRequest(main_frame.copy());
       let result = possum2.webRequest.onBeforeRequest(script.copy());
       assert.deepEqual(result, constants.CANCEL);
     });
@@ -123,7 +124,7 @@ describe('possum.js', function() {
       let url2 = new URL(details.script.url);
       url2.pathname = '/otherpath.js';
 
-      let details2 = new Details(Object.assign({}, script.copy(), {url: url2.href}))
+      let details2 = new Details(Object.assign(script.copy(), {url: url2.href}))
       this.onBeforeRequest(details2);
 
       await sendMessage(
@@ -132,6 +133,7 @@ describe('possum.js', function() {
       );
 
       let possum2 = await Possum.load(this.possum.store.diskMap.disk);
+      possum2.webRequest.onBeforeRequest(main_frame.copy());
 
       let result = possum2.webRequest.onBeforeRequest(script.copy()),
         result2 =  possum2.webRequest.onBeforeRequest(details2);
