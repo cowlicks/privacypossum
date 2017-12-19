@@ -12,7 +12,6 @@
 
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
 * multiple Reasons on a single thing
-* turn off cookie blocking on deactivated sites
 
 
 ## threats
