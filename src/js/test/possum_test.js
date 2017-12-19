@@ -9,10 +9,9 @@ const assert = require('chai').assert,
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
-let newScript = () => Object.assign({}, details.script),
-  newMain = () => Object.assign({}, details.main_frame),
-  reqHeaders = () => Object.assign({}, newScript(), {'requestHeaders': [cookie, notCookie]}),
-  respHeaders = () => Object.assign({}, newScript(), {'responseHeaders': [cookie, notCookie]});
+let {script, main_frame} = details,
+  reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
+  respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
 
 describe('possum.js', function() {
   beforeEach(function() {
@@ -35,33 +34,33 @@ describe('possum.js', function() {
     });
     it('ensure we have a blocked stuff', function() {
       // set tab
-      this.onBeforeRequest(newMain());
-      assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
+      this.onBeforeRequest(main_frame.copy());
+      assert.deepEqual(this.onBeforeRequest(script.copy()), constants.CANCEL);
       // assure it strips cookies
-      assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), {'requestHeaders': [notCookie]});
-      assert.deepEqual(this.onHeadersReceived(respHeaders()), {'responseHeaders': [notCookie]});
+      assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), {'requestHeaders': [notCookie]});
+      assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), {'responseHeaders': [notCookie]});
     });
 
     describe('unblocked urls', async function() {
       beforeEach(async function() {
-        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: newScript().url});
+        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: script.copy().url});
       });
 
       it('unblocks requests', async function() {
         // assure it is blocked
-        assert.deepEqual(this.onBeforeRequest(newScript()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.NO_ACTION);
       });
 
       it('does not strip third party headers', async function() {
-        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), constants.NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
       });
     });
 
     describe('deactivated hosts', async function() {
       let tabId = details.main_frame.tabId;
       beforeEach(async function() {
-        this.onBeforeRequest(newMain());
+        this.onBeforeRequest(main_frame.copy());
 
         // deactivate tab
         await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
@@ -69,26 +68,26 @@ describe('possum.js', function() {
 
       it('does not block on this tab', async function() {
         // not blocked on this tab
-        let script_result = this.onBeforeRequest(newScript());
+        let script_result = this.onBeforeRequest(script.copy());
         assert.deepEqual(script_result, constants.NO_ACTION);
 
         // re-activate tab
         await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
 
         // blocked again
-        assert.deepEqual(this.onBeforeRequest(newScript()), constants.CANCEL);
+        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.CANCEL);
       });
 
       it('does not strip headers', async function() {
-        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), constants.NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
 
         // re-activate tab
         await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
 
         // assure it strips cookies again
-        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders()), {'requestHeaders': [notCookie]});
-        assert.deepEqual(this.onHeadersReceived(respHeaders()), {'responseHeaders': [notCookie]});
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), {'requestHeaders': [notCookie]});
+        assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), {'responseHeaders': [notCookie]});
       });
     });
   });
@@ -96,19 +95,19 @@ describe('possum.js', function() {
   describe('fingerprinting', function() {
     beforeEach(async function() {
       // load a page, with a script
-      this.onBeforeRequest(newMain());
-      this.onBeforeRequest(newScript());
+      this.onBeforeRequest(main_frame.copy());
+      this.onBeforeRequest(script.copy());
 
       // page see's fingerprinting and sends message
       await sendMessage(
         {type: constants.FINGERPRINTING, url: details.script.url},
-        toSender(newMain())
+        toSender(main_frame.copy())
       );
     });
 
     it('blocks fingerprinting after it is detected', function() {
       // another request for the fingerprinting script is made
-      let result = this.onBeforeRequest(newScript());
+      let result = this.onBeforeRequest(script.copy());
       assert.deepEqual(result, constants.CANCEL);
       getBadgeText({tabId: details.script.tabId}, (text) => assert.equal(text, '1'));
     });
@@ -116,7 +115,7 @@ describe('possum.js', function() {
     it('still blocks fingerprinting after loading from disk', async function() {
       let possum2 = await Possum.load(this.possum.store.diskMap.disk);
 
-      let result = possum2.webRequest.onBeforeRequest(newScript());
+      let result = possum2.webRequest.onBeforeRequest(script.copy());
       assert.deepEqual(result, constants.CANCEL);
     });
 
@@ -124,17 +123,17 @@ describe('possum.js', function() {
       let url2 = new URL(details.script.url);
       url2.pathname = '/otherpath.js';
 
-      let details2 = new Details(Object.assign({}, newScript(), {url: url2.href}))
+      let details2 = new Details(Object.assign({}, script.copy(), {url: url2.href}))
       this.onBeforeRequest(details2);
 
       await sendMessage(
         {type: constants.FINGERPRINTING, url: details2.url},
-        toSender(newMain())
+        toSender(main_frame.copy())
       );
 
       let possum2 = await Possum.load(this.possum.store.diskMap.disk);
 
-      let result = possum2.webRequest.onBeforeRequest(newScript()),
+      let result = possum2.webRequest.onBeforeRequest(script.copy()),
         result2 =  possum2.webRequest.onBeforeRequest(details2);
       assert.deepEqual(result, constants.CANCEL);
       assert.deepEqual(result2, constants.CANCEL);
