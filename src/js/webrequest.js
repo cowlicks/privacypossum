@@ -6,13 +6,6 @@ const {URL} = require('./shim'),
   constants = require('./constants'),
   {Handler} = require('./reasons');
 
-// check if hostname has the given basename
-function isBaseOfHostname(base, host) {
-  return host.endsWith(base) ?
-    (base.length === host.length || host.substr(-base.length - 1, 1) === '.') :
-    false;
-}
-
 class WebRequest {
   constructor(tabs, store) {
     this.handler = new Handler(tabs);
@@ -22,11 +15,7 @@ class WebRequest {
   }
 
   isThirdParty(details) {
-    let basename = this.tabs.getBaseDomain(details.tabId);
-    if (basename) {
-      return !isBaseOfHostname(basename, details.urlObj.hostname);
-    }
-    return false;
+    return this.tabs.isThirdParty(details.tabId, details.urlObj.hostname);
   }
 
   start(onBeforeRequest, onBeforeSendHeaders, onHeadersReceived) {

@@ -8,7 +8,7 @@
 
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
-  {listenerMixin, setTabIconActive} = require('./utils'),
+  {listenerMixin, setTabIconActive, isBaseOfHostname} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -156,6 +156,14 @@ class Tabs {
     } catch(e) {
       return undefined;
     }
+  }
+
+  isThirdParty(tabId, hostname) {
+    let basename = this.getBaseDomain(tabId);
+    if (basename) {
+      return !isBaseOfHostname(basename, hostname);
+    }
+    return false;
   }
 
   hasResource({tabId, frameId, url, type}) {

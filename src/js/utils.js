@@ -74,6 +74,14 @@ function hasAction(obj, reason) {
 
 class Listener extends listenerMixin(Object) {}
 
+// check if hostname has the given basename
+function isBaseOfHostname(base, host) {
+  return host.endsWith(base) ?
+    (base.length === host.length || host.substr(-base.length - 1, 1) === '.') :
+    false;
+}
+
+
 Object.assign(exports, {
   BrowserDisk,
   makeTrap,
@@ -81,6 +89,7 @@ Object.assign(exports, {
   Listener,
   setTabIconActive,
   hasAction,
+  isBaseOfHostname,
 });
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));
