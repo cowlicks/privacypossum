@@ -14,3 +14,9 @@ s.onload = function() {
   this.remove();
 };
 (document.head || document.documentElement).appendChild(s);
+
+chrome.runtime.onMessage.addListener(message => {
+  if (message.type === 'firstparty-fingerprinting') {
+    document.dispatchEvent(new CustomEvent(event_id, {detail: message}));
+  }
+});

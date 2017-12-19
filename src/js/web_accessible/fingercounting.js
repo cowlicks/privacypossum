@@ -96,7 +96,7 @@ const methods = [
 ];
 
 class Counter {
-  constructor({globalObj, methods, getScriptLocation, onFingerPrinting, threshold}) {
+  constructor({globalObj, document, methods, getScriptLocation, onFingerPrinting, threshold}) {
     this.globalObj = globalObj;
     this.methods = methods;
     this.getScriptLocation = getScriptLocation
@@ -105,12 +105,20 @@ class Counter {
 
     this.locations = {};
     this.nMethods = methods.length;
-    this.isFingerprinting = false;
     for (const m of methods) {
       this.wrapMethod(m);
     }
+    document.addEventListener(event_id, this.firstpartyFingerprintingListener.bind(this));
   }
 
+  firstpartyFingerprintingListener(e) {
+      let {type, url} = e.detail;
+      if (type === 'firstparty-fingerprinting') {
+        if (this.locations.hasOwnProperty(url)) {
+          this.locations[url].isFingerprinting = true;
+        }
+      }
+  }
   // wrap a dotted method name with a counter
   wrapMethod(dottedPropName) {
     const self = this,
@@ -170,6 +178,7 @@ if (typeof exports === 'undefined') {
 
   /* start 'em up */
   const config = {
+    document,
     globalObj: window,
     methods,
     getScriptLocation,
