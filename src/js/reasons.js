@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {URL, onUpdated} = require('./shim'),
+  {URL, sendMessage, onUpdated} = require('./shim'),
   {setTabIconActive, hasAction} = require('./utils'),
   constants = require('./constants');
 
@@ -26,6 +26,15 @@ class Reason {
 }
 
 const tabDeactivate = new Action({reason: TAB_DEACTIVATE});
+
+function fingerPrintingRequestHandler({tabs}, details) {
+  if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
+    Object.assign(details, {response: CANCEL, shortCircuit: false});
+  } else {
+    // send set fp signal
+    sendMessage({type: 'firstparty-fingerprinting', url: details.url});
+  }
+}
 
 async function onFingerPrinting({store, tabs}, message, sender) {
   let tabId = sender.tab.id,
@@ -101,7 +110,7 @@ const reasons = [
   {
     name: FINGERPRINTING,
     funcs: {
-      requestHandler: setResponse(CANCEL, false),
+      requestHandler: fingerPrintingRequestHandler,
       messageHandler: onFingerPrinting,
     },
   },
