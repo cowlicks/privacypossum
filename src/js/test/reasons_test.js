@@ -2,10 +2,10 @@
 
 const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
-  {onUpdated} = require('../shim'),
+  {URL, onUpdated} = require('../shim'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
-  {main_frame} = require('./testing_utils').details,
+  {main_frame, third_party} = require('./testing_utils').details,
   {Reason, Handler, TabHandler, tabDeactivate} = require('../reasons');
 
 describe('reasons.js', function() {
@@ -55,9 +55,13 @@ describe('reasons.js', function() {
 
     describe('#handleRequest', function() {
       it('fingerprinting', function() {
-        let details = {}, obj = {};
-        obj.action = new Action({reason: constants.FINGERPRINTING});
+        let obj = {action: new Action({reason: constants.FINGERPRINTING})},
+          details = third_party.copy();
+        details.urlObj = new URL(details.url);
+        this.tabs.addResource(main_frame.copy());
+
         this.handler.handleRequest(obj, details);
+
         assert.equal(details.response, constants.CANCEL);
       });
 

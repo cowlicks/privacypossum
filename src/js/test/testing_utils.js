@@ -53,6 +53,9 @@ class Details {
   toSender(url) {
     return toSender(this, url);
   }
+  copy() {
+    return JSON.parse(JSON.stringify(this));
+  }
 }
 
 const main_frame = new Details({
