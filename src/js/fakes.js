@@ -66,7 +66,7 @@ function fakePort(name) {
 }
 
 class Connects extends Function {
-  // returs fake [connect, onConnect] 
+  // returs fake [connect, onConnect]
   static create() {
     let onConnect = new Connects();
     let connect = new Proxy(onConnect, {
