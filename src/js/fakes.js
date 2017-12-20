@@ -65,6 +65,40 @@ function fakePort(name) {
   return [a, b];
 }
 
+class Connects extends Function {
+  // returs fake [connect, onConnect] 
+  static create() {
+    let onConnect = new Connects();
+    let connect = new Proxy(onConnect, {
+      apply: function(target, thisArg, argList) {
+        return target.connect.apply(target, argList);
+      }
+    });
+    return [connect, onConnect];
+  }
+
+  constructor() {
+    super();
+    this.funcs = [];
+  }
+
+  addListener(func) {
+    this.funcs.push(func);
+  }
+
+  clear() {
+    this.funcs = []
+  }
+
+  connect({name}) {
+    let [port, otherPort] = fakePort(name);
+    for (let func of this.funcs) {
+      func(otherPort);
+    }
+    return port;
+  }
+}
+
 function fakeConnects () {
   let connections = [];
   let onConnect = {funcs: []};
@@ -82,6 +116,6 @@ function fakeConnects () {
   return [connect, onConnect];
 }
 
-Object.assign(exports, {FakeDisk, FakeMessages, fakePort, fakeConnects});
+Object.assign(exports, {FakeDisk, FakeMessages, fakePort, Connects, fakeConnects});
 
 })(typeof exports == 'undefined' ? require.scopes.fakes = {} : exports);
