@@ -2,6 +2,7 @@
 
 [(function(exports) {
 
+const {memoize} = require('./utils');
 
 let multiDomainFirstPartiesArray = [
   ["1800contacts.com", "800contacts.com"],
@@ -297,6 +298,8 @@ class MultiDomainFirstParties {
         this._data.set(domain, set);
       });
     });
+
+    this.isMdfp = memoize(this.isMdfp.bind(this), ([one, two]) => one + ' ' + two, 1000)
   }
 
   isMdfp(one, two) {
