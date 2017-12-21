@@ -11,10 +11,7 @@ const constants = require('./constants'),
   PopupServer = require('./popup').Server;
 
 class Possum {
-  constructor(store) {
-    if (typeof store === 'undefined') {
-      store = new DomainStore(constants.DISK_NAME);
-    }
+  constructor(store = new DomainStore(constants.DISK_NAME)) {
     this.store = store;
 
     this.tabs = new Tabs();

@@ -18,14 +18,7 @@ class DomainTree extends Tree {
 }
 
 class DomainStore {
-  constructor(name, disk, splitter_) {
-    if (typeof disk === 'undefined') {
-      disk = Disk.newDisk();
-    }
-
-    if (typeof splitter_ === 'undefined') {
-      splitter_ = splitter;
-    }
+  constructor(name, disk = Disk.newDisk(), splitter_ = splitter) {
     this.init(name, disk, splitter_);
   }
 

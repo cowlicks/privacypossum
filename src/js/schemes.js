@@ -33,12 +33,8 @@ class Path {
 }
 
 class Domain {
-  constructor(data) {
-    if (typeof data === 'undefined') {
-      this.paths = {};
-    } else {
-      Object.assign(this, data);
-    }
+  constructor(data = {paths: {}}) {
+    Object.assign(this, data);
   }
 
   setPath(path, action) {
