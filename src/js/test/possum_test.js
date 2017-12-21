@@ -4,7 +4,7 @@ const assert = require('chai').assert,
   constants = require('../constants'),
   {Reason} = require('../reasons'),
   {Action} = require('../schemes'),
-  {onConnect, onMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
+  {onConnect, tabsOnMessage, onMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
   {cookie, notCookie, details, Details, toSender} = require('./testing_utils'),
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
@@ -15,6 +15,7 @@ let {script, main_frame, first_party_script} = details,
 
 describe('possum.js', function() {
   beforeEach(function() {
+    tabsOnMessage.clear();
     onMessage.clear();
     onConnect.clear();
     this.possum = new Possum();
@@ -122,9 +123,16 @@ describe('possum.js', function() {
       })
 
       it('alerts the page script', function() {
-        this.onBeforeRequest(first_party_script.copy());
-        let message = onMessage.messages[onMessage.messages.length - 1];
-        assert.deepEqual(message, {type: 'firstparty-fingerprinting', url: first_party_script.url});
+        let fps = first_party_script.copy(),
+          {tabId, frameId} = fps;
+
+        this.onBeforeRequest(fps);
+        let message = tabsOnMessage.messages[tabsOnMessage.messages.length - 1];
+        assert.deepEqual(message, [
+            tabId,
+            {type: 'firstparty-fingerprinting', url: first_party_script.url},
+            {frameId},
+        ]);
       })
     });
 
