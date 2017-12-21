@@ -316,7 +316,8 @@ Object.assign(exports, {
   get isMdfp() {
     delete this.isMdfp;
     let mdfp = new MultiDomainFirstParties();
-    this.isMdfp = mdfp.isMdfp.bind(this, mdfp.isMdfp.bind(mdfp));
+    this.isMdfp = mdfp.isMdfp.bind(mdfp);
+    return this.isMdfp;
   }
 });
 
