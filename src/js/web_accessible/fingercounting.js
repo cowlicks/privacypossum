@@ -14,8 +14,7 @@
  * todo: better name than "method"?
  */
 
-const threshold = 0.75,
-    FingerPrintingError = new Error('fingerprinting detected');
+const threshold = 0.75;
 
 let event_id;
 
@@ -164,9 +163,10 @@ class Counter {
         this.onFingerPrinting(loc_name);
       }
     }
+
     loc.counts[prop_name] += 1;
     if (loc.isFingerprinting) {
-      throw FingerPrintingError;
+      throw new Error(`Fingerprinting detected on ${loc_name} with proprety ${prop_name}`);
     }
   }
 };
@@ -188,7 +188,7 @@ if (typeof exports === 'undefined') {
 
   const counter = new Counter(config); // eslint-disable-line
 } else {
-  Object.assign(exports, {Counter, FingerPrintingError});
+  Object.assign(exports, {Counter});
 }
 
 })(typeof exports == 'undefined' ? undefined : exports);
