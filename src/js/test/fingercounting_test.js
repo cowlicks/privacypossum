@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {Counter, FingerPrintingError} = require('../web_accessible/fingercounting'),
+  {Counter} = require('../web_accessible/fingercounting'),
   {makeTrap} = require('../utils'),
   {Mock} = require('./testing_utils');
 
@@ -28,7 +28,7 @@ describe('fingercounting.js', function() {
       try {
         testProp.stuff; // eslint-disable-line
       } catch (e) {
-        assert.equal(e.message, FingerPrintingError.message);
+        assert.isTrue(e.message.startsWith('Fingerprinting'));
       }
 
       assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
