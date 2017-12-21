@@ -50,6 +50,9 @@
       "js/basedomain/psl.js",
       "js/basedomain/basedomain.js",
 
+      "js/mdfp.js",
+      "js/parties.js",
+
       "js/reasons.js",
       "js/tabs.js",
 
