@@ -5,6 +5,22 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon} = require('./shim');
 
+function memoize(func, hash, size) {
+  let cache = new Map();
+  return function() {
+    let key = hash(arguments);
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    let result = func.apply(undefined, arguments);
+    cache.set(key, result);
+    if (cache.size > size) {
+      cache.delete(cache.keys().next().value);
+    }
+    return result;
+  }
+}
+
 class BrowserDisk {
   constructor(disk) {
     this.disk = disk;
@@ -83,6 +99,7 @@ function isBaseOfHostname(base, host) {
 
 
 Object.assign(exports, {
+  memoize,
   BrowserDisk,
   makeTrap,
   listenerMixin,
