@@ -14,6 +14,7 @@
 * multiple Reasons on a single thing
 * test 1st party fingerprinting behavior !!!!!
 * modify bootstrap code to take a path string.
+* add mdfp stuff
 
 
 ## threats
