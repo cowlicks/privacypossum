@@ -65,7 +65,7 @@ let onAndSendMessage = (name) => {
 };
 
 let connectAndOnConnect = (name) => {
-  let [con, onCon] = require('./fakes').fakeConnects();
+  let [con, onCon] = require('./fakes').Connects.create();
   assign('onConnect', onCon);
   assign('connect', con);
   return getter(name, exports);
