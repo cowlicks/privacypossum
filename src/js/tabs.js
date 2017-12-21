@@ -9,6 +9,7 @@
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
   {listenerMixin, setTabIconActive, isBaseOfHostname} = require('./utils'),
+  {isThirdParty} = require('./parties'),
   {getBaseDomain} = require('./basedomain/basedomain');
 
 class Resource {
@@ -36,7 +37,7 @@ class Frame {
       if (!(urlObj instanceof URL)) {
         urlObj = new URL(url);
       }
-      this.basedomain = getBaseDomain(urlObj.hostname);
+      this.urlObj = urlObj;
     }
   }
 
@@ -150,20 +151,8 @@ class Tabs {
     return this.getTab(tabId).get(frameId);
   }
 
-  getBaseDomain(tabId) {
-    try {
-      return this.getFrame(tabId, 0).basedomain;
-    } catch(e) {
-      return undefined;
-    }
-  }
-
   isThirdParty(tabId, hostname) {
-    let basename = this.getBaseDomain(tabId);
-    if (basename) {
-      return !isBaseOfHostname(basename, hostname);
-    }
-    return false;
+    return isThirdParty(this.getFrame(tabId, 0).urlObj.hostname, hostname);
   }
 
   hasResource({tabId, frameId, url, type}) {
