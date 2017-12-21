@@ -288,9 +288,7 @@ let multiDomainFirstPartiesArray = [
 ];
 
 class MultiDomainFirstParties {
-  constructor(mdfpArr) {
-    mdfpArr = mdfpArr ? mdfpArr : multiDomainFirstPartiesArray;
-
+  constructor(mdfpArr = multiDomainFirstPartiesArray) {
     this._data = new Map();
 
     mdfpArr.forEach(firstFiestas => {
@@ -308,6 +306,7 @@ class MultiDomainFirstParties {
         return true;
       }
     }
+    // is this comparison needed?
     return one === two;
   }
 }
