@@ -55,7 +55,7 @@ function shimmer(out_name, real_name, onSuccess, onFail) {
 }
 
 /**
- * shims for api's that share state;
+ * shims for api's that share state; // todo use proxy's for these?
  */
 let onAndSendMessage = (name) => {
   let fm = makeFakeMessages();
