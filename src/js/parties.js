@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {mtemoize} = require('./utils'),
+const {memoize} = require('./utils'),
   {getBaseDomain} = require('./basedomain/basedomain'),
   {isMdfp} = require('./mdfp');
 
@@ -15,6 +15,7 @@ function isThirdParty(d1, d2) {
   }
   return true;
 }
+isThirdParty = memoize(isThirdParty, ([a, b]) => a + ' ' + b, 1000);
 
 Object.assign(exports, {isThirdParty});
 
