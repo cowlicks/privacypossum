@@ -60,7 +60,7 @@ class Details {
 
 const main_frame = new Details({
     frameId: 0,
-    url: 'https://google.com/',
+    url: 'https://firstparty.com/',
     tabId: 1,
     parentFrameId: -1,
     type: 'main_frame',
@@ -72,9 +72,16 @@ const main_frame = new Details({
     parentFrameId: 0,
     type: 'sub_frame',
   }),
+  first_party_script = new Details({
+    frameId: 0,
+    url: 'https://firstparty.com/script.js',
+    tabId: 1,
+    type: 'script',
+  }),
+  // todo consolidate script and third_party
   script = new Details({
     frameId: 0,
-    url: 'https://foo.com/somescript.js',
+    url: 'https://foo.com/otherscript.js',
     tabId: 1,
     type: 'script',
   }),
@@ -85,6 +92,6 @@ const main_frame = new Details({
     type: 'script',
   });
 
-const details = {main_frame, sub_frame, script, third_party};
+const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
 Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});

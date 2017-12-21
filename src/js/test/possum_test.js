@@ -9,7 +9,7 @@ const assert = require('chai').assert,
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
-let {script, main_frame} = details,
+let {script, main_frame, first_party_script} = details,
   reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
   respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
 
@@ -98,12 +98,33 @@ describe('possum.js', function() {
       // load a page, with a script
       this.onBeforeRequest(main_frame.copy());
       this.onBeforeRequest(script.copy());
+      this.onBeforeRequest(first_party_script.copy());
 
       // page see's fingerprinting and sends message
       await sendMessage(
         {type: constants.FINGERPRINTING, url: details.script.url},
         toSender(main_frame.copy())
       );
+    });
+
+    describe('first party fingerprinting', function() {
+      beforeEach(async function() {
+        await sendMessage(
+          {type: constants.FINGERPRINTING, url: details.first_party_script.url},
+          toSender(main_frame.copy())
+        );
+      });
+
+      it('does not block firstparty fingerprinting scripts', function() {
+        let result = this.onBeforeRequest(first_party_script.copy());
+        assert.deepEqual(result, constants.NO_ACTION);
+      })
+
+      it('alerts the page script', function() {
+        this.onBeforeRequest(first_party_script.copy());
+        let message = onMessage.messages[onMessage.messages.length - 1];
+        assert.deepEqual(message, {type: 'firstparty-fingerprinting', url: first_party_script.url});
+      })
     });
 
     it('blocks fingerprinting after it is detected', function() {
