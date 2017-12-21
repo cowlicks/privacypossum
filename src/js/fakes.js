@@ -23,10 +23,12 @@ class FakeDisk extends Map {
 class FakeMessages {
   constructor() {
     this.funcs = [];
+    this.messages = [];
   }
 
   clear() {
     this.funcs = [];
+    this.messages = [];
   }
 
   addListener(func) {
@@ -35,6 +37,7 @@ class FakeMessages {
 
   async sendMessage() {
     for (let func of this.funcs) {
+      this.messages.push(arguments[0]);
       await func(...arguments);
     }
   }
