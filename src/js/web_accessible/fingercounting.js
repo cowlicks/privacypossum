@@ -108,6 +108,7 @@ class Counter {
       this.wrapMethod(m);
     }
     document.addEventListener(event_id, this.firstpartyFingerprintingListener.bind(this));
+    document.dispatchEvent(new CustomEvent(event_id, {detail: {type: 'ready'}}));
   }
 
   firstpartyFingerprintingListener(e) {
