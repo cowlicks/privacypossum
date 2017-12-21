@@ -12,8 +12,8 @@
 
 [(function(exports) {
 
-const {publicSuffixes} = require('./psl');
-
+const {publicSuffixes} = require('./psl'),
+    {memoize} = require('../utils');
 
 const re_ipv4 = /[0-9]$/;
 
@@ -68,6 +68,7 @@ function getBaseDomain(/**String*/ hostname) {
 
   return curDomain;
 }
+getBaseDomain = memoize(getBaseDomain, (x) => x, 1000);
 
 Object.assign(exports, {getBaseDomain});
 
