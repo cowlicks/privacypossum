@@ -99,23 +99,6 @@ class Connects extends Function {
   }
 }
 
-function fakeConnects () {
-  let connections = [];
-  let onConnect = {funcs: []};
-  onConnect.addListener = (func) => {
-    onConnect.funcs.push(func);
-  }
-  let connect = function({name}) {
-    let [port, otherPort] = fakePort(name);
-    connections.push([port, otherPort]);
-    for (let func of onConnect.funcs) {
-      func(otherPort);
-    }
-    return port;
-  }
-  return [connect, onConnect];
-}
-
-Object.assign(exports, {FakeDisk, FakeMessages, fakePort, Connects, fakeConnects});
+Object.assign(exports, {FakeDisk, FakeMessages, fakePort, Connects});
 
 })(typeof exports == 'undefined' ? require.scopes.fakes = {} : exports);
