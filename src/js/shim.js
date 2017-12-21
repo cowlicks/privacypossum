@@ -64,6 +64,13 @@ let onAndSendMessage = (name) => {
   return getter(name, exports);
 };
 
+let tabsOnAndSendMessage = (name) => {
+  let fm = makeFakeMessages();
+  assign('tabsOnMessage', fm);
+  assign('tabsSendMessage', fm.sendMessage.bind(fm));
+  return getter(name, exports);
+};
+
 let connectAndOnConnect = (name) => {
   let [con, onCon] = require('./fakes').Connects.create();
   assign('onConnect', onCon);
@@ -110,6 +117,8 @@ let shims = [
   ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
   ['onActivated', 'chrome.tabs.onActivated', passThru, makeFakeMessages],
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
+  ['tabsOnMessage', 'chrome.tabs.onMessage', passThru, tabsOnAndSendMessage],
+  ['tabsSendMessage', 'chrome.tabs.sendMessage', passThru, tabsOnAndSendMessage],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
   ['getDocument', 'document', () => () => document, () => require('./utils').makeTrap()],
