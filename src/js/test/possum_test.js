@@ -32,27 +32,28 @@ describe('possum.js', function() {
         details.script.url,
         new Action({reason: blocker.name, href: details.script.url})
       );
-    });
-    it('ensure we have a blocked stuff', function() {
+
       // set tab
       this.onBeforeRequest(main_frame.copy());
+    });
+    it('ensure we block block it & strip cookies', function() {
       assert.deepEqual(this.onBeforeRequest(script.copy()), constants.CANCEL);
       // assure it strips cookies
       assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), {'requestHeaders': [notCookie]});
       assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), {'responseHeaders': [notCookie]});
     });
 
-    describe('unblocked urls', async function() {
+    describe('unblocked urls', function() {
       beforeEach(async function() {
         await sendMessage({type: constants.USER_URL_DEACTIVATE, url: script.copy().url});
       });
 
-      it('unblocks requests', async function() {
+      it('unblocks requests', function() {
         // assure it is blocked
         assert.deepEqual(this.onBeforeRequest(script.copy()), constants.NO_ACTION);
       });
 
-      it('does not strip third party headers', async function() {
+      it('does not strip cookies when the url is a 3rd party', function() {
         assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
         assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
       });
