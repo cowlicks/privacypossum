@@ -312,6 +312,14 @@ class MultiDomainFirstParties {
   }
 }
 
+Object.assign(exports, {
+  get isMdfp() {
+    delete this.isMdfp;
+    let mdfp = new MultiDomainFirstParties();
+    this.isMdfp = mdfp.isMdfp.bind(this, mdfp.isMdfp.bind(mdfp));
+  }
+});
+
 Object.assign(exports, {MultiDomainFirstParties});
 
 })].map(func => typeof exports == 'undefined' ? require.scopes.mdfp = func : func(exports));
