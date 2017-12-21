@@ -96,6 +96,7 @@ function isBaseOfHostname(base, host) {
     (base.length === host.length || host.substr(-base.length - 1, 1) === '.') :
     false;
 }
+isBaseOfHostname = memoize(isBaseOfHostname, ([base, host]) => base + ' ' + host, 1000);
 
 
 Object.assign(exports, {
