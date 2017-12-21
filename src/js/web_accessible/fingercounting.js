@@ -112,12 +112,13 @@ class Counter {
   }
 
   firstpartyFingerprintingListener(e) {
-      let {type, url} = e.detail;
-      if (type === 'firstparty-fingerprinting') {
-        if (this.locations.hasOwnProperty(url)) {
-          this.locations[url].isFingerprinting = true;
-        }
+    let {type, url} = e.detail;
+    if (type === 'firstparty-fingerprinting') {
+      if (!this.locations.hasOwnProperty(url)) {
+        this.locations[url] = this.addLocation();
       }
+      this.locations[url].isFingerprinting = true;
+    }
   }
   // wrap a dotted method name with a counter
   wrapMethod(dottedPropName) {
