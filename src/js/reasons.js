@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('./schemes'),
-  {URL, sendMessage, onUpdated} = require('./shim'),
+  {URL, tabsSendMessage, onUpdated} = require('./shim'),
   {setTabIconActive, hasAction} = require('./utils'),
   constants = require('./constants');
 
@@ -32,7 +32,8 @@ function fingerPrintingRequestHandler({tabs}, details) {
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
     // send set fp signal
-    sendMessage({type: 'firstparty-fingerprinting', url: details.url});
+    let {tabId, frameId} = details;
+    tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
   }
 }
 
