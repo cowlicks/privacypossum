@@ -36,8 +36,8 @@ class FakeMessages {
   }
 
   async sendMessage() {
+    this.messages.push(Array.from(arguments).slice(0, arguments.length))
     for (let func of this.funcs) {
-      this.messages.push(arguments[0]);
       await func(...arguments);
     }
   }
