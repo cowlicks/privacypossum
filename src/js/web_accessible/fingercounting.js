@@ -38,6 +38,27 @@ function getUrlFromStackLine(line) {
     .match(urlEndRegex)[0];
 }
 
+function randString() {
+  return Math.random().toString(36).substr(2);
+}
+
+function randNumber(min = 0, max = 1) {
+  return () => (Math.random() * (max - min)) + min;
+}
+
+function randInt(min, max) {
+  return () => Math.floor(randNumber(min, max));
+}
+
+function randArr(min, max, filler) {
+  return () => {
+    let size = randInt(min, max)
+    return Array.from(new Array(size), filler);
+  }
+}
+
+function noop() {}
+
 /**
  * fingerprintjs2 defines the following "keys"
  *
@@ -47,49 +68,49 @@ function getUrlFromStackLine(line) {
  */
 const methods = [
   //    keys = this.userAgentKey(keys);
-  'navigator.userAgent',
+  ['navigator.userAgent', randString],
   //    keys = this.languageKey(keys);
-  'navigator.language',
+  ['navigator.language', randString],
   //    keys = this.pixelRatioKey(keys);
-  'window.devicePixelRatio',
+  ['window.devicePixelRatio', randNumber(0, 2)],
   //    keys = this.hasLiedLanguagesKey(keys);
-  'navigator.languages',
+  ['navigator.languages', randArr(0, 7, randString)],
   //    keys = this.colorDepthKey(keys);
-  'screen.colorDepth',
+  ['screen.colorDepth', randInt(5, 40)],
   //    keys = this.hardwareConcurrencyKey(keys);
-  'navigator.hardwareConcurrency',
+  ['navigator.hardwareConcurrency', randInt(1, 10)],
   //    keys = this.cpuClassKey(keys);
-  'navigator.cpuClass',
+  ['navigator.cpuClass', noop],
   //    keys = this.platformKey(keys);
-  'navigator.platform',
+  ['navigator.platform', randString],
   //    keys = this.doNotTrackKey(keys);
-  'navigator.doNotTrack',
+  ['navigator.doNotTrack', noop],
   //    keys = this.touchSupportKey(keys);
-  'navigator.maxTouchPoints',
+  ['navigator.maxTouchPoints', randInt(0, 5)],
 
   //    keys = this.screenResolutionKey(keys);
-  'screen.width',
+  ['screen.width', randInt(500, 3000)],
   //    keys = this.availableScreenResolutionKey(keys);
-  'screen.availWidth',
+  ['screen.availWidth', randInt(500, 3000)],
   // these also are counted with:
   //    keys = this.hasLiedResolutionKey(keys);
 
   //    keys = this.timezoneOffsetKey(keys);
-  'Date.prototype.getTimezoneOffset',
+  ['Date.prototype.getTimezoneOffset', () => randInt(0, 200)],
   //    keys = this.sessionStorageKey(keys);
-  'window.sessionStorage',
+  ['window.sessionStorage', noop],
   //    keys = this.localStorageKey(keys);
-  'window.localStorage',
+  ['window.localStorage', noop],
   //    keys = this.indexedDbKey(keys);
-  'window.indexedDB',
+  ['window.indexedDB', noop],
   //    keys = this.openDatabaseKey(keys);
-  'window.openDatabase',
+  ['window.openDatabase', noop],
   //    keys = this.pluginsKey(keys);
-  'navigator.plugins',
+  ['navigator.plugins', noop],
   //    keys = this.canvasKey(keys);
-  'window.CanvasRenderingContext2D.prototype.rect',
+  ['window.CanvasRenderingContext2D.prototype.rect', noop],
   //    keys = this.webglKey(keys);
-  'window.WebGLRenderingContext.prototype.createBuffer',
+  ['window.WebGLRenderingContext.prototype.createBuffer', noop],
   //    keys = this.adBlockKey(keys);
   //    keys = this.addBehaviorKey(keys);
   //    keys = this.hasLiedOsKey(keys);
@@ -103,8 +124,8 @@ class Counter {
 
     this.locations = {};
     this.nMethods = methods.length;
-    for (const m of methods) {
-      this.wrapMethod(m);
+    for (const [name, lieFunc] of methods) {
+      this.wrapMethod(name, lieFunc);
     }
 
     this.listen(this.firstpartyFingerprintingListener.bind(this));
@@ -124,8 +145,9 @@ class Counter {
       this.locations[url].isFingerprinting = true;
     }
   }
+
   // wrap a dotted method name with a counter
-  wrapMethod(dottedPropName) {
+  wrapMethod(dottedPropName, lieFunc) {
     const self = this,
       arr = dottedPropName.split('.'),
       propName = arr.pop();
@@ -135,7 +157,10 @@ class Counter {
 
     Object.defineProperty(baseObj, propName, {
       get: function() {
-        self.addCall(dottedPropName, self.getScriptLocation());
+        let loc = self.addCall(dottedPropName, self.getScriptLocation());
+        if (loc.isFingerprinting) {
+          return lieFunc(before);
+        }
         return before;
       }
     });
@@ -166,14 +191,12 @@ class Counter {
       if ((loc.nnzCounts/this.nMethods) > this.threshold &&
           (!loc.isFingerprinting)) {
         loc.isFingerprinting = true;
-        this.onFingerPrinting(loc_name);
+        this.onFingerprinting(loc_name);
       }
     }
 
     loc.counts[prop_name] += 1;
-    if (loc.isFingerprinting) {
-      throw new Error(`Fingerprinting detected on ${loc_name} with proprety ${prop_name}`);
-    }
+    return loc;
   }
 };
 
