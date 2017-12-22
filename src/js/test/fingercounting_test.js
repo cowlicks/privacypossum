@@ -20,11 +20,15 @@ describe('fingercounting.js', function() {
           globalObj: global,
           methods: ['testProp.stuff'],
           getScriptLocation: new Mock(scriptLocation),
-          onFingerPrinting: new Mock(),
           threshold: 0.75,
+          send: new Mock(),
+          listen: new Mock(),
         };
 
       let counter = new Counter(config);
+      assert.deepEqual(counter.send.calledWith, [{type: 'ready'}]);
+      assert.isTrue(counter.listen.called);
+
       try {
         testProp.stuff; // eslint-disable-line
       } catch (e) {
@@ -32,7 +36,7 @@ describe('fingercounting.js', function() {
       }
 
       assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
-      assert.deepEqual(counter.onFingerPrinting.calledWith, [scriptLocation]);
+      assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: scriptLocation}]);
       assert.equal(counter.getScriptLocation.ncalls, 1);
     });
   });
