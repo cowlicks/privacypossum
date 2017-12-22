@@ -14,9 +14,10 @@
 * multiple Reasons on a single thing
 * test 1st party fingerprinting behavior !!!!!
 * modify bootstrap code to take a path string.
-* add mdfp stuff
 * add USER_BLOCK to reason and use it in tests
 * inject bad data into fingercounting
+* fix script locating issues. Throws error when accessed in terminal.
+* fix issue inspecting popup throws an exception. Issue where reloading extension throws errors for missing tabs.
 
 
 ## threats
