@@ -111,7 +111,7 @@ class Counter {
     this.send({type: 'ready'});
   }
 
-  onFingerPrinting(loc) {
+  onFingerprinting(loc) {
     this.send({type: 'fingerprinting', url: loc});
   }
 
@@ -147,7 +147,7 @@ class Counter {
 
   /*
    * Keep a running score/nnzCounts. This lets us avoid polling
-   * counter.isFingerPrinting.
+   * counter.isFingerprinting.
    */
   addCall(prop_name, loc_name) {
     if (!loc_name) {
