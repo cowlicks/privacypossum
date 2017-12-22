@@ -33,6 +33,7 @@ function fingerPrintingRequestHandler({tabs}, details) {
   } else {
     // send set fp signal
     let {tabId, frameId} = details;
+    tabs.markResponse(CANCEL, details.url, details.tabId);
     tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
   }
 }
