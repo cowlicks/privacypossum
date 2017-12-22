@@ -14,14 +14,17 @@
  * todo: better name than "method"?
  */
 
+// stuff for default config in browser
 const threshold = 0.75;
 
 let event_id;
 
-function onFingerPrinting(loc) {
-  document.dispatchEvent(new CustomEvent(event_id, {
-    detail: {type: 'fingerprinting', url: loc},
-  }));
+function send(msg) {
+  document.dispatchEvent(new CustomEvent(event_id, {detail: msg}));
+}
+
+function listen(func) {
+  document.addEventListener(event_id, func);
 }
 
 // get the location of arguments.callee.caller
@@ -95,20 +98,21 @@ const methods = [
 ];
 
 class Counter {
-  constructor({globalObj, document, methods, getScriptLocation, onFingerPrinting, threshold}) {
-    this.globalObj = globalObj;
-    this.methods = methods;
-    this.getScriptLocation = getScriptLocation
-    this.onFingerPrinting = onFingerPrinting;
-    this.threshold = threshold;
+  constructor({globalObj, methods, getScriptLocation, threshold, send, listen}) {
+    Object.assign(this, {globalObj, methods, getScriptLocation, threshold, send, listen});
 
     this.locations = {};
     this.nMethods = methods.length;
     for (const m of methods) {
       this.wrapMethod(m);
     }
-    document.addEventListener(event_id, this.firstpartyFingerprintingListener.bind(this));
-    document.dispatchEvent(new CustomEvent(event_id, {detail: {type: 'ready'}}));
+
+    this.listen(this.firstpartyFingerprintingListener.bind(this));
+    this.send({type: 'ready'});
+  }
+
+  onFingerPrinting(loc) {
+    this.send({type: 'fingerprinting', url: loc});
   }
 
   firstpartyFingerprintingListener(e) {
@@ -180,12 +184,12 @@ if (typeof exports === 'undefined') {
 
   /* start 'em up */
   const config = {
-    document,
     globalObj: window,
     methods,
     getScriptLocation,
-    onFingerPrinting,
-    threshold
+    threshold,
+    send,
+    listen,
   };
 
   const counter = new Counter(config); // eslint-disable-line
