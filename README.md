@@ -16,6 +16,7 @@
 * modify bootstrap code to take a path string.
 * add mdfp stuff
 * add USER_BLOCK to reason and use it in tests
+* inject bad data into fingercounting
 
 
 ## threats
