@@ -18,7 +18,7 @@ describe('fingercounting.js', function() {
         config = {
           document: makeTrap(),
           globalObj: global,
-          methods: ['testProp.stuff'],
+          methods: [['testProp.stuff', () => 'lie func called']],
           getScriptLocation: new Mock(scriptLocation),
           threshold: 0.75,
           send: new Mock(),
@@ -29,15 +29,12 @@ describe('fingercounting.js', function() {
       assert.deepEqual(counter.send.calledWith, [{type: 'ready'}]);
       assert.isTrue(counter.listen.called);
 
-      try {
-        testProp.stuff; // eslint-disable-line
-      } catch (e) {
-        assert.isTrue(e.message.startsWith('Fingerprinting'));
-      }
+      testProp.stuff; // eslint-disable-line
 
       assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
       assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: scriptLocation}]);
       assert.equal(counter.getScriptLocation.ncalls, 1);
+      assert.equal(testProp.stuff, 'lie func called');
     });
   });
 });
