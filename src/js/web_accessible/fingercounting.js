@@ -43,11 +43,11 @@ function randString() {
 }
 
 function randNumber(min = 0, max = 1) {
-  return () => (Math.random() * (max - min)) + min;
+  return (Math.random() * (max - min)) + min;
 }
 
 function randInt(min, max) {
-  return () => Math.floor(randNumber(min, max));
+  return Math.floor(randNumber(min, max));
 }
 
 function randArr(min, max, filler) {
@@ -72,13 +72,13 @@ const methods = [
   //    keys = this.languageKey(keys);
   ['navigator.language', randString],
   //    keys = this.pixelRatioKey(keys);
-  ['window.devicePixelRatio', randNumber(0, 2)],
+  ['window.devicePixelRatio', randNumber.bind(0, 2)],
   //    keys = this.hasLiedLanguagesKey(keys);
   ['navigator.languages', randArr(0, 7, randString)],
   //    keys = this.colorDepthKey(keys);
-  ['screen.colorDepth', randInt(5, 40)],
+  ['screen.colorDepth', randInt.bind(5, 40)],
   //    keys = this.hardwareConcurrencyKey(keys);
-  ['navigator.hardwareConcurrency', randInt(1, 10)],
+  ['navigator.hardwareConcurrency', randInt.bind(1, 10)],
   //    keys = this.cpuClassKey(keys);
   ['navigator.cpuClass', noop],
   //    keys = this.platformKey(keys);
@@ -86,17 +86,17 @@ const methods = [
   //    keys = this.doNotTrackKey(keys);
   ['navigator.doNotTrack', noop],
   //    keys = this.touchSupportKey(keys);
-  ['navigator.maxTouchPoints', randInt(0, 5)],
+  ['navigator.maxTouchPoints', randInt.bind(0, 5)],
 
   //    keys = this.screenResolutionKey(keys);
-  ['screen.width', randInt(500, 3000)],
+  ['screen.width', randInt.bind(500, 3000)],
   //    keys = this.availableScreenResolutionKey(keys);
-  ['screen.availWidth', randInt(500, 3000)],
+  ['screen.availWidth', randInt.bind(500, 3000)],
   // these also are counted with:
   //    keys = this.hasLiedResolutionKey(keys);
 
   //    keys = this.timezoneOffsetKey(keys);
-  ['Date.prototype.getTimezoneOffset', () => randInt(0, 200)],
+  ['Date.prototype.getTimezoneOffset', () => randInt.bind(0, 200)],
   //    keys = this.sessionStorageKey(keys);
   ['window.sessionStorage', noop],
   //    keys = this.localStorageKey(keys);
