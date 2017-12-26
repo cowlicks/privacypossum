@@ -57,7 +57,32 @@ function randArr(min, max, filler) {
   }
 }
 
-function noop() {}
+let randoThing = {
+  [Symbol.toPrimitive](hint) {
+    if (hint === 'number') {
+      return randInt(0, 10);
+    }
+    if (hint === 'string') {
+      return randString();
+    }
+    return true;
+  }
+}
+
+function trap() {
+  let target = () => {},
+    descriptor = {apply: lol, get: lol},
+    lol = (target, property, receiver) => {
+      if (typeof property === 'symbol' && property === Symbol.toPrimitive) {
+        return randoThing[property];
+      }
+      return new Proxy(target, descriptor);
+    };
+  return lol(target);
+}
+
+
+function noop() {return noop};
 
 /**
  * fingerprintjs2 defines the following "keys"
@@ -80,11 +105,11 @@ const methods = [
   //    keys = this.hardwareConcurrencyKey(keys);
   ['navigator.hardwareConcurrency', randInt.bind(1, 10)],
   //    keys = this.cpuClassKey(keys);
-  ['navigator.cpuClass', noop],
+  ['navigator.cpuClass', trap()],
   //    keys = this.platformKey(keys);
   ['navigator.platform', randString],
   //    keys = this.doNotTrackKey(keys);
-  ['navigator.doNotTrack', noop],
+  ['navigator.doNotTrack', trap()],
   //    keys = this.touchSupportKey(keys);
   ['navigator.maxTouchPoints', randInt.bind(0, 5)],
 
@@ -106,11 +131,11 @@ const methods = [
   //    keys = this.openDatabaseKey(keys);
   ['window.openDatabase', noop],
   //    keys = this.pluginsKey(keys);
-  ['navigator.plugins', noop],
+  ['navigator.plugins', trap()],
   //    keys = this.canvasKey(keys);
-  ['window.CanvasRenderingContext2D.prototype.rect', noop],
+  ['window.HTMLCanvasElement.prototype.getContext', trap()],
   //    keys = this.webglKey(keys);
-  ['window.WebGLRenderingContext.prototype.createBuffer', noop],
+  ['window.WebGLRenderingContext.prototype.createBuffer', trap()],
   //    keys = this.adBlockKey(keys);
   //    keys = this.addBehaviorKey(keys);
   //    keys = this.hasLiedOsKey(keys);
