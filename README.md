@@ -13,6 +13,7 @@
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
 * multiple Reasons on a single thing
 * test 1st party fingerprinting behavior !!!!!
+* add firstparty-fingerprinting to constants
 * modify bootstrap code to take a path string.
 * add USER_BLOCK to reason and use it in tests
 * inject bad data into fingercounting
@@ -33,7 +34,16 @@ know less about where their content is being used.
 
 We detect fingerprinting and block it in a first, and third party context.
 
-for first parties, we don't outright block the request, because it is more likely bundled with code that is essential to functionality of the website.
+for first parties, we don't outright block the request, because it is more
+likely bundled with code that is essential to functionality of the website.
+
+## goals
+
+Keep the codebase small with few external dependencies.
+
+Keep the codebase easy to build and develop.
+We prefer to have the extension runnable without any build tools. So it can be through the extension menu.
+Put fewer layers of abstraction between developer and install.
 
 ## threats
 
