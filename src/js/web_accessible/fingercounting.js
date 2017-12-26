@@ -71,13 +71,13 @@ let randoThing = {
 
 function trap() {
   let target = () => {},
-    descriptor = {apply: lol, get: lol},
     lol = (target, property, receiver) => {
       if (typeof property === 'symbol' && property === Symbol.toPrimitive) {
         return randoThing[property];
       }
       return new Proxy(target, descriptor);
-    };
+    },
+    descriptor = {apply: lol, get: lol};
   return lol(target);
 }
 
