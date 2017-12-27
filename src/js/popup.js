@@ -9,7 +9,7 @@
 
 [(function(exports) {
 
-let {connect, onConnect, tabsQuery, getDocument, sendMessage} = require('./shim'),
+let {connect, onConnect, tabsQuery, getDocument, sendMessage, getURL} = require('./shim'),
   {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
 
 
@@ -56,7 +56,8 @@ class Popup {
 
   connect() {
     this.port = connect({name: POPUP});
-    this.view = new View(this.port, blocked => {
+    this.view = new View(this.port, ({active, blocked}) => {
+      this.active = active;
       this.blocked = new Set(blocked);
       this.show();
     });
@@ -72,7 +73,27 @@ class Popup {
   }
 
   show() {
+    this.showActive(this.active);
     this.showBlocked(this.blocked);
+  }
+
+  showActive(active) {
+    let onOff = $('onOff');
+
+    if (onOff.getAttribute('active') === `${active}`) {
+      return;
+    }
+
+    onOff.setAttribute('active', `${active}`);
+    onOff.title = `click to ${active ? 'deactivate' : 'activate'} for this site`;
+
+    let doc = getDocument(),
+      img = doc.createElement('img');
+
+    img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
+    img.height = 100, img.width = 100;
+
+    $('onOff').innerHTML = img.outerHTML;
   }
 
   showBlocked(blocked) {

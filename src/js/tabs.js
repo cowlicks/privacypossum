@@ -68,7 +68,7 @@ class Tab extends listenerMixin(Map) {
   }
 
   getData() {
-    return Array.from(this.blocked);
+    return {active: this.active, blocked: Array.from(this.blocked)};
   }
 
   setBadgeText(text) {
@@ -88,6 +88,7 @@ class Tab extends listenerMixin(Map) {
       this.setBadgeText('');
     }
     setTabIconActive(this.id, this.active);
+    this.onChange();
   }
 
   markResponse(response, url) {
