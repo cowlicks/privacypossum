@@ -72,7 +72,21 @@ class Popup {
   }
 
   show() {
-    $('blocked').innerHTML = Array.from(this.blocked);
+    this.showBlocked(this.blocked);
+  }
+
+  showBlocked(blocked) {
+    let doc = getDocument(),
+      ul = doc.createElement('ul');
+
+    blocked.forEach(b => {
+      let li = doc.createElement('li');
+      li.innerHTML = b;
+      ul.appendChild(li);
+    });
+
+    $('blocked').innerHTML = '';
+    $('blocked').appendChild(ul);
   }
 }
 
