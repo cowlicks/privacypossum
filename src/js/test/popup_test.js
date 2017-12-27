@@ -34,26 +34,29 @@ describe('popup.js', function() {
   });
 
   describe('Popup and Server', function() {
-    it('blocked is sent', async function() {
-      let tabId = 1,
-        url1 = 'https://foo.com/stuff',
-        url2 = 'https://bar.com/other',
-        tab = new Tab(tabId),
-        tabs = new Tabs();
+    let url1 = 'https://foo.com/stuff',
+      url2 = 'https://bar.com/other';
+    beforeEach(async function() {
+      let tabId = 1;
+      this.tab = new Tab(tabId);
+      this.tabs = new Tabs();
 
       tabsQuery.tabs = [{id: tabId}]; // mock current tab
-      tab.markResponse(constants.CANCEL, url1);
-      tabs.setTab(tab.id, tab);
+      this.tab.markResponse(constants.CANCEL, url1);
+      this.tabs.setTab(this.tab.id, this.tab);
 
-      let server = new Server(tabs),
-        popup = new Popup(tabId);
-      server.start();
-      await popup.connect();
+      this.server = new Server(this.tabs);
+      this.popup = new Popup(tabId);
 
-      assert.isTrue(popup.blocked.has(url1), 'initial url is blocked');
+      this.server.start();
+      await this.popup.connect();
+    })
 
-      tab.markResponse(constants.CANCEL, url2);
-      assert.isTrue(popup.blocked.has(url2), 'added url is blocked');
+    it('blocked is sent', function() {
+      assert.isTrue(this.popup.blocked.has(url1), 'initial url is blocked');
+
+      this.tab.markResponse(constants.CANCEL, url2);
+      assert.isTrue(this.popup.blocked.has(url2), 'added url is blocked');
     });
   });
 });
