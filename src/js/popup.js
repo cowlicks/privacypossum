@@ -34,6 +34,8 @@ class View {
  *
  * Takes a `port` and an object with an `onChange` and `addListener`
  * methods. `onChange` is called directly first to send the initial data.
+ *
+ * todo: add a mixin that conforms to changer interface
  */
 class Model {
   constructor(port, data) {

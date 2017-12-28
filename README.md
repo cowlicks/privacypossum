@@ -17,9 +17,15 @@
 * modify bootstrap code to take a path string.
 * add USER_BLOCK to reason and use it in tests
 * inject bad data into fingercounting
-* fix script locating issues. Throws error when accessed in terminal.
+* fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
 * fix issue inspecting popup throws an exception. Issue where reloading extension throws errors for missing tabs.
 * strip 1st party refer headers too?
+* add url deactivate to popup, add tests, make sure deactivated urls show up in popup, and can be toggled
+* add html tooling
+* replace popup logo with on/off button
+* show user-deactivated urls in popup
+* put message clearing for tests in root beforeEach
+* markresponse -> markAction, macke it take an action as an argument
 
 ## techniques
 
@@ -36,6 +42,10 @@ We detect fingerprinting and block it in a first, and third party context.
 
 for first parties, we don't outright block the request, because it is more
 likely bundled with code that is essential to functionality of the website.
+
+## data structures
+
+We store domain-name related data in a heirarchical tree data-structure, TLD's at the root, like the real DNS system. This lets us store aggregate data easily. So we can get all urls with a certain hostname which we store data for, or all subdomains of a given hostname, etc. The data structure has synchronouse gets, and asynchronous sets.
 
 ## goals
 
