@@ -58,5 +58,12 @@ describe('popup.js', function() {
       this.tab.markResponse(constants.CANCEL, url2);
       assert.isTrue(this.popup.blocked.has(url2), 'added url is blocked');
     });
+
+    it('active is sent', function() {
+      assert.isTrue(this.popup.active);
+
+      this.tab.toggleActiveState();
+      assert.isFalse(this.popup.active);
+    });
   });
 });
