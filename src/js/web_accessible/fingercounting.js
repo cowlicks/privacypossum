@@ -32,10 +32,14 @@ function getScriptLocation() {
   return getUrlFromStackLine(new Error().stack.split('\n')[3]);
 }
 
+const innerMostParens = /\(([^\(\)]+)\)/;
 const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
 function getUrlFromStackLine(line) {
-  return line.slice(line.indexOf('http')) // http://foo.bar/path?q=p#frag:somestuff
-    .match(urlEndRegex)[0];
+  if (line.endsWith(')')) { // there are parenthese
+    line = line.match(innerMostParens)[1]; // get innermost parens
+  }
+  line = line.split(' ').pop(); // remove stuff up to the url
+  return line.match(urlEndRegex)[0]; // strip stuff after the path of url (query, hash, and line numbers);
 }
 
 function randString() {
@@ -242,7 +246,7 @@ if (typeof exports === 'undefined') {
 
   const counter = new Counter(config); // eslint-disable-line
 } else {
-  Object.assign(exports, {Counter});
+  Object.assign(exports, {Counter, getUrlFromStackLine});
 }
 
 })(typeof exports == 'undefined' ? undefined : exports);
