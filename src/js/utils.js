@@ -5,16 +5,34 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon} = require('./shim');
 
-class FifoCache extends Map {
+class FifoMap extends Map {
   constructor(maxSize) {
     super();
     Object.assign(this, {maxSize});
   }
+
   set(key, val) {
     super.set(key, val);
     if (this.size > this.maxSize) {
       this.delete(this.keys().next().value);
     }
+  }
+}
+
+class LogBook extends FifoMap {
+  constructor() {
+    super(...arguments);
+    this.count = 0;
+  }
+
+  dump() {
+    return Array.from(this).reverse();
+  }
+
+  log(entry) {
+    this.set(this.count, entry);
+    this.count += 1;
+    return this;
   }
 }
 
@@ -24,7 +42,7 @@ class FifoCache extends Map {
  * cache.
  */
 function memoize(func, hash, size) {
-  let cache = new FifoCache(size);
+  let cache = new FifoMap(size);
   return function() {
     let key = hash(arguments);
     if (cache.has(key)) {
@@ -116,6 +134,7 @@ isBaseOfHostname = memoize(isBaseOfHostname, ([base, host]) => base + ' ' + host
 
 Object.assign(exports, {
   memoize,
+  LogBook,
   BrowserDisk,
   makeTrap,
   listenerMixin,
