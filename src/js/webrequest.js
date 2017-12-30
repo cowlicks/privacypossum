@@ -45,9 +45,9 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markResponse({response, url, tabId}) {
+  markAction({response, url, tabId}) {
     if (response !== constants.NO_ACTION) {
-      return this.tabs.markResponse(response, url, tabId);
+      return this.tabs.markAction(response, url, tabId);
     }
   }
 
@@ -70,7 +70,7 @@ class WebRequest {
   commitRequest(details) {
     details.response = constants.NO_ACTION;
     this.checkAllRequestActions(details);
-    this.markResponse(details);  // record new behavior
+    this.markAction(details);  // record new behavior
     return details.response;
   }
 
