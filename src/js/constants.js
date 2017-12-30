@@ -8,6 +8,7 @@ const DISK_NAME = 'p055um';
 // BlockingResponse types
 const NO_ACTION = {},
   CANCEL = {cancel: true};
+const responses = {CANCEL, NO_ACTION};
 
 // suffix of main_frame & sub_frame
 const TYPES = {
@@ -37,6 +38,8 @@ const FINGERPRINTING = 'fingerprinting',
   USER_URL_DEACTIVATE = 'user_url_deactivate';
 
 const TAB_DEACTIVATE = 'tab_deactivate';
+
+const reasons = {FINGERPRINTING, USER_HOST_DEACTIVATE, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE};
 
 // ports
 const POPUP = 'popup';
