@@ -2,8 +2,8 @@
 
 [(function(exports) {
 
-const {memoize} = require('./utils'),
-  {getBaseDomain} = require('./basedomain/basedomain'),
+const {memoize} = require('../utils'),
+  {getBaseDomain} = require('./basedomain'),
   {isMdfp} = require('./mdfp');
 
 function isThirdParty(d1, d2) {
@@ -19,4 +19,4 @@ isThirdParty = memoize(isThirdParty, ([a, b]) => a + ' ' + b, 1000);
 
 Object.assign(exports, {isThirdParty});
 
-})].map(func => typeof exports == 'undefined' ? define('/parties', func) : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/domains/parties', func) : func(exports));

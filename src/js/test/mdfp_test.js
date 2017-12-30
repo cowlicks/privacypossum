@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {isMdfp} = require('../mdfp');
+  {isMdfp} = require('../domains/mdfp');
 
 describe('mdfp.js', function() {
   it('true cases', function() {

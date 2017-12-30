@@ -6844,4 +6844,4 @@ const publicSuffixes = new Map(
 
 Object.assign(exports, {publicSuffixes});
 
-})].map(func => typeof exports == 'undefined' ? define('/basedomain/psl', func) : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/domains/psl', func) : func(exports));

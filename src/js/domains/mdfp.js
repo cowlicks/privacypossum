@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {memoize} = require('./utils');
+const {memoize} = require('../utils');
 
 let multiDomainFirstPartiesArray = [
   ["1800contacts.com", "800contacts.com"],

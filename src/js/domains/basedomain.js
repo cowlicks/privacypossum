@@ -72,4 +72,4 @@ getBaseDomain = memoize(getBaseDomain, (x) => x, 1000);
 
 Object.assign(exports, {getBaseDomain});
 
-})].map(func => typeof exports == 'undefined' ? define('/basedomain/basedomain', func) : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/domains/basedomain', func) : func(exports));

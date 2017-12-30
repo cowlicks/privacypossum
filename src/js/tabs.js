@@ -9,8 +9,7 @@
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
   {listenerMixin, setTabIconActive, isBaseOfHostname} = require('./utils'),
-  {isThirdParty} = require('./parties'),
-  {getBaseDomain} = require('./basedomain/basedomain');
+  {isThirdParty} = require('./domains/parties');
 
 class Resource {
   constructor({url, method, type}) {
