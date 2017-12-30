@@ -47,13 +47,13 @@
       "js/fakes.js",
       "js/suffixtree.js",
 
-      "js/basedomain/psl.js",
-      "js/basedomain/basedomain.js",
-
-      "js/mdfp.js",
-      "js/parties.js",
+      "js/domains/psl.js",
+      "js/domains/basedomain.js",
+      "js/domains/mdfp.js",
+      "js/domains/parties.js",
 
       "js/reasons/reasons.js",
+      "js/reasons/handlers.js",
       "js/tabs.js",
 
       "js/schemes.js",
