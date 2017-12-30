@@ -8,7 +8,7 @@
 
 const {URL, setBadgeText} = require('./shim'),
   constants = require('./constants'),
-  {listenerMixin, setTabIconActive, isBaseOfHostname} = require('./utils'),
+  {listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
 class Resource {
@@ -152,7 +152,12 @@ class Tabs {
   }
 
   isThirdParty(tabId, hostname) {
-    return isThirdParty(this.getFrame(tabId, 0).urlObj.hostname, hostname);
+    let tab = this.getFrame(tabId, 0);
+    if (tab && tab.urlObj) {
+      return isThirdParty(tab.urlObj.hostname, hostname);
+    }
+    log(`missing tab data for tabId ${tabId}`);
+    return false;
   }
 
   hasResource({tabId, frameId, url, type}) {
