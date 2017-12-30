@@ -53,7 +53,7 @@
       "js/mdfp.js",
       "js/parties.js",
 
-      "js/reasons.js",
+      "js/reasons/reasons.js",
       "js/tabs.js",
 
       "js/schemes.js",
