@@ -5,8 +5,21 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon} = require('./shim');
 
+class FifoCache extends Map {
+  constructor(maxSize) {
+    super();
+    Object.assign(this, {maxSize});
+  }
+  set(key, val) {
+    super.set(key, val);
+    if (this.size > this.maxSize) {
+      this.delete(this.keys().next().value);
+    }
+  }
+}
+
 function memoize(func, hash, size) {
-  let cache = new Map();
+  let cache = new FifoCache(size);
   return function() {
     let key = hash(arguments);
     if (cache.has(key)) {
@@ -14,9 +27,6 @@ function memoize(func, hash, size) {
     }
     let result = func.apply(undefined, arguments);
     cache.set(key, result);
-    if (cache.size > size) {
-      cache.delete(cache.keys().next().value);
-    }
     return result;
   }
 }
