@@ -4,11 +4,11 @@
 
 const {URL} = require('./shim'),
   constants = require('./constants'),
-  {Handler} = require('./reasons/reasons');
+  {Handler} = require('./reasons/handlers');
 
 class WebRequest {
   constructor(tabs, store) {
-    this.handler = new Handler(tabs);
+    this.handler = new Handler(tabs, store);
     this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
     this.tabs = tabs;
     this.store = store;
