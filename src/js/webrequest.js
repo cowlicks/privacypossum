@@ -121,4 +121,4 @@ function removeCookies(headers) {
 
 Object.assign(exports, {WebRequest, removeCookies});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.webrequest = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));

@@ -197,4 +197,4 @@ class Tabs {
 
 Object.assign(exports, {Frame, Tabs, Tab});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.tabs = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/tabs', func) : func(exports));

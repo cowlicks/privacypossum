@@ -1,6 +1,6 @@
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const {Listener} = require('./utils');
 
@@ -104,4 +104,4 @@ class Connects extends Function {
 
 Object.assign(exports, {FakeDisk, FakeMessages, fakePort, Connects});
 
-})(typeof exports == 'undefined' ? require.scopes.fakes = {} : exports);
+})].map(func => typeof exports == 'undefined' ? define('/fakes', func) : func(exports));

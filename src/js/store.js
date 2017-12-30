@@ -93,4 +93,4 @@ class DomainStore {
 
 Object.assign(exports, {DomainStore});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.store = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/store', func) : func(exports));

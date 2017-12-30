@@ -322,4 +322,4 @@ Object.assign(exports, {
 
 Object.assign(exports, {MultiDomainFirstParties});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.mdfp = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/mdfp', func) : func(exports));

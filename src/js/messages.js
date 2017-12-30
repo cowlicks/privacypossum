@@ -37,4 +37,4 @@ class MessageDispatcher {
 
 Object.assign(exports, {MessageDispatcher});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.messages = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/messages', func) : func(exports));

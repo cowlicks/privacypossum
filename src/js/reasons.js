@@ -212,4 +212,4 @@ class Handler {
 
 Object.assign(exports, {TabHandler, Handler, tabDeactivate, Reason, reasons});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.reasons = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/reasons', func) : func(exports));

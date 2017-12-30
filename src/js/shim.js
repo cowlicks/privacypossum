@@ -137,4 +137,4 @@ let shims = [
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.shim = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/shim', func) : func(exports));

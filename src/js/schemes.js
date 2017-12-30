@@ -57,4 +57,4 @@ class Domain {
 
 Object.assign(exports, {Action, Domain, Path});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.schemes = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/schemes', func) : func(exports));

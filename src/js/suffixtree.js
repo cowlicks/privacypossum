@@ -88,4 +88,4 @@ function splitter(splitme) {
 
 Object.assign(exports, {Tree, splitter});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.suffixtree = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/suffixtree', func) : func(exports));
