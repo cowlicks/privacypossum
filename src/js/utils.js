@@ -30,6 +30,7 @@ class LogBook extends FifoMap {
   }
 
   log(entry) {
+    // todo check entry is always a string
     this.set(this.count, entry);
     this.count += 1;
     return this;
