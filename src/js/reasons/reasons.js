@@ -188,14 +188,14 @@ class TabHandler {
 
 
 class Handler {
-  constructor(tabs, store) {
+  constructor(tabs, store, reasons_ = reasons) {
     this.requestHandler = new RequestHandler(tabs, store);
     this.handleRequest = this.requestHandler.handleRequest.bind(this.requestHandler);
 
     this.tabHandler = new TabHandler(tabs, store);
     this.tabHandler.startListeners();
 
-    reasons.forEach(reason => {
+    reasons_.forEach(reason => {
       this.addReason(reason);
     });
   }
