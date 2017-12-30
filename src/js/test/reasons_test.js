@@ -6,7 +6,7 @@ const {assert} = require('chai'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
   {main_frame, third_party} = require('./testing_utils').details,
-  {Reason, Handler, TabHandler, tabDeactivate} = require('../reasons');
+  {Reason, Handler, TabHandler, tabDeactivate} = require('../reasons/reasons');
 
 describe('reasons.js', function() {
   beforeEach(function() {

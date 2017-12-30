@@ -2,7 +2,7 @@
 
 const assert = require('chai').assert,
   constants = require('../constants'),
-  {Reason} = require('../reasons'),
+  {Reason} = require('../reasons/reasons'),
   {Action} = require('../schemes'),
   {onConnect, tabsOnMessage, onMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
   {cookie, notCookie, details, Details, toSender} = require('./testing_utils'),

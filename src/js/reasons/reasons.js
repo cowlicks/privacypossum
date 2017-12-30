@@ -2,10 +2,10 @@
 
 [(function(exports) {
 
-const {Action} = require('./schemes'),
-  {URL, tabsSendMessage, onUpdated} = require('./shim'),
-  {setTabIconActive, hasAction} = require('./utils'),
-  constants = require('./constants');
+const {Action} = require('../schemes'),
+  {URL, tabsSendMessage, onUpdated} = require('../shim'),
+  {setTabIconActive, hasAction} = require('../utils'),
+  constants = require('../constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = constants;
@@ -212,4 +212,4 @@ class Handler {
 
 Object.assign(exports, {TabHandler, Handler, tabDeactivate, Reason, reasons});
 
-})].map(func => typeof exports == 'undefined' ? define('/reasons', func) : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/reasons/reasons', func) : func(exports));

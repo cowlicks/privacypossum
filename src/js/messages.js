@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {reasons} = require('./reasons');
+const {reasons} = require('./reasons/reasons');
 
 // todo move this to reasons.js
 class MessageDispatcher {

@@ -4,7 +4,7 @@
 
 const {URL} = require('./shim'),
   constants = require('./constants'),
-  {Handler} = require('./reasons');
+  {Handler} = require('./reasons/reasons');
 
 class WebRequest {
   constructor(tabs, store) {
