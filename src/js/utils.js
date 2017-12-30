@@ -18,6 +18,11 @@ class FifoCache extends Map {
   }
 }
 
+/*
+ * Memoize the function `func`. `hash` coneverts the functions arguments into a
+ * key to reference the result in the cache. `size` is the max size of the
+ * cache.
+ */
 function memoize(func, hash, size) {
   let cache = new FifoCache(size);
   return function() {
