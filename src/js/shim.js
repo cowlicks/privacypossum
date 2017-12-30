@@ -126,6 +126,7 @@ let shims = [
     () => {
       let out = (obj, callback) => callback(out.tabs);
       out.tabs = [];
+      out.clear = () => out.tabs = [];
       return out;
     },
   ],

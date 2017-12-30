@@ -4,5 +4,5 @@ beforeEach(function() {
   tabsOnMessage.clear();
   onMessage.clear();
   onConnect.clear();
-  tabsQuery.tabs = [];
+  tabsQuery.clear();
 });
