@@ -78,4 +78,4 @@ class DiskMap {
 
 Object.assign(exports, {DiskMap});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.disk_map = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/disk_map', func) : func(exports));

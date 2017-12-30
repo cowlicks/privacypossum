@@ -34,4 +34,4 @@ class Possum {
 
 Object.assign(exports, {Possum});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.possum = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/possum', func) : func(exports));

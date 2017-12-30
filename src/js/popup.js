@@ -153,4 +153,4 @@ function $(id) {
 
 Object.assign(exports, {Model, View, Popup, Server, currentTab});
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.popup = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));

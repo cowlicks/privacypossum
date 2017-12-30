@@ -110,4 +110,4 @@ Object.assign(exports, {
   isBaseOfHostname,
 });
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.utils = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));

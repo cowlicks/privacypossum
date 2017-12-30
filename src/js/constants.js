@@ -56,4 +56,4 @@ Object.assign(exports, {
   POPUP,
 });
 
-})].map(func => typeof exports == 'undefined' ? require.scopes.constants = func : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/constants', func) : func(exports));
