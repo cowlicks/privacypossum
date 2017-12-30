@@ -8,11 +8,11 @@
  * [(function(exports) {
  * ...
  *
- * })].map(func => typeof exports == 'undefined' ? require.scopes.name = func : func(exports));
+ * })].map(func => typeof exports == 'undefined' ? define('/path/to/module', func) : func(exports));
  *
  * Then in the module, exported objects are assigned to properties on `exports`.
  *
- * We user `require` to import modules like so:
+ * We use `require` to import modules relative to the current location, like so:
  *
  * const {someFunc} = require('./name');
  *
@@ -21,7 +21,7 @@
  * Just like you would in node.
  *
  * We use this wrapping (instead of a IIAFE) because it lets us load the module lazily, or
- * immediately, based on the environment. It seemed to me the most concise
+ * immediately, based on the environment. It seemed to be the most concise
  * anonymous expression.
  */
 
