@@ -37,6 +37,15 @@ class LogBook extends FifoMap {
   }
 }
 
+function lazyDef(exports_, name, definerFunc) {
+  Object.assign(exports_, {
+    get [name]() {
+      delete this[name];
+      return this[name] = definerFunc(exports_);
+    }
+  });
+}
+
 /*
  * Memoize the function `func`. `hash` coneverts the functions arguments into a
  * key to reference the result in the cache. `size` is the max size of the
@@ -132,6 +141,11 @@ function isBaseOfHostname(base, host) {
 }
 isBaseOfHostname = memoize(isBaseOfHostname, ([base, host]) => base + ' ' + host, 1000);
 
+lazyDef(exports, 'log', (exports_) => {
+  let logger = new LogBook(100);
+  Object.assign(exports_, {logger});
+  return logger.log.bind(logger);
+});
 
 Object.assign(exports, {
   memoize,
@@ -143,6 +157,7 @@ Object.assign(exports, {
   setTabIconActive,
   hasAction,
   isBaseOfHostname,
+  lazyDef,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));

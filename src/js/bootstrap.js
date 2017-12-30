@@ -50,7 +50,6 @@ function require(module) {
 
 // ('/path/to/module', func)
 function define(name, moduleFunc) {
-  // todo log here
   let arr = name.substr(1).split('/'),
     lastName = arr.pop();
 

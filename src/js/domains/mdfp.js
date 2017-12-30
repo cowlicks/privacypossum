@@ -2,7 +2,8 @@
 
 [(function(exports) {
 
-const {memoize} = require('../utils');
+const {memoize, lazyDef} = require('../utils');
+
 
 let multiDomainFirstPartiesArray = [
   ["1800contacts.com", "800contacts.com"],
@@ -311,13 +312,9 @@ class MultiDomainFirstParties {
   }
 }
 
-Object.assign(exports, {
-  get isMdfp() {
-    delete this.isMdfp;
-    let mdfp = new MultiDomainFirstParties();
-    this.isMdfp = mdfp.isMdfp.bind(mdfp);
-    return this.isMdfp;
-  }
+lazyDef(exports, 'isMdfp', () => {
+  let mdfp = new MultiDomainFirstParties();
+  return mdfp.isMdfp.bind(mdfp);
 });
 
 Object.assign(exports, {MultiDomainFirstParties});
