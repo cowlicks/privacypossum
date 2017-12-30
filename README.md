@@ -47,9 +47,6 @@ We detect fingerprinting and block it in a first, and third party context.
 for first parties, we don't outright block the request, because it is more
 likely bundled with code that is essential to functionality of the website.
 
-## data structures
-
-We store domain-name related data in a heirarchical tree data-structure, TLD's at the root, like the real DNS system. This lets us store aggregate data easily. So we can get all urls with a certain hostname which we store data for, or all subdomains of a given hostname, etc. The data structure has synchronouse gets, and asynchronous sets.
 
 ## goals
 
@@ -68,3 +65,24 @@ from common commercial tracking.
 
 We want to threaten trarcking on a large scale, we want to be the threat model
 of the tracking industry.
+
+## architecture
+
+### reasons
+The ways we change normal browser behavior are defined by "reasons.js". Each way we change behavior has its own "reason".
+reasons are loaded into various "handlers". Handlers intercept browser behaviour and modify them based on whatever reasons they have loaded.
+
+### data structures
+
+We store domain-name related data in a heirarchical tree data-structure, TLD's
+at the root, like the real DNS system. This lets us store aggregate data
+easily. So we can get all urls with a certain hostname which we store data for,
+or all subdomains of a given hostname, etc. The data structure has synchronouse
+gets, and asynchronous sets.
+
+We also have a datastructure for monitoring tabs, and getting informationg
+about them in a synchronous way. This is defined in tabs.js.
+
+### shims
+
+We extensively test the project headlessly. To do this, we shim all the browser extension interfaces in shim.js. We define the fake interfaces in fakes.js.
