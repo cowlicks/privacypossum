@@ -26,17 +26,26 @@
  */
 
 function require(module) {
-  if (module.startsWith('.')) {
-    module = module.split('.').slice(-1)[0].split('/').slice(-1)[0];
+  let before = require.loc;
+  while (!module.startsWith('./')) {
+    module = module.substr(1);
+    require.loc = require.loc['..'];
   }
 
-  if (require.scopes.hasOwnProperty(module)) {
-    if (typeof require.scopes[module] === 'function') {
-      require.scopes[module](require.scopes[module] = {});
-    }
-    return require.scopes[module];
-  }
-  throw new Error('module: ' + module + ' not found.');
+  let arr = module.substr(2).split('/');
+
+  let part = arr.reduce(
+    (obj, part) => {
+      if (typeof obj[part] === 'function') {
+        obj[part](obj[part] = {'..': obj});
+      }
+      require.loc = obj[part];
+      return obj[part];
+    },
+    require.loc
+  );
+  require.loc = before;
+  return part;
 }
 
 // ('/path/to/module', func)
@@ -53,3 +62,4 @@ function define(name, moduleFunc) {
   baseObj[lastName] = moduleFunc;
 }
 require.scopes = {};
+require.loc = require.scopes;
