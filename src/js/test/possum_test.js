@@ -15,9 +15,6 @@ let {script, main_frame, first_party_script} = details,
 
 describe('possum.js', function() {
   beforeEach(function() {
-    tabsOnMessage.clear();
-    onMessage.clear();
-    onConnect.clear();
     this.possum = new Possum();
     this.onBeforeRequest = this.possum.webRequest.onBeforeRequest.bind(this.possum.webRequest);
     this.onBeforeSendHeaders = this.possum.webRequest.onBeforeSendHeaders.bind(this.possum.webRequest);
