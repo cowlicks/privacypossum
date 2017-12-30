@@ -37,7 +37,7 @@ function require(module) {
   let part = arr.reduce(
     (obj, part) => {
       if (typeof obj[part] === 'function') {
-        obj[part](obj[part] = {'..': obj});
+        obj[part](obj[part] = {});
       }
       require.loc = obj[part];
       return obj[part];
