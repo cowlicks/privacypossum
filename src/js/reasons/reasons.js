@@ -111,7 +111,7 @@ async function onUserHostDeactivate({tabs, store}, {tabId}) {
 const reasons = [
   {
     name: FINGERPRINTING,
-    funcs: {
+    props: {
       in_popup: true,
       requestHandler: fingerPrintingRequestHandler,
       messageHandler: onFingerPrinting,
@@ -119,7 +119,7 @@ const reasons = [
   },
   {
     name: USER_URL_DEACTIVATE,
-    funcs: {
+    props: {
       in_popup: true,
       requestHandler: setResponse(NO_ACTION, true),
       messageHandler: onUserUrlDeactivate,
@@ -127,7 +127,7 @@ const reasons = [
   },
   {
     name: TAB_DEACTIVATE,
-    funcs: {
+    props: {
       requestHandler: setResponse(NO_ACTION, true),
       tabHandler: ({}, {tab}) => {
         setTabIconActive(tab.id, !!tab.active);
@@ -136,12 +136,12 @@ const reasons = [
   },
   {
     name: USER_HOST_DEACTIVATE,
-    funcs: {
+    props: {
       requestHandler: userHostDeactivateRequestHandler,
       messageHandler: onUserHostDeactivate,
     },
   },
-].map(({name, funcs}) => new Reason(name, funcs));
+].map(({name, props}) => new Reason(name, props));
 
 Object.assign(exports, {tabDeactivate, Reason, reasons});
 
