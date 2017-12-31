@@ -42,9 +42,9 @@ class WebRequest {
     this.tabs.addResource(details);
   }
 
-  markAction({response, url, tabId}) {
-    if (response !== constants.NO_ACTION) {
-      return this.tabs.markAction(response, url, tabId);
+  markAction({action, url, tabId}) {
+    if (action && this.handler.isInPopup(action.reason)) {
+      return this.tabs.markAction(action, url, tabId);
     }
   }
 

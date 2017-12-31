@@ -33,7 +33,7 @@ function fingerPrintingRequestHandler({tabs}, details) {
   } else {
     // send set fp signal
     let {tabId, frameId} = details;
-    tabs.markAction(CANCEL, details.url, details.tabId);
+    tabs.markAction({reason: constants.FINGERPRINTING}, details.url, details.tabId);
     tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
   }
 }
@@ -52,7 +52,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
       {href} = new URL(url);
 
     let action = new Action({reason, href, frameUrl, tabUrl});
-    tabs.markAction(CANCEL, href, sender.tab.id);
+    tabs.markAction({reason: constants.FINGERPRINTING}, href, sender.tab.id);
     await store.setDomainPath(href, action);
   }
 }

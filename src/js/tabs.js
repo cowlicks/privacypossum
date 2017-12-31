@@ -90,8 +90,8 @@ class Tab extends listenerMixin(Map) {
     this.onChange();
   }
 
-  markAction(response, url) {
-    if (response === constants.NO_ACTION || !this.active) {
+  markAction(action, url) {
+    if (!this.active) {
       return;
     }
 
@@ -194,8 +194,8 @@ class Tabs {
     tab.get(details.parentFrameId).children.set(frame.id, frame);
   }
 
-  markAction(response, url, tabId) {
-    this.getTab(tabId).markAction(response, url);
+  markAction(action, url, tabId) {
+    this.getTab(tabId).markAction(action, url);
   }
 };
 
