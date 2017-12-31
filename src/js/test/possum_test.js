@@ -55,6 +55,17 @@ describe('possum.js', function() {
         assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
         assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
       });
+
+      it('shown in the popup', async function() {
+        this.onBeforeRequest(script.copy());
+
+        let tabId = details.script.tabId;
+        tabsQuery.tabs = [{id: tabId}];
+
+        let popup = new Popup(tabId);
+        await popup.connect();
+        assert.isTrue(popup.blocked.has(details.script.url), 'popup has the blocked url');
+      });
     });
 
     describe('deactivated hosts', async function() {
