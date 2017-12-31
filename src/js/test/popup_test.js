@@ -1,7 +1,6 @@
 "use strict";
 
 const assert = require('chai').assert,
-  constants = require('../constants'),
   {fakePort} = require('../fakes'),
   {Tab, Tabs} = require('../tabs'),
   {Listener} = require('../utils'),

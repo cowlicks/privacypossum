@@ -7,7 +7,6 @@
 [(function(exports) {
 
 const {URL, setBadgeText} = require('./shim'),
-  constants = require('./constants'),
   {listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 

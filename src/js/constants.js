@@ -47,12 +47,14 @@ const POPUP = 'popup';
 
 Object.assign(exports, {
   DISK_NAME,
+  responses,
   NO_ACTION,
   CANCEL,
   TYPES,
   FRAME_END,
   inactiveIcons,
   activeIcons,
+  reasons,
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,

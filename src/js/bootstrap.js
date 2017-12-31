@@ -49,7 +49,7 @@ function require(module) {
 }
 
 // ('/path/to/module', func)
-function define(name, moduleFunc) {
+function define(name, moduleFunc) {  // eslint-disable-line
   let arr = name.substr(1).split('/'),
     lastName = arr.pop();
 

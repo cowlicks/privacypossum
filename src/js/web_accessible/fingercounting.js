@@ -75,7 +75,7 @@ let randoThing = {
 
 function trap() {
   let target = () => {},
-    lol = (target, property, receiver) => {
+    lol = (target, property) => {
       if (typeof property === 'symbol' && property === Symbol.toPrimitive) {
         return randoThing[property];
       }
