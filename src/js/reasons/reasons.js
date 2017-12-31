@@ -7,7 +7,7 @@ const {Action} = require('../schemes'),
   {setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
-const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE,
+const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE, BLOCK,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = constants;
 
 function setResponse(response, shortCircuit) {
@@ -25,7 +25,8 @@ class Reason {
   }
 }
 
-const tabDeactivate = new Action({reason: TAB_DEACTIVATE});
+const tabDeactivate = new Action({reason: TAB_DEACTIVATE}),
+  blockAction = new Action({reason: BLOCK});
 
 function fingerPrintingRequestHandler({tabs}, details) {
   if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
@@ -141,8 +142,15 @@ const reasons = [
       messageHandler: onUserHostDeactivate,
     },
   },
+  {
+    name: BLOCK,
+    props: {
+      in_popup: true,
+      requestHandler: setResponse(CANCEL, true),
+    },
+  },
 ].map(({name, props}) => new Reason(name, props));
 
-Object.assign(exports, {tabDeactivate, Reason, reasons});
+Object.assign(exports, {tabDeactivate, blockAction, Reason, reasons});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/reasons', func) : func(exports));

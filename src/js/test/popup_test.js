@@ -6,6 +6,7 @@ const assert = require('chai').assert,
   {Tab, Tabs} = require('../tabs'),
   {Listener} = require('../utils'),
   {tabsQuery} = require('../shim'),
+  {blockAction} = require('../reasons/reasons'),
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
@@ -39,7 +40,7 @@ describe('popup.js', function() {
       this.tabs = new Tabs();
 
       tabsQuery.tabs = [{id: tabId}]; // mock current tab
-      this.tab.markAction({reason: constants.FINGERPRINTING}, url1);
+      this.tab.markAction(blockAction, url1);
       this.tabs.setTab(this.tab.id, this.tab);
 
       this.server = new Server(this.tabs);
@@ -52,7 +53,7 @@ describe('popup.js', function() {
     it('blocked is sent', function() {
       assert.isTrue(this.popup.blocked.has(url1), 'initial url is blocked');
 
-      this.tab.markAction({reason: constants.FINGERPRINTING}, url2);
+      this.tab.markAction(blockAction, url2);
       assert.isTrue(this.popup.blocked.has(url2), 'added url is blocked');
     });
 

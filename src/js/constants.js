@@ -35,7 +35,8 @@ const activeIcons = {
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
   USER_HOST_DEACTIVATE = 'user_host_deactivate',
-  USER_URL_DEACTIVATE = 'user_url_deactivate';
+  USER_URL_DEACTIVATE = 'user_url_deactivate',
+  BLOCK = 'block';
 
 const TAB_DEACTIVATE = 'tab_deactivate';
 
@@ -55,6 +56,7 @@ Object.assign(exports, {
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
+  BLOCK,
   TAB_DEACTIVATE,
   POPUP,
 });
