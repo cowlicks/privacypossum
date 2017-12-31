@@ -20,8 +20,8 @@ function setResponse(response, shortCircuit) {
  * `requestHandler` function with signature ({store, tabs}, details)
  */
 class Reason {
-  constructor(name, {messageHandler, requestHandler, tabHandler, count_on_badge}) {
-    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, count_on_badge});
+  constructor(name, {messageHandler, requestHandler, tabHandler, in_popup}) {
+    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, in_popup});
   }
 }
 
@@ -112,6 +112,7 @@ const reasons = [
   {
     name: FINGERPRINTING,
     funcs: {
+      in_popup: true,
       requestHandler: fingerPrintingRequestHandler,
       messageHandler: onFingerPrinting,
     },
@@ -119,6 +120,7 @@ const reasons = [
   {
     name: USER_URL_DEACTIVATE,
     funcs: {
+      in_popup: true,
       requestHandler: setResponse(NO_ACTION, true),
       messageHandler: onUserUrlDeactivate,
     },

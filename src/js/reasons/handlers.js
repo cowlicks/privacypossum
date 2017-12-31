@@ -59,10 +59,15 @@ class Handler {
 
     this.tabHandler = new TabHandler(tabs, store);
     this.tabHandler.startListeners();
+    this.inPopupSet = new Set();
 
     reasons_.forEach(reason => {
       this.addReason(reason);
     });
+  }
+
+  isInPopup(reasonName) {
+    return this.inPopupSet.has(reasonName);
   }
 
   addReason(reason) {
@@ -71,6 +76,9 @@ class Handler {
     }
     if (reason.tabHandler) {
       this.tabHandler.addReason(reason);
+    }
+    if (reason.in_popup) {
+      this.inPopupSet.add(reason.name);
     }
   }
 }

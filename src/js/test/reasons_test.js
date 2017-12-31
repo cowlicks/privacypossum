@@ -54,6 +54,15 @@ describe('reasons.js', function() {
       });
     });
 
+    it('#isInPopup', function() {
+      [constants.FINGERPRINTING, constants.USER_URL_DEACTIVATE].forEach(name => {
+        assert.isTrue(this.handler.isInPopup(name), `${name} should be in popup`);
+      });
+      [constants.TAB_DEACTIVATE, constants.USER_HOST_DEACTIVATE].forEach(name => {
+        assert.isFalse(this.handler.isInPopup(name), `${name} should be in popup`);
+      });
+    });
+
     describe('#handleRequest', function() {
       it('fingerprinting', function() {
         let obj = {action: new Action({reason: constants.FINGERPRINTING})},
