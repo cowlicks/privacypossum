@@ -9,9 +9,6 @@
  *
  * In the accounting code we track the usage *per script*. We determine which
  * script is accessing the method by checking the stack, see `getScriptLocation`.
- *
- * todo: add a way for methods to lie.
- * todo: better name than "method"?
  */
 
 // stuff for default config in browser
@@ -27,8 +24,8 @@ function listen(func) {
   document.addEventListener(event_id, func);
 }
 
-// get the location of arguments.callee.caller
-function getScriptLocation() {
+// gets the location of arguments.callee.caller
+function getScriptLocation() {  // todo: to do split('\n') we do a O(n) read of the stack, this could be reduced by a constant factor by only reading to the third '\n'. but this is micro optimisation
   return getUrlFromStackLine(new Error().stack.split('\n')[3]);
 }
 

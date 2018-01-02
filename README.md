@@ -3,7 +3,6 @@
 * add blocker blocking
 * surrogates
 * widgets
-* spoil fingerprints done
 * rules like:
     - youtube -> youtube-nocookie
     - inject header for twitter
@@ -11,7 +10,11 @@
 * t.co unwrapping
 
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
+
 * multiple Reasons on a single thing
+
+* consider injecting contentscripts programatically
+* spoil fingerprints done
 * test 1st party fingerprinting behavior !!!!!
 * add firstparty-fingerprinting to constants
 * modify bootstrap code to take a path string.
@@ -25,11 +28,15 @@
 * replace popup logo with on/off button
 * show user-deactivated urls in popup
 * put message clearing for tests in root beforeEach
-* markresponse -> markAction, macke it take an action as an argument
-* today -> rename markResponse, refactor so popup items are done as part of reasons, add.in_popup property, add popup messages to reasons
+* make it take an action as an argument
+* refactor so popup items are done as part of reasons, add.in_popup property, add popup messages to reasons
 * adding all this stuff to reasons, it'd be nice for them to be more flexible, in their own directory, should refactor bootstrap stuff to make this easier
 * test bootstrap.js, add logging
 * add logging in bootstrap
+* add popup messaging into reasons
+* update psl script to reflect new location
+* add MessageDispatcher to Handler
+
 
 ## techniques
 

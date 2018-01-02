@@ -1,4 +1,5 @@
 "use strict";
+// todo messages.js was added reasons/handlers.js, so rename this file, or add it to handlers.js
 
 const assert = require('chai').assert,
   constants = require('../constants'),
