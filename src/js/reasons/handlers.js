@@ -2,8 +2,38 @@
 
 [(function(exports) {
 
-const {onUpdated} = require('../shim'),
+const shim = require('../shim'),
     {reasons} = require('./reasons');
+
+class MessageDispatcher {
+  constructor(tabs, store, reasons_ = reasons) {
+    this.tabs = tabs;
+    this.store = store;
+    this.dispatchMap = new Map();
+    reasons_.map(this.addReason.bind(this));
+  }
+
+  async dispatcher(message, sender) {
+    if (this.dispatchMap.has(message.type)) {
+        return await (this.dispatchMap.get(message.type))(message, sender);
+    }
+  }
+
+  addReason(reason) {
+    if (reason.messageHandler) {
+      return this.addListener(reason.name, reason.messageHandler.bind(undefined, {store: this.store, tabs: this.tabs}));
+    }
+  }
+
+  addListener(type, callback) {
+    this.dispatchMap.set(type, callback);
+  }
+
+  start(onMessage = shim.onMessage) {
+    Object.assign(this, {onMessage});
+    this.onMessage.addListener(this.dispatcher.bind(this));
+  }
+}
 
 // todo wrap handler requests to assure main_frame's are not blocked.
 // todo make a handler mixin
