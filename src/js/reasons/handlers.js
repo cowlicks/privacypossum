@@ -5,7 +5,7 @@
 const shim = require('../shim'),
     {reasons} = require('./reasons');
 
-class MessageDispatcher {
+class MessageHandler {
   constructor(tabs, store, reasons_ = reasons) {
     this.tabs = tabs;
     this.store = store;
@@ -62,7 +62,7 @@ class TabHandler {
     this.funcs = new Map();
   }
 
-  startListeners() {
+  startListeners(onUpdated = shim.onUpdated) {
     onUpdated.addListener(this.handleUpdated.bind(this));
   }
 
@@ -89,6 +89,7 @@ class Handler {
 
     this.tabHandler = new TabHandler(tabs, store);
     this.tabHandler.startListeners();
+
     this.inPopupSet = new Set();
 
     reasons_.forEach(reason => {
@@ -113,6 +114,6 @@ class Handler {
   }
 }
 
-Object.assign(exports, {RequestHandler, TabHandler, Handler});
+Object.assign(exports, {MessageHandler, RequestHandler, TabHandler, Handler});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/handlers', func) : func(exports));

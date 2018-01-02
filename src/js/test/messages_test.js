@@ -6,15 +6,15 @@ const assert = require('chai').assert,
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {Action} = require('../schemes'),
-  {MessageDispatcher} = require('../messages'),
+  {MessageHandler} = require('../reasons/handlers'),
   {Mock, Details, details} = require('./testing_utils');
 
 describe('messages.js', function() {
-  describe('MessageDispatcher', function() {
+  describe('MessageHandler', function() {
     beforeEach(function() {
       this.tabs = new Tabs();
       this.store = new DomainStore('name');
-      this.ml = new MessageDispatcher(
+      this.ml = new MessageHandler(
         this.tabs,
         this.store,
       );
