@@ -23,6 +23,14 @@ class Node extends Map {
   hasLabelData() {
     return this.hasOwnProperty(SENTINEL);
   }
+
+  deleteLableData() {
+    return delete this[SENTINEL];
+  }
+
+  dangling() { // no data and no children
+    return this.size == 0 && !this.hasLabelData();
+  }
 }
 
 function setAgg(node, part) {
@@ -34,6 +42,12 @@ function setAgg(node, part) {
 
 function getAgg(node, part) {
   return node.get(part);
+}
+
+function deleteAgg(node, part, aggregator) {
+  let next = node.get(part);
+  aggregator.push(next);
+  return next;
 }
 
 function branchAgg(node, part, agg) {
@@ -73,6 +87,22 @@ class Tree {
   get(key) {
     let node = this.aggregate(key, getAgg);
     return (typeof node === 'undefined') ? undefined : node.getLabelData();
+  }
+
+  delete(key) {
+    let branch = [], deleted = false;
+    this.aggregate(key, deleteAgg, branch);
+    let cur = branch.pop();
+    if (typeof cur !== 'undefined' && cur.hasLabelData()) {
+      cur.deleteLableData();
+      deleted = true;
+      while (branch.length > 0 && cur.dangling()) {
+        let parent_ = branch.pop();
+        parent_.delete(cur[LABEL]);
+        cur = parent_;
+      }
+    }
+    return deleted;
   }
 
   getBranchData(key) {
