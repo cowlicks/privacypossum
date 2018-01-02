@@ -25,7 +25,7 @@ class Reason {
   }
 }
 
-const tabDeactivate = new Action({reason: TAB_DEACTIVATE}),
+const tabDeactivate = new Action({reason: TAB_DEACTIVATE}), // should these go elsewhere?
   blockAction = new Action({reason: BLOCK});
 
 function fingerPrintingRequestHandler({tabs}, details) {

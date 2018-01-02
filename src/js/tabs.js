@@ -59,7 +59,7 @@ class Tab extends listenerMixin(Map) {
     super();
     this.active = true;
     this.id = id;
-    this.actions = new Set();
+    this.actions = new Map();
 
     this.onChange = this.onEvent;
     this.setBadgeText(''); // clear badge
@@ -95,7 +95,7 @@ class Tab extends listenerMixin(Map) {
     }
 
     if (!this.actions.has(url)) {
-      this.actions.add(url);
+      this.actions.set(url, action);
       this.onChange();
     }
 

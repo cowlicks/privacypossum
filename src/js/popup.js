@@ -60,7 +60,7 @@ class Popup {
     this.port = connect({name: POPUP});
     this.view = new View(this.port, ({active, actions}) => {
       this.active = active;
-      this.actions = new Set(actions);
+      this.actions = new Map(actions);
       this.show();
     });
     return this.view.ready;
@@ -76,7 +76,7 @@ class Popup {
 
   show() {
     this.showActive(this.active);
-    this.showBlocked(this.actions);
+    this.showActions(this.actions);
   }
 
   showActive(active) {
@@ -98,13 +98,13 @@ class Popup {
     $('onOff').innerHTML = img.outerHTML;
   }
 
-  showBlocked(actions) {
+  showActions(actions) {
     let doc = getDocument(),
       ul = doc.createElement('ul');
 
-    actions.forEach(b => {
+    actions.forEach((value, key) => {
       let li = doc.createElement('li');
-      li.innerHTML = b;
+      li.innerHTML = `url: ${key} with action: ${value.reason}`;
       ul.appendChild(li);
     });
 
