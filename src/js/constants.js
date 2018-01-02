@@ -45,6 +45,8 @@ const reasons = {FINGERPRINTING, USER_HOST_DEACTIVATE, USER_URL_DEACTIVATE, USER
 // ports
 const POPUP = 'popup';
 
+const REMOVE_ACTION = 'remove_action';
+
 Object.assign(exports, {
   DISK_NAME,
   responses,
@@ -61,6 +63,7 @@ Object.assign(exports, {
   BLOCK,
   TAB_DEACTIVATE,
   POPUP,
+  REMOVE_ACTION,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/constants', func) : func(exports));
