@@ -49,11 +49,11 @@ describe('popup.js', function() {
       await this.popup.connect();
     })
 
-    it('blocked is sent', function() {
-      assert.isTrue(this.popup.blocked.has(url1), 'initial url is blocked');
+    it('actions are sent', function() {
+      assert.isTrue(this.popup.actions.has(url1), 'initial url is blocked');
 
       this.tab.markAction(blockAction, url2);
-      assert.isTrue(this.popup.blocked.has(url2), 'added url is blocked');
+      assert.isTrue(this.popup.actions.has(url2), 'added url is blocked');
     });
 
     it('active is sent', function() {

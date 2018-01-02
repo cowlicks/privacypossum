@@ -59,14 +59,14 @@ class Tab extends listenerMixin(Map) {
     super();
     this.active = true;
     this.id = id;
-    this.blocked = new Set();
+    this.actions = new Set();
 
     this.onChange = this.onEvent;
     this.setBadgeText(''); // clear badge
   }
 
   getData() {
-    return {active: this.active, blocked: Array.from(this.blocked)};
+    return {active: this.active, actions: Array.from(this.actions)};
   }
 
   setBadgeText(text) {
@@ -94,13 +94,13 @@ class Tab extends listenerMixin(Map) {
       return;
     }
 
-    if (!this.blocked.has(url)) {
-      this.blocked.add(url);
+    if (!this.actions.has(url)) {
+      this.actions.add(url);
       this.onChange();
     }
 
-    if (this.blocked.size > 0) {
-      this.setBadgeText('' + this.blocked.size);
+    if (this.actions.size > 0) {
+      this.setBadgeText('' + this.actions.size);
     }
   }
 }
