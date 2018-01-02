@@ -15,6 +15,9 @@ class WebRequest {
   }
 
   isThirdParty(details) {
+    if (details.tabId < -1) {
+      return false; // no associated tab, so 3rd party isn't applicable
+    }
     return this.tabs.isThirdParty(details.tabId, details.urlObj.hostname);
   }
 

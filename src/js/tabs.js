@@ -151,12 +151,13 @@ class Tabs {
   }
 
   isThirdParty(tabId, hostname) {
-    let tab = this.getFrame(tabId, 0);
-    if (tab && tab.urlObj) {
-      return isThirdParty(tab.urlObj.hostname, hostname);
+    try {
+      let tabhost = this.getFrame(tabId, 0).urlObj.hostname
+      return isThirdParty(tabhost, hostname);
+    } catch (e) {
+      log(`error getting tab data for tabId ${tabId} with error ${e.stack}`);
+      return false;
     }
-    log(`missing tab data for tabId ${tabId}`);
-    return false;
   }
 
   hasResource({tabId, frameId, url, type}) {

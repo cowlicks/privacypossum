@@ -58,7 +58,6 @@
 
       "js/schemes.js",
 
-      "js/messages.js",
       "js/webrequest.js",
       "js/store.js",
       "js/popup.js",
