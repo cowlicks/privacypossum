@@ -20,6 +20,15 @@ describe('disk_map.js', function() {
       }
     });
 
+    it('deletes', async function() {
+      let key = 'key', val = 'val';
+      await this.dmap.set(key, val);
+      assert.equal(await this.dmap.get(key), val);
+
+      assert.isTrue(await this.dmap.delete(key));
+      assert.isFalse(this.dmap.has(key));
+    });
+
     it('loads from disk', async function() {
       let keys = 'abcdefg'.split('');
 

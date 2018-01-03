@@ -74,6 +74,17 @@ class DiskMap {
   has(key) {
     return this.keys.has(key);
   }
+
+  async delete(key) {
+    if (this.keys.has(key)) {
+      this.keys.delete(key);
+      await new Promise(resolve => this.disk.set(this.keys_key, Array.from(this.keys), resolve));
+      return new Promise(resolve => {
+        this.disk.delete((this.name + key), r => resolve(r));
+      });
+    }
+    return false;
+  }
 }
 
 Object.assign(exports, {DiskMap});

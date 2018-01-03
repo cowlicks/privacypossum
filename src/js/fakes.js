@@ -18,6 +18,11 @@ class FakeDisk extends Map {
     let setter = super.set.bind(this);
     return asyncify(() => cb(setter(key, value)));
   }
+
+  async delete(key, cb) {
+    let deleter = super.delete.bind(this);
+    return asyncify(() => cb(deleter(key)));
+  }
 }
 
 class FakeMessages {

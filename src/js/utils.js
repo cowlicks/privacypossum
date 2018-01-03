@@ -78,6 +78,10 @@ class BrowserDisk {
   set(key, value, cb) {
     return this.disk.set({[key]: value}, cb);
   }
+
+  delete(key, cb) {
+    return this.disk(remove, cb);
+  }
 }
 
 // move to shim
