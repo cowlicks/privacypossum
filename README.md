@@ -1,4 +1,4 @@
-# Roadmap
+# Tracking Feature Roadmap
 
 * add blocker blocking
 * surrogates
@@ -8,10 +8,22 @@
     - inject header for twitter
 
 * t.co unwrapping
-
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
 
-* multiple Reasons on a single thing
+# Usuage features Roadmap
+
+* disable actions for urls in popup
+* undo disable action in popup
+* disable for site
+
+# Testing roadmap
+
+* integration testing with selenium
+* travis-ci
+
+# todo
+
+* multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
 * spoil fingerprints done
@@ -36,6 +48,7 @@
 * add popup messaging into reasons
 * update psl script to reflect new location
 * add MessageDispatcher to Handler
+* add deletion to domain store, do disk map next.
 
 
 ## techniques
