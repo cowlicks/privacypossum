@@ -26,7 +26,6 @@
 * multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
-* modify bootstrap code to take a path string.
 * add USER_BLOCK to reason and use it in tests
 * fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
 * fix issue inspecting popup throws an exception. Issue where reloading extension throws errors for missing tabs.
