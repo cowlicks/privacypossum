@@ -70,7 +70,11 @@ class Tab extends listenerMixin(Map) {
   }
 
   setBadgeText(text) {
-    setBadgeText({text, tabId: this.id});
+    try {
+      setBadgeText({text, tabId: this.id});
+    } catch (e) {
+      log(`Error setting badge text with tabId ${tabId} got error ${e}.`);
+    }
   }
 
   setActiveState(active) {

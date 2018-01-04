@@ -30,7 +30,7 @@ class LogBook extends FifoMap {
   }
 
   log(entry) {
-    // todo check entry is always a string
+    console.log(entry); // eslint-disable-line
     this.set(this.count, entry);
     this.count += 1;
     return this;
