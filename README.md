@@ -35,8 +35,6 @@
 * show user-deactivated urls in popup
 * make it take an action as an argument
 * refactor so popup items are done as part of reasons, add.in_popup property, add popup messages to reasons
-* test bootstrap.js, add logging
-* add logging in bootstrap
 * add popup messaging into reasons
 * update psl script to reflect new location
 * add MessageDispatcher to Handler
