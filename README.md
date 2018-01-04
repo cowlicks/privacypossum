@@ -33,7 +33,6 @@
 * strip 1st party refer headers too?
 * add url deactivate to popup, add tests, make sure deactivated urls show up in popup, and can be toggled
 * add html tooling
-* replace popup logo with on/off button
 * show user-deactivated urls in popup
 * put message clearing for tests in root beforeEach
 * make it take an action as an argument
