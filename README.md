@@ -26,12 +26,8 @@
 * multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
-* spoil fingerprints done
-* test 1st party fingerprinting behavior !!!!!
-* add firstparty-fingerprinting to constants
 * modify bootstrap code to take a path string.
 * add USER_BLOCK to reason and use it in tests
-* inject bad data into fingercounting
 * fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
 * fix issue inspecting popup throws an exception. Issue where reloading extension throws errors for missing tabs.
 * strip 1st party refer headers too?
