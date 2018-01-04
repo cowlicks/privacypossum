@@ -19,7 +19,8 @@
 # Testing roadmap
 
 * integration testing with selenium
-* travis-ci
+* travis-ci unittesting
+* travis-ci selenium
 
 # todo
 
