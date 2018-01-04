@@ -41,7 +41,7 @@ function lazyDef(exports_, name, definerFunc) {
   Object.assign(exports_, {
     get [name]() {
       delete this[name];
-      return this[name] = definerFunc(exports_);
+      return this[name] = Object.assign(exports_, definerFunc())[name];
     }
   });
 }
@@ -145,10 +145,9 @@ function isBaseOfHostname(base, host) {
 }
 isBaseOfHostname = memoize(isBaseOfHostname, ([base, host]) => base + ' ' + host, 1000);
 
-lazyDef(exports, 'log', (exports_) => {
+lazyDef(exports, 'log', () => {
   let logger = new LogBook(100);
-  Object.assign(exports_, {logger});
-  return logger.log.bind(logger);
+  return {logger, log: logger.log.bind(logger)};
 });
 
 Object.assign(exports, {

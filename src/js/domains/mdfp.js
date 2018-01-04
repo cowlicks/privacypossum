@@ -314,7 +314,7 @@ class MultiDomainFirstParties {
 
 lazyDef(exports, 'isMdfp', () => {
   let mdfp = new MultiDomainFirstParties();
-  return mdfp.isMdfp.bind(mdfp);
+  return {isMdfp: mdfp.isMdfp.bind(mdfp)};
 });
 
 Object.assign(exports, {MultiDomainFirstParties});
