@@ -19,15 +19,25 @@ describe('store.js', function() {
     });
 
     it('deletes', async function() {
-      let key = 'some.key.com', val = new Domain('val');
-      assert.isUndefined(this.dtree.get(key));
+      let host = 'some.key.com', path1 = '/val1', path2 = '/val2',
+        url1 = `https://${host}${path1}`, url2 = `https://${host}${path2}`,
+        domain = new Domain({paths: {[path1]: path1, [path2]: path2}});
 
-      await this.dtree.set(key, val);
-      await this.dtree.delete(key);
+      await this.dtree.set(host, domain);
+
+      await this.dtree.deleteDomainPath(url1);
+
+      assert.isUndefined(this.dtree.getDomainPath(url1));
+      assert.equal(this.dtree.getDomainPath(url2), path2);
+      assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: path2}});
 
       let newTree = await loadNewFromTree(this.dtree);
 
-      assert.isFalse(newTree.has(key), 'not in new tree');
+      // unchanged after loading
+      assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: path2}});
+
+      await this.dtree.deleteDomain(url1);
+      assert.isUndefined(this.dtree.getDomain(url1));
     });
 
     it('gets and sets', async function(){

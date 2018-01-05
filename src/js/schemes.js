@@ -50,6 +50,11 @@ class Domain {
     return this.paths[path];
   }
 
+  deletePath(path) {
+    delete this.paths[path];
+    return this;
+  }
+
   updatePath(path, callback) {
     return this.setPath(path, callback(this.getPath));
   }

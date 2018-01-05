@@ -74,6 +74,11 @@ class DomainStore {
     await this.set(url.hostname, value);
   }
 
+  async deleteDomain(url) {
+    url = new URL(url);
+    return await this.delete(url.hostname);
+  }
+
   async updateDomain(url, callback) {
     let domain = this.getDomain(url);
     if (typeof domain === 'undefined' || !(domain instanceof Domain)) {
@@ -91,6 +96,13 @@ class DomainStore {
     await this.updateDomain(url, (domain) => {
       let {pathname} = new URL(url);
       return domain.setPath(pathname, action);
+    });
+  }
+
+  async deleteDomainPath(url) {
+    return await this.updateDomain(url, (domain) => {
+      let {pathname} = new URL(url);
+      return domain.deletePath(pathname);
     });
   }
 }
