@@ -50,6 +50,10 @@ class DomainStore {
     return this.keys.has(key);
   }
 
+  async delete(key) {
+    return this.tree.delete(key) && await this.diskMap.delete(key);
+  }
+
   async set(key, value) {
     this.tree.set(key, value);
     await this.diskMap.set(key, value);

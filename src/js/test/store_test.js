@@ -10,8 +10,24 @@ describe('store.js', function() {
       parts = host.split('.'),
       len = parts.length;
 
+    async function loadNewFromTree({diskMap: {name, disk}}) {
+      return await DomainStore.load(name, disk);
+    }
+
     beforeEach(function() {
       this.dtree = new DomainStore('name');
+    });
+
+    it('deletes', async function() {
+      let key = 'some.key.com', val = new Domain('val');
+      assert.isUndefined(this.dtree.get(key));
+
+      await this.dtree.set(key, val);
+      await this.dtree.delete(key);
+
+      let newTree = await loadNewFromTree(this.dtree);
+
+      assert.isFalse(newTree.has(key), 'not in new tree');
     });
 
     it('gets and sets', async function(){
@@ -39,8 +55,7 @@ describe('store.js', function() {
         await this.dtree.set(name, i);
       }
 
-      let loadedTree = await DomainStore.load(
-        this.dtree.diskMap.name, this.dtree.diskMap.disk);
+      let loadedTree = await loadNewFromTree(this.dtree);
 
       assert.deepEqual(loadedTree.keys, this.dtree.keys);
       this.dtree.keys.forEach(key => {
