@@ -6,7 +6,7 @@
 
 [(function(exports) {
 
-const {URL, setBadgeText} = require('./shim'),
+const shim = require('./shim'), {URL, setBadgeText} = shim,
   {listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -114,7 +114,7 @@ class Tabs {
     this._data = new Map();
   }
 
-  startListeners(onRemoved) {
+  startListeners({onRemoved} = shim) {
     onRemoved.addListener(this.removeTab.bind(this));
   }
 

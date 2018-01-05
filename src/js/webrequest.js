@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {URL} = require('./shim'),
+const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {Handler} = require('./reasons/handlers');
 
@@ -21,7 +21,7 @@ class WebRequest {
     return this.tabs.isThirdParty(details.tabId, details.urlObj.hostname);
   }
 
-  start(onBeforeRequest, onBeforeSendHeaders, onHeadersReceived) {
+  start({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
       {urls: ["<all_urls>"]},
