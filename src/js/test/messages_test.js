@@ -26,7 +26,7 @@ describe('messages.js', function() {
         let func = new Mock(),
           type = 'test msg';
 
-        this.ml.start(onMessage);
+        this.ml.startListeners(onMessage);
         this.ml.addListener(type, func);
 
         sendMessage({type});

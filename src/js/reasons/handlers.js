@@ -46,7 +46,7 @@ class MessageHandler extends Dispatcher {
     reasons_.map(this.addReason.bind(this));
   }
 
-  start(onMessage = shim.onMessage) {
+  startListeners(onMessage = shim.onMessage) {
     Object.assign(this, {onMessage});
     this.onMessage.addListener(this.dispatcher.bind(this));
   }

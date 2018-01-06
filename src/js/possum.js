@@ -21,7 +21,7 @@ class Possum {
     this.webRequest.start()
 
     this.messageListener = new MessageHandler(this.tabs, this.store),
-    this.messageListener.start();
+    this.messageListener.startListeners();
 
     this.popup = new PopupServer(this.tabs);
     this.popup.start();
