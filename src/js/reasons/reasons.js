@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
-  {URL, tabsSendMessage} = require('../shim'),
+  {URL, sendMessage, tabsSendMessage} = require('../shim'),
   {setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
@@ -20,8 +20,8 @@ function setResponse(response, shortCircuit) {
  * `requestHandler` function with signature ({store, tabs}, details)
  */
 class Reason {
-  constructor(name, {messageHandler, requestHandler, tabHandler, in_popup}) {
-    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, in_popup});
+  constructor(name, {messageHandler, requestHandler, tabHandler, in_popup, popupHandler}) {
+    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, in_popup, popupHandler});
   }
 }
 
@@ -56,6 +56,10 @@ async function onFingerPrinting({store, tabs}, message, sender) {
     tabs.markAction({reason: constants.FINGERPRINTING}, href, sender.tab.id);
     await store.setDomainPath(href, action);
   }
+}
+
+function sendUrlDeactivate(url) {
+  sendMessage({type: USER_URL_DEACTIVATE, url})
 }
 
 async function onUserUrlDeactivate({store}, {url}) {
@@ -116,6 +120,7 @@ const reasons = [
       in_popup: true,
       requestHandler: fingerPrintingRequestHandler,
       messageHandler: onFingerPrinting,
+      popupHandler: sendUrlDeactivate,
     },
   },
   {
@@ -147,6 +152,7 @@ const reasons = [
     props: {
       in_popup: true,
       requestHandler: setResponse(CANCEL, true),
+      popupHandler: sendUrlDeactivate,
     },
   },
 ].map(({name, props}) => new Reason(name, props));

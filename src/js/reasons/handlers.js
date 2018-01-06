@@ -37,6 +37,15 @@ class Dispatcher {
   }
 }
 
+class PopupHandler extends Dispatcher {
+  constructor(reasons_ = reasons) {
+    super(x => x);
+    Object.assign(this, {name: 'popupHandler'});
+    this.addReason = this.addReason.bind(this, []);
+    reasons_.map(this.addReason.bind(this));
+  }
+}
+
 const mhInputParser = ([messenger, sender]) => [messenger.type, [messenger, sender]];
 class MessageHandler extends Dispatcher {
   constructor(tabs, store, reasons_ = reasons) {
@@ -118,6 +127,6 @@ class Handler {
   }
 }
 
-Object.assign(exports, {MessageHandler, RequestHandler, TabHandler, Handler});
+Object.assign(exports, {PopupHandler, MessageHandler, RequestHandler, TabHandler, Handler});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/handlers', func) : func(exports));

@@ -2,16 +2,35 @@
 
 const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
-  {URL, onUpdated} = require('../shim'),
+  {URL, onMessage, onUpdated} = require('../shim'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
   {main_frame, third_party} = require('./testing_utils').details,
   {Reason, tabDeactivate} = require('../reasons/reasons'),
-  {Handler, TabHandler} = require('../reasons/handlers');
+  {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
+  });
+  describe('PopupHandler', function() {
+    beforeEach(function() {
+      this.popupHandler = new PopupHandler();
+    });
+    it('fingerprinting popup handler sends url deactivate', function() {
+      let url = 'some url',
+        expected = [{type: constants.USER_URL_DEACTIVATE, url}];
+
+      this.popupHandler.dispatcher(constants.FINGERPRINTING, [url]);
+      assert.deepEqual(onMessage.messages.pop(), expected);
+    });
+
+    it('adds reasons', function() {
+      let called = false, name = 'test';
+      this.popupHandler.addReason({name, popupHandler: () => called = true});
+      this.popupHandler.dispatcher(name);
+      assert.isTrue(called);
+    });
   });
   describe('TabHandler', function() {
     it('handles tabs', async function() {
