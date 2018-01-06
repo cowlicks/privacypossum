@@ -24,6 +24,7 @@
 
 # todo
 
+* handlers should just be for dispatching stuff, not starting listeners
 * multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
