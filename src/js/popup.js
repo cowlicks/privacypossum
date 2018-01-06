@@ -9,7 +9,7 @@
 
 [(function(exports) {
 
-let {connect, onConnect, tabsQuery, getDocument, sendMessage, getURL} = require('./shim'),
+let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
 
 
@@ -89,7 +89,7 @@ class Popup {
     onOff.setAttribute('active', `${active}`);
     onOff.title = `click to ${active ? 'deactivate' : 'activate'} for this site`;
 
-    let doc = getDocument(),
+    let doc = document,
       img = doc.createElement('img');
 
     img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
@@ -99,7 +99,7 @@ class Popup {
   }
 
   showActions(actions) {
-    let doc = getDocument(),
+    let doc = document,
       ul = doc.createElement('ul');
 
     actions.forEach((value, key) => {
@@ -148,7 +148,7 @@ function currentTab() {
 }
 
 function $(id) {
-  return getDocument().getElementById(id);
+  return document.getElementById(id);
 }
 
 Object.assign(exports, {Model, View, Popup, Server, currentTab});

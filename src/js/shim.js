@@ -121,7 +121,7 @@ let shims = [
   ['tabsSendMessage', 'chrome.tabs.sendMessage', passThru, tabsOnAndSendMessage],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
-  ['getDocument', 'document', () => () => document, () => require('./utils').makeTrap()],
+  ['document', 'document', passThru, () => require('./utils').makeTrap()],
   ['tabsQuery', 'chrome.tabs.query', passThru,
     () => {
       let out = (obj, callback) => callback(out.tabs);
