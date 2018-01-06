@@ -29,21 +29,21 @@ class Dispatcher {
       return (this.funcs.get(type)).apply(undefined, args);
     }
   }
+  addReason(args, reason) {
+    if (reason[this.name]) {
+      args = args ? args : [];
+      return this.addListener(reason.name, reason[this.name].bind(this, ...args));
+    }
+  }
 }
 
 const mhInputParser = ([messenger, sender]) => [messenger.type, [messenger, sender]];
 class MessageHandler extends Dispatcher {
   constructor(tabs, store, reasons_ = reasons) {
     super(mhInputParser);
-    this.tabs = tabs;
-    this.store = store;
+    Object.assign(this, {tabs, store, name: 'messageHandler'});
+    this.addReason = this.addReason.bind(this, [{store, tabs}]),
     reasons_.map(this.addReason.bind(this));
-  }
-
-  addReason(reason) {
-    if (reason.messageHandler) {
-      return this.addListener(reason.name, reason.messageHandler.bind(undefined, {store: this.store, tabs: this.tabs}));
-    }
   }
 
   start(onMessage = shim.onMessage) {
@@ -57,8 +57,8 @@ const rhInputParser = ([obj, details]) => [obj.action.reason, [details]];
 class RequestHandler extends Dispatcher {
   constructor(tabs, store) {
     super(rhInputParser);
-    Object.assign(this, {tabs, store});
-    this.funcs = new Map();
+    Object.assign(this, {tabs, store, name: 'requestHandler'});
+    this.addReason = this.addReason.bind(this, [{store, tabs}]);
   }
 
   handleRequest(obj, details) {
@@ -67,18 +67,14 @@ class RequestHandler extends Dispatcher {
       this.dispatcher(obj, details);
     }
   }
-
-  addReason(reason) {
-    this.addListener(reason.name,
-      reason.requestHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
-  }
 }
 
 const thInputParser = ([{tab, info}]) => [tab.action.reason, [{tab, info}]];
 class TabHandler extends Dispatcher {
   constructor(tabs, store) {
     super(thInputParser);
-    Object.assign(this, {tabs, store});
+    Object.assign(this, {tabs, store, name: 'tabHandler'});
+    this.addReason = this.addReason.bind(this, [{store, tabs}]);
   }
 
   startListeners(onUpdated = shim.onUpdated) {
@@ -92,11 +88,6 @@ class TabHandler extends Dispatcher {
         return this.dispatcher({tab, info});
       }
     }
-  }
-
-  addReason(reason) {
-    this.funcs.set(reason.name,
-      reason.tabHandler.bind(undefined, {tabs: this.tabs, store: this.store}));
   }
 }
 
@@ -119,12 +110,8 @@ class Handler {
   }
 
   addReason(reason) {
-    if (reason.requestHandler) {
-      this.requestHandler.addReason(reason);
-    }
-    if (reason.tabHandler) {
-      this.tabHandler.addReason(reason);
-    }
+    this.requestHandler.addReason(reason);
+    this.tabHandler.addReason(reason);
     if (reason.in_popup) {
       this.inPopupSet.add(reason.name);
     }
