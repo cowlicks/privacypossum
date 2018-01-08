@@ -29,6 +29,12 @@ class Dispatcher {
       return (this.funcs.get(type)).apply(undefined, args);
     }
   }
+
+  // same as dispatcher but returns the function with bound arguments.
+  getFunc() {
+    return this.dispatcher.bind(this, arguments);
+  }
+
   addReason(args, reason) {
     if (reason[this.name]) {
       args = args ? args : [];
