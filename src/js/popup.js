@@ -53,7 +53,7 @@ class Model {
 class Popup {
   constructor(tabId) {
     this.tabId = tabId;
-    this.setHandlers();
+    this.setOnOffHandler();
   }
 
   connect() {
@@ -66,7 +66,7 @@ class Popup {
     return this.view.ready;
   }
 
-  setHandlers() {
+  setOnOffHandler() {
     $('onOff').onclick = this.onOff.bind(this);
   }
 
