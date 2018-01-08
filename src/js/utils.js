@@ -145,6 +145,34 @@ function isBaseOfHostname(base, host) {
 }
 isBaseOfHostname = memoize(isBaseOfHostname, ([base, host]) => base + ' ' + host, 1000);
 
+function passThrough() {
+  return Array.from(arguments);
+}
+
+function wrap(func, before = passThrough, after = passThrough) {
+  return function() {
+    return after(func.apply(undefined, before.apply(undefined, arguments)));
+  }
+}
+
+function zip() {
+  let args = Array.from(arguments),
+    nargs = args.length,
+    out = [];
+
+  if (!nargs) return;
+
+  for (let i = 0; i < nargs; i++) {
+    let arr = args[i],
+      len = arr.length;
+    for (let j = 0; j < len; j++) {
+      if (j >= out.length) out.push([]);
+      out[j].push(arr[j]);
+    }
+  }
+  return out;
+}
+
 lazyDef(exports, 'log', () => {
   let logger = new LogBook(100);
   return {logger, log: logger.log.bind(logger)};
@@ -161,6 +189,8 @@ Object.assign(exports, {
   hasAction,
   isBaseOfHostname,
   lazyDef,
+  wrap,
+  zip,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));
