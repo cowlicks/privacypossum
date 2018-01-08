@@ -19,6 +19,17 @@ function Mock(retval) {
   return out;
 }
 
+function watchFunc(func) {
+  function outFunc() {
+    outFunc.inputs.push(Array.from(arguments));
+    let res = func.apply(this, arguments);
+    outFunc.outputs.push(res);
+    return res;
+  }
+  outFunc.inputs = [], outFunc.outputs = [];
+  return outFunc;
+}
+
 function stub(name, value) {
   let parts = name.split('.'),
     last = parts.pop(),
@@ -94,4 +105,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});
+Object.assign(exports, {watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});
