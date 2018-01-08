@@ -10,6 +10,7 @@
 [(function(exports) {
 
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
+  {PopupHandler} = require('./reasons/handlers'),
   {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
 
 
@@ -52,6 +53,8 @@ class Model {
 
 class Popup {
   constructor(tabId) {
+    this.handlerHandler = new PopupHandler();
+    this.getClickHandler = this.handlerHandler.getFunc.bind(this.handlerHandler);
     this.tabId = tabId;
     this.setOnOffHandler();
   }
@@ -98,18 +101,31 @@ class Popup {
     $('onOff').innerHTML = img.outerHTML;
   }
 
-  showActions(actions) {
-    let doc = document,
-      ul = doc.createElement('ul');
+  showActions(actionsUrls) {
+    let actionsUrlsHandlers = this.getHandlers(actionsUrls),
+      html = this.makeActionsHtml(actionsUrlsHandlers);
+    $('actions').innerHTML = '';
+    $('actions').appendChild(html);
+  }
 
-    actions.forEach((value, key) => {
+  getHandlers(actionsUrls) {
+    let out = [];
+    actionsUrls.forEach((action, url) => {
+      out.push([action, url, this.getClickHandler(action.reason, [url])]);
+    });
+    return out;
+  }
+
+  makeActionsHtml(actionsUrlsHandlers, doc = document) {
+    let ul = doc.createElement('ul');
+
+    actionsUrlsHandlers.forEach(([action, url, handler]) => {
       let li = doc.createElement('li');
-      li.innerHTML = `url: ${key} with action: ${value.reason}`;
+      li.innerHTML = `url: ${url} with action: ${action.reason}`;
+      li.onclick = handler;
       ul.appendChild(li);
     });
-
-    $('actions').innerHTML = '';
-    $('actions').appendChild(ul);
+    return ul;
   }
 }
 
