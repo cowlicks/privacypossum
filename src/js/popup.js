@@ -82,7 +82,8 @@ class Popup {
     this.showActions(this.actions);
   }
 
-  showActive(active) {
+  // show the onOff button
+  showActive(active, doc = document) {
     let onOff = $('onOff');
 
     if (onOff.getAttribute('active') === `${active}`) {
@@ -92,8 +93,7 @@ class Popup {
     onOff.setAttribute('active', `${active}`);
     onOff.title = `click to ${active ? 'deactivate' : 'activate'} for this site`;
 
-    let doc = document,
-      img = doc.createElement('img');
+    let img = doc.createElement('img');
 
     img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
     img.height = 100, img.width = 100;
