@@ -57,16 +57,25 @@ class Popup {
     this.getClickHandler = this.handlerHandler.getFunc.bind(this.handlerHandler);
     this.tabId = tabId;
     this.setOnOffHandler();
+    this.urlActions = new Map();
   }
 
   connect() {
     this.port = connect({name: POPUP});
     this.view = new View(this.port, ({active, actions}) => {
       this.active = active;
-      this.actions = new Map(actions);
+      this.updateUrlActions(actions);
       this.show();
     });
     return this.view.ready;
+  }
+
+  updateUrlActions(actions) {
+    this.urlActions = new Map();
+
+    actions.forEach(([url, action]) => {
+      this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url])});
+    });
   }
 
   setOnOffHandler() {
@@ -79,7 +88,7 @@ class Popup {
 
   show() {
     this.showActive(this.active);
-    this.showActions(this.actions);
+    this.showActions();
   }
 
   // show the onOff button
@@ -101,9 +110,8 @@ class Popup {
     $('onOff').innerHTML = img.outerHTML;
   }
 
-  showActions(actionsUrls) {
-    let actionsUrlsHandlers = this.getHandlers(actionsUrls),
-      html = this.makeActionsHtml(actionsUrlsHandlers);
+  showActions() {
+    let html = this.makeActionsHtml(this.urlActions);
     $('actions').innerHTML = '';
     $('actions').appendChild(html);
   }
@@ -119,7 +127,7 @@ class Popup {
   makeActionsHtml(actionsUrlsHandlers, doc = document) {
     let ul = doc.createElement('ul');
 
-    actionsUrlsHandlers.forEach(([action, url, handler]) => {
+    actionsUrlsHandlers.forEach(({action, handler}, url) => {
       let li = doc.createElement('li');
       li.innerHTML = `url: ${url} with action: ${action.reason}`;
       li.onclick = handler;
