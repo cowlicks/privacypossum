@@ -64,7 +64,7 @@ describe('possum.js', function() {
 
         let popup = new Popup(tabId);
         await popup.connect();
-        assert.isTrue(popup.actions.has(details.script.url), 'popup has the blocked url');
+        assert.isTrue(popup.urlActions.has(details.script.url), 'popup has the blocked url');
       });
     });
 
@@ -186,7 +186,7 @@ describe('possum.js', function() {
       tabsQuery.tabs = [{id: tabId}];
       let popup = new Popup(tabId);
       await popup.connect();
-      assert.isTrue(popup.actions.has(details.script.url), 'popup has the blocked url');
+      assert.isTrue(popup.urlActions.has(details.script.url), 'popup has the blocked url');
     });
   });
 });

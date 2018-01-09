@@ -2,9 +2,10 @@
 
 const assert = require('chai').assert,
   {fakePort} = require('../fakes'),
+  {USER_URL_DEACTIVATE} = require('../constants'),
   {Tab, Tabs} = require('../tabs'),
   {Listener, wrap} = require('../utils'),
-  {tabsQuery} = require('../shim'),
+  {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
   {watchFunc} = require('./testing_utils'),
   {Model, View, Server, Popup} = require('../popup');
@@ -49,15 +50,19 @@ describe('popup.js', function() {
     describe('action click handlers', function() {
       it('sets click handlers', async function() {
         let popup = this.popup,
-          getClickHandler = popup.getClickHandler = watchFunc(popup.getClickHandler.bind(popup)),
-          getHandlers = popup.getHandlers = watchFunc(popup.getHandlers.bind(popup));
+          getClickHandler = popup.getClickHandler = popup.getClickHandler.bind(popup),
+          getHandlers = popup.getHandlers = popup.getHandlers.bind(popup);
 
         this.server.start();
         await popup.connect();
 
-        assert.deepEqual(getClickHandler.inputs, [[blockAction.reason, [url1]]]);
-        assert.deepEqual(getHandlers.inputs[0][0], new Map([[url1, blockAction]]));
-        assert.deepEqual(getHandlers.outputs[0][0].slice(0, 2), [blockAction, url1]);
+        assert.isTrue(popup.urlActions.has(url1));
+        assert.deepEqual(popup.urlActions.get(url1).action, blockAction);
+
+        popup.urlActions.get(url1).handler();
+
+        let url = url1, type = USER_URL_DEACTIVATE;
+        assert.deepEqual(onMessage.messages[0], [{url, type}]);
       });
     });
 
@@ -67,10 +72,10 @@ describe('popup.js', function() {
         await this.popup.connect();
       });
       it('actions are sent', function() {
-        assert.isTrue(this.popup.actions.has(url1), 'initial url is blocked');
+        assert.isTrue(this.popup.urlActions.has(url1), 'initial url is blocked');
 
         this.tab.markAction(blockAction, url2);
-        assert.isTrue(this.popup.actions.has(url2), 'added url is blocked');
+        assert.isTrue(this.popup.urlActions.has(url2), 'added url is blocked');
       });
 
       it('active is sent', function() {
