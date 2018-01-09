@@ -32,7 +32,7 @@ class Dispatcher {
 
   // same as dispatcher but returns the function with bound arguments.
   getFunc() {
-    return this.dispatcher.bind(this, arguments);
+    return this.dispatcher.bind(this, ...arguments);
   }
 
   addReason(args, reason) {
