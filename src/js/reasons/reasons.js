@@ -26,7 +26,17 @@ class Reason {
 }
 
 const tabDeactivate = new Action({reason: TAB_DEACTIVATE}), // should these go elsewhere?
+  removeAction = new Action({reason: REMOVE_ACTION}),
   blockAction = new Action({reason: BLOCK});
+
+function sendRemoveAction(url, tabId) {
+  sendMessage({type: REMOVE_ACTION, url, tabId});
+}
+
+function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
+  tabs.markAction(removeAction, message.url, message.tabId);
+  return store.deleteDomainPath(message.url);
+}
 
 function fingerPrintingRequestHandler({tabs}, details) {
   if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
@@ -130,6 +140,7 @@ const reasons = [
       in_popup: true,
       requestHandler: setResponse(NO_ACTION, true),
       messageHandler: onUserUrlDeactivate,
+      popupHandler: sendRemoveAction,
     },
   },
   {
@@ -154,6 +165,12 @@ const reasons = [
       in_popup: true,
       requestHandler: setResponse(CANCEL, true),
       popupHandler: sendUrlDeactivate,
+    },
+  },
+  {
+    name: REMOVE_ACTION,
+    props: {
+      messageHandler: onRemoveAction,
     },
   },
 ].map(({name, props}) => new Reason(name, props));
