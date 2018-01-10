@@ -66,6 +66,10 @@ describe('possum.js', function() {
         let popup = new Popup(tabId);
         await popup.connect();
         assert.isTrue(popup.urlActions.has(details.script.url), 'popup has the blocked url');
+
+        await popup.urlActions.get(details.script.url).handler();
+        assert.isFalse(popup.urlActions.has(details.script.url), 'url removed from popup');
+        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.NO_ACTION, 'no action');
       });
     });
 
