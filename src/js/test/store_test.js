@@ -34,10 +34,10 @@ describe('store.js', function() {
       let newTree = await loadNewFromTree(this.dtree);
 
       // unchanged after loading
-      assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: path2}});
+      assert.deepEqual(newTree.getDomain(url2), {paths: {[path2]: path2}});
 
-      await this.dtree.deleteDomain(url1);
-      assert.isUndefined(this.dtree.getDomain(url1));
+      await newTree.deleteDomain(url1);
+      assert.isUndefined(newTree.getDomain(url1));
     });
 
     it('gets and sets', async function(){
