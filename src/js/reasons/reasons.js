@@ -8,7 +8,7 @@ const {Action} = require('../schemes'),
   constants = require('../constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE, BLOCK,
-    USER_HOST_DEACTIVATE, TAB_DEACTIVATE} = constants;
+    USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
 
 function setResponse(response, shortCircuit) {
   return ({}, details) => Object.assign(details, {response, shortCircuit});

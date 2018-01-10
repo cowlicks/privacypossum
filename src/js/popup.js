@@ -74,7 +74,7 @@ class Popup {
     this.urlActions = new Map();
 
     actions.forEach(([url, action]) => {
-      this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url])});
+      this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url, this.tabId])});
     });
   }
 
