@@ -58,14 +58,15 @@ async function onFingerPrinting({store, tabs}, message, sender) {
   }
 }
 
-function sendUrlDeactivate(url) {
-  sendMessage({type: USER_URL_DEACTIVATE, url})
+function sendUrlDeactivate(url, tabId) {
+  sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
 }
 
-async function onUserUrlDeactivate({store}, {url}) {
+async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
   let action = new Action({
     reason: constants.USER_URL_DEACTIVATE,
     href: url});
+  tabs.markAction(action, url, tabId);
   await store.setDomainPath(url, action);
 }
 
