@@ -1,8 +1,10 @@
 'use strict';
 
-const assert = require('chai').assert,
-  {onRemoved} = require('../shim'),
-  {Tabs} = require('../tabs');
+let assert = require('chai').assert,
+  {BLOCK, REMOVE_ACTION} = require('../constants'),
+  {onRemoved, getBadgeText} = require('../shim'),
+  {Action} = require('../schemes'),
+  {Tab, Tabs} = require('../tabs');
 
 const tabId = 1,
   main_frame = {frameId: 0, url: 'https://google.com/', tabId, parentFrameId: -1, type: 'main_frame'},
@@ -48,6 +50,26 @@ describe('tabs.js', function() {
       it('with resource', function() {
         this.tabs.addResource(resource);
         assert.isTrue(this.tabs.hasResource(resource));
+      });
+    })
+
+    describe('Tab', function() {
+      const tabId = 1,
+        url = 'https://example.com';
+
+      beforeEach(function() {
+        this.tab = new Tab(tabId);
+      })
+      describe('#markAction', function() {
+        it('adds actions', async function() {
+          this.tab.markAction(new Action({reason: BLOCK}), url);
+          assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '1');
+        })
+        it('removes actions', async function() {
+          this.tab.markAction(new Action({reason: BLOCK}), url);
+          this.tab.markAction(new Action({reason: REMOVE_ACTION}), url);
+          assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '');
+        });
       });
     })
   });

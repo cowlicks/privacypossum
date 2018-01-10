@@ -7,6 +7,7 @@
 [(function(exports) {
 
 const shim = require('./shim'), {URL, setBadgeText} = shim,
+  {REMOVE_ACTION} = require('./constants'),
   {listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -70,6 +71,15 @@ class Tab extends listenerMixin(Map) {
   }
 
   setBadgeText(text) {
+    if (text == '0') {
+      text = '';
+    }
+
+    if (text === this.currentBadgeText) {
+      return;
+    }
+    this.currentBadgeText = text;
+
     try {
       setBadgeText({text, tabId: this.id});
     } catch (e) {
@@ -98,14 +108,15 @@ class Tab extends listenerMixin(Map) {
       return;
     }
 
-    if (!this.actions.has(url)) {
+    if (action.reason === REMOVE_ACTION && this.actions.has(url)) {
+      this.actions.delete(url);
+      this.onChange();
+    } else if (!this.actions.has(url)) {
       this.actions.set(url, action);
       this.onChange();
     }
 
-    if (this.actions.size > 0) {
-      this.setBadgeText('' + this.actions.size);
-    }
+    this.setBadgeText('' + this.actions.size);
   }
 }
 
