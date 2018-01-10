@@ -4,10 +4,9 @@ const assert = require('chai').assert,
   {fakePort} = require('../fakes'),
   {USER_URL_DEACTIVATE} = require('../constants'),
   {Tab, Tabs} = require('../tabs'),
-  {Listener, wrap} = require('../utils'),
+  {Listener} = require('../utils'),
   {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
-  {watchFunc} = require('./testing_utils'),
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
@@ -49,9 +48,7 @@ describe('popup.js', function() {
     });
     describe('action click handlers', function() {
       it('sets click handlers', async function() {
-        let popup = this.popup,
-          getClickHandler = popup.getClickHandler = popup.getClickHandler.bind(popup),
-          getHandlers = popup.getHandlers = popup.getHandlers.bind(popup);
+        let popup = this.popup;
 
         this.server.start();
         await popup.connect();
@@ -61,8 +58,9 @@ describe('popup.js', function() {
 
         popup.urlActions.get(url1).handler();
 
-        let url = url1, type = USER_URL_DEACTIVATE;
-        assert.deepEqual(onMessage.messages[0], [{url, type}]);
+        let url = url1, type = USER_URL_DEACTIVATE,
+          res = onMessage.messages.pop().pop();
+        assert.include(res, {url, type});
       });
     });
 
