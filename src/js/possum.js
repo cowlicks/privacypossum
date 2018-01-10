@@ -5,7 +5,6 @@
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
   {DomainStore} = require('./store'),
-  {onRemoved} = require('./shim'),
   {MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
   PopupServer = require('./popup').Server;
