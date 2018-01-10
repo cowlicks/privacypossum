@@ -43,7 +43,8 @@ describe('possum.js', function() {
 
     describe('unblocked urls', function() {
       beforeEach(async function() {
-        await sendMessage({type: constants.USER_URL_DEACTIVATE, url: script.copy().url});
+        let {url, tabId} = script.copy();
+        await sendMessage({type: constants.USER_URL_DEACTIVATE, url, tabId});
       });
 
       it('unblocks requests', function() {

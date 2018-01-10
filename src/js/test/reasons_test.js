@@ -19,10 +19,10 @@ describe('reasons.js', function() {
     });
     it('fingerprinting popup handler sends url deactivate', function() {
       let url = 'some url',
-        expected = [{type: constants.USER_URL_DEACTIVATE, url}];
+        expected = {type: constants.USER_URL_DEACTIVATE, url};
 
       this.popupHandler.dispatcher(constants.FINGERPRINTING, [url]);
-      assert.deepEqual(onMessage.messages.pop(), expected);
+      assert.include(onMessage.messages.pop().pop(), expected);
     });
 
     it('adds reasons', function() {

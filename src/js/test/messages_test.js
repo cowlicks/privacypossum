@@ -36,26 +36,28 @@ describe('messages.js', function() {
 
     describe('Deactivate', function() {
       let {main_frame} = details,
-        href = main_frame.url,
-        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href}),
-        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href});
+        {url, tabId} = main_frame,
+        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href: url}),
+        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href: url});
+      beforeEach(function() {
+        this.tabs.addResource(main_frame);
+      });
 
       it('url deactivate updates storage', async function() {
         await this.ml.dispatcher(
-          {type: constants.USER_URL_DEACTIVATE, url: href},
+          {type: constants.USER_URL_DEACTIVATE, url, tabId},
           undefined
         );
-        let path = this.ml.store.getDomainPath(href);
+        let path = this.ml.store.getDomainPath(url);
         assert.deepEqual(path.action, urlAction);
       });
 
       it('host deactivate updates storage', async function() {
-        this.tabs.addResource(main_frame);
         await this.ml.dispatcher(
-          {type: constants.USER_HOST_DEACTIVATE, tabId: details.main_frame.tabId},
+          {type: constants.USER_HOST_DEACTIVATE, tabId},
           undefined
         );
-        let domain = this.ml.store.getDomain(href);
+        let domain = this.ml.store.getDomain(url);
         assert.deepEqual(domain.action, hostAction);
       });
     });
