@@ -108,14 +108,13 @@ class Tab extends listenerMixin(Map) {
       return;
     }
 
-    if (action.reason === REMOVE_ACTION && this.actions.has(url)) {
+    if (action.reason === REMOVE_ACTION) {
       this.actions.delete(url);
-      this.onChange();
-    } else if (!this.actions.has(url)) {
+    } else {
       this.actions.set(url, action);
-      this.onChange();
     }
 
+    this.onChange();
     this.setBadgeText('' + this.actions.size);
   }
 }
