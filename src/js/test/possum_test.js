@@ -187,11 +187,20 @@ describe('possum.js', function() {
     })
 
     it('has the fp script blocked in the popup', async function() {
-      let tabId = details.script.tabId;
+      let {tabId} = details.script,
+        url = details.script.url;
+
       tabsQuery.tabs = [{id: tabId}];
       let popup = new Popup(tabId);
       await popup.connect();
-      assert.isTrue(popup.urlActions.has(details.script.url), 'popup has the blocked url');
+
+      // clicking changes action FP -> user deactivated
+      popup.urlActions.get(url).handler();
+      assert.equal(popup.urlActions.get(url).action.reason, constants.USER_URL_DEACTIVATE);
+
+      // now click changes action user deactivated -> removed
+      popup.urlActions.get(url).handler();
+      assert.isFalse(popup.urlActions.has(url), 'second click removes the action');
     });
   });
 });
