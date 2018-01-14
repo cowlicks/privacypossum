@@ -80,7 +80,7 @@ class DiskMap {
       this.keys.delete(key);
       await new Promise(resolve => this.disk.set(this.keys_key, Array.from(this.keys), resolve));
       return new Promise(resolve => {
-        this.disk.delete((this.name + key), r => resolve(r));
+        this.disk.remove((this.name + key), r => resolve(r));
       });
     }
     return false;
