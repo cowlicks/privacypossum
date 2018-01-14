@@ -1,4 +1,5 @@
 ![logo](/src/media/logo-med256.png)
+
 # Tracking Feature Roadmap
 
 * add blocker blocking
@@ -30,7 +31,6 @@
 * multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
-* add USER_BLOCK to reason and use it in tests
 * fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
 * fix issue inspecting popup throws an exception. Issue where reloading extension throws errors for missing tabs.
 * strip 1st party refer headers too?
@@ -39,10 +39,8 @@
 * show user-deactivated urls in popup
 * make it take an action as an argument
 * refactor so popup items are done as part of reasons, add.in_popup property, add popup messages to reasons
-* add popup messaging into reasons
 * update psl script to reflect new location
 * add MessageDispatcher to Handler
-* add deletion to domain store, do disk map next.
 
 
 ## techniques
