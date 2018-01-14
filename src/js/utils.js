@@ -80,7 +80,10 @@ class BrowserDisk {
   }
 
   delete(key, cb) {
-    return this.disk(remove, cb);
+    return this.disk.remove(key, cb);
+  }
+  remove(key, cb) {
+    return this.delete(key, cb);
   }
 }
 
