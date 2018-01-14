@@ -61,6 +61,7 @@ We detect fingerprinting and block it in a first, and third party context.
 for first parties, we don't outright block the request, because it is more
 likely bundled with code that is essential to functionality of the website.
 
+t.co urls get unwrapped on twitter and tweetdeck
 
 ## goals
 

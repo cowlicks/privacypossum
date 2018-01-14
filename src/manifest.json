@@ -76,6 +76,16 @@
       ],
       "all_frames": true,
       "run_at": "document_start"
+    },
+    {
+      "js": [
+        "js/contentscripts/twitter.js"
+      ],
+      "matches": [
+        "*://twitter.com/*",
+        "*://tweetdeck.twitter.com/*"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
