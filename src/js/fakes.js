@@ -9,19 +9,26 @@ async function asyncify(func) {
 }
 
 class FakeDisk extends Map {
+  constructor() {
+    super(...arguments);
+    this.getter = super.get.bind(this);
+    this.setter = super.set.bind(this);
+    this.deleter = super.delete.bind(this);
+  }
+
   async get(key, cb) {
-    let getter = super.get.bind(this);
-    return asyncify(() => cb(getter(key)));
+    return asyncify(() => cb(this.getter(key)));
   }
 
   async set(key, value, cb) {
-    let setter = super.set.bind(this);
-    return asyncify(() => cb(setter(key, value)));
+    return asyncify(() => cb(this.setter(key, value)));
   }
 
   async delete(key, cb) {
-    let deleter = super.delete.bind(this);
-    return asyncify(() => cb(deleter(key)));
+    return asyncify(() => cb(this.deleter(key)));
+  }
+  async remove(key, cb) {
+    return this.delete(key, cb);
   }
 }
 

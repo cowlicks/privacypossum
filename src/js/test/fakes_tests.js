@@ -21,4 +21,20 @@ describe('fakes.js', function() {
       connect.clear();
     });
   })
+  describe('FakeDisk', function() {
+    beforeEach(async function() {
+      this.key = 'key', this.value = 'value';
+      this.fd = new fakes.FakeDisk();
+      await new Promise(resolve => this.fd.set(this.key, this.value, resolve));
+    });
+    it('sets & gets', async function() {
+      // key with no data returns undefined
+      assert.isUndefined(await new Promise(resolve => this.fd.get('does not exist', resolve)));
+      assert.equal(await new Promise(resolve => this.fd.get(this.key, resolve)), this.value);
+    });
+    it('remove', async function() {
+      await new Promise(resolve => this.fd.remove(this.key, resolve));
+      assert.isUndefined(await new Promise(resolve => this.fd.get(this.key, resolve)));
+    });
+  });
 })
