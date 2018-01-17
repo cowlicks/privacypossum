@@ -120,11 +120,12 @@ let listenerMixin = (Base) => class extends Base {
     this.funcs.delete(func);
   }
 
-  onEvent() {
-    this.funcs.forEach(func => func(this.getData()));
+  onEvent(event_) {
+    this.funcs.forEach(func => func(this.getData(event_)));
   }
 
-  getData() {
+  getData(event_) {
+    return event_;
   }
 }
 
