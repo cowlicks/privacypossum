@@ -1,0 +1,31 @@
+body {
+  width: 300px;
+}
+
+#header {
+  margin-top: 10;
+  height: 40;
+}
+
+#header img {
+  height: 30;
+}
+
+#title {
+  font-size: 25;
+}
+
+#logo {
+  float: left;
+  margin-right: 20;
+}
+
+#onOff {
+  float: right;
+}
+
+.action {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

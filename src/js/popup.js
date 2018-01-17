@@ -13,6 +13,7 @@ let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./
   {PopupHandler} = require('./reasons/handlers'),
   {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
 
+const noActionsText = `No tracking detected`;
 
 /*
  * View of some remote data represented by a `Model`.
@@ -105,7 +106,6 @@ class Popup {
     let img = doc.createElement('img');
 
     img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
-    img.height = 100, img.width = 100;
 
     $('onOff').innerHTML = img.outerHTML;
   }
@@ -125,11 +125,18 @@ class Popup {
   }
 
   makeActionsHtml(actionsUrlsHandlers, doc = document) {
+    if (actionsUrlsHandlers.size === 0) {
+      let empty = doc.createElement('div');
+      empty.id = 'emptyActions';
+      empty.innerText = noActionsText;
+      return empty;
+    }
     let ul = doc.createElement('ul');
 
     actionsUrlsHandlers.forEach(({action, handler}, url) => {
       let li = doc.createElement('li');
-      li.innerHTML = `url: ${url} with action: ${action.reason}`;
+      li.className = 'action';
+      li.innerText = `url: ${url} with action: ${action.reason}`;
       li.onclick = handler;
       ul.appendChild(li);
     });
