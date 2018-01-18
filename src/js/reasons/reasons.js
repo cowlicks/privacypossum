@@ -3,8 +3,8 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
-  {sendUrlDeactivate} = require('./utils'),
-  {URL, sendMessage} = require('../shim'),
+  {sendUrlDeactivate, sendRemoveAction} = require('./utils'),
+  {URL} = require('../shim'),
   {Listener, setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
@@ -52,10 +52,6 @@ class Reasons extends Listener {
 const tabDeactivate = new Action({reason: TAB_DEACTIVATE}), // should these go elsewhere?
   removeAction = new Action({reason: REMOVE_ACTION}),
   blockAction = new Action({reason: BLOCK});
-
-function sendRemoveAction({}, url, tabId) {
-  sendMessage({type: REMOVE_ACTION, url, tabId});
-}
 
 function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
   tabs.markAction(removeAction, message.url, message.tabId);

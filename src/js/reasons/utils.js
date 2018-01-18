@@ -3,13 +3,18 @@
 [(function(exports) {
 
 const {sendMessage} = require('../shim'),
-  {USER_URL_DEACTIVATE} = require('../constants');
+  {REMOVE_ACTION, USER_URL_DEACTIVATE} = require('../constants');
 
-function sendUrlDeactivate({}, url, tabId) {
-  sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
+function makeSendAction(type) {
+  return function({}, url, tabId) {
+    return sendMessage({type, url, tabId});
+  };
 }
 
-Object.assign(exports, {sendUrlDeactivate});
+const sendUrlDeactivate = makeSendAction(USER_URL_DEACTIVATE),
+  sendRemoveAction = makeSendAction(REMOVE_ACTION);
+
+Object.assign(exports, {sendUrlDeactivate, sendRemoveAction});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/utils', func) : func(exports));
 
