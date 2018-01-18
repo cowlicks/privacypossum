@@ -23,6 +23,8 @@
  * We use this wrapping (instead of a IIAFE) because it lets us load the module lazily, or
  * immediately, based on the environment. It seemed to be the most concise
  * anonymous expression.
+ *
+ * New files need to be added to the manifest.json. And to appropriate html files, like popup.html.
  */
 
 function require(module) {
