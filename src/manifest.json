@@ -53,6 +53,8 @@
       "js/domains/parties.js",
 
       "js/reasons/reasons.js",
+      "js/reasons/fingerprinting.js",
+      "js/reasons/utils.js",
       "js/reasons/handlers.js",
       "js/tabs.js",
 

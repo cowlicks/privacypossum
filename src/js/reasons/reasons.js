@@ -3,11 +3,12 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
-  {URL, sendMessage, tabsSendMessage} = require('../shim'),
+  {sendUrlDeactivate} = require('./utils'),
+  {URL, sendMessage} = require('../shim'),
   {Listener, setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
-const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE, BLOCK,
+const {NO_ACTION, CANCEL, USER_URL_DEACTIVATE, BLOCK,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
 
 function setResponse(response, shortCircuit) {
@@ -59,40 +60,6 @@ function sendRemoveAction({}, url, tabId) {
 function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
   tabs.markAction(removeAction, message.url, message.tabId);
   return store.deleteDomainPath(message.url);
-}
-
-function fingerPrintingRequestHandler({tabs}, details) {
-  if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
-    Object.assign(details, {response: CANCEL, shortCircuit: false});
-  } else {
-    // send set fp signal
-    let {tabId, frameId} = details;
-    tabs.markAction({reason: constants.FINGERPRINTING}, details.url, details.tabId);
-    tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
-  }
-}
-
-async function onFingerPrinting({store, tabs}, message, sender) {
-  let tabId = sender.tab.id,
-    {frameId} = sender,
-    {url} = message,
-    type = 'script';
-
-  // NB: the url could be dangerous user input, so we check it is an existing resource.
-  if (tabs.hasResource({tabId, frameId, url, type})) {
-    let reason = constants.FINGERPRINTING,
-      frameUrl = tabs.getFrameUrl(tabId, frameId),
-      tabUrl = tabs.getTabUrl(sender.tab.id),
-      {href} = new URL(url);
-
-    let action = new Action({reason, href, frameUrl, tabUrl});
-    tabs.markAction({reason: constants.FINGERPRINTING}, href, sender.tab.id);
-    await store.setDomainPath(href, action);
-  }
-}
-
-function sendUrlDeactivate({}, url, tabId) {
-  sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
 }
 
 async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
@@ -149,15 +116,6 @@ async function onUserHostDeactivate({tabs, store}, {tabId}) {
 
 const reasonsArray = [
   {
-    name: FINGERPRINTING,
-    props: {
-      in_popup: true,
-      requestHandler: fingerPrintingRequestHandler,
-      messageHandler: onFingerPrinting,
-      popupHandler: sendUrlDeactivate,
-    },
-  },
-  {
     name: USER_URL_DEACTIVATE,
     props: {
       in_popup: true,
@@ -197,6 +155,8 @@ const reasonsArray = [
     },
   },
 ];
+
+reasonsArray.push(require('./fingerprinting').fingerPrintingReason);
 
 Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
 
