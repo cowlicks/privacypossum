@@ -4,7 +4,7 @@
 
 const {Action} = require('../schemes'),
   {URL, sendMessage, tabsSendMessage} = require('../shim'),
-  {setTabIconActive, hasAction} = require('../utils'),
+  {Listener, setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
 const {NO_ACTION, CANCEL, FINGERPRINTING, USER_URL_DEACTIVATE, BLOCK,
@@ -25,11 +25,34 @@ class Reason {
   }
 }
 
+class Reasons extends Listener {
+  constructor(reasons = []) {
+    super();
+    this.reasons = new Set();
+    reasons.map(this.addReason.bind(this));
+  }
+
+  static fromArray(reasonsArray) {
+    return new Reasons(reasonsArray.map(({name, props}) => new Reason(name, props)));
+  }
+
+  map(func) {
+    return Array.from(this.reasons).map(func);
+  }
+
+  addReason(reason) {
+    if (!this.reasons.has(reason)) {
+      this.reasons.add(reason);
+      this.onEvent(reason);
+    }
+  }
+}
+
 const tabDeactivate = new Action({reason: TAB_DEACTIVATE}), // should these go elsewhere?
   removeAction = new Action({reason: REMOVE_ACTION}),
   blockAction = new Action({reason: BLOCK});
 
-function sendRemoveAction(url, tabId) {
+function sendRemoveAction({}, url, tabId) {
   sendMessage({type: REMOVE_ACTION, url, tabId});
 }
 
@@ -68,7 +91,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
   }
 }
 
-function sendUrlDeactivate(url, tabId) {
+function sendUrlDeactivate({}, url, tabId) {
   sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
 }
 
@@ -124,7 +147,7 @@ async function onUserHostDeactivate({tabs, store}, {tabId}) {
   return setActiveState(tabs.getTab(tabId), active);
 }
 
-const reasons = [
+const reasonsArray = [
   {
     name: FINGERPRINTING,
     props: {
@@ -173,8 +196,8 @@ const reasons = [
       messageHandler: onRemoveAction,
     },
   },
-].map(({name, props}) => new Reason(name, props));
+];
 
-Object.assign(exports, {tabDeactivate, blockAction, Reason, reasons});
+Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/reasons', func) : func(exports));

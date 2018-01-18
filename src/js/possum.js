@@ -5,7 +5,8 @@
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
   {DomainStore} = require('./store'),
-  {MessageHandler} = require('./reasons/handlers'),
+  {Reasons, reasonsArray} = require('./reasons/reasons'),
+  {Handler, MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
   PopupServer = require('./popup').Server;
 
@@ -16,10 +17,14 @@ class Possum {
     this.tabs = new Tabs();
     this.tabs.startListeners();
 
-    this.webRequest = new WebRequest(this.tabs, this.store);
+    this.reasons = Reasons.fromArray(reasonsArray);
+
+    this.handler = new Handler(this.tabs, this.store, this.reasons);
+
+    this.webRequest = new WebRequest(this.tabs, this.store, this.handler);
     this.webRequest.start()
 
-    this.messageListener = new MessageHandler(this.tabs, this.store),
+    this.messageListener = new MessageHandler(this.tabs, this.store, this.reasons),
     this.messageListener.startListeners();
 
     this.popup = new PopupServer(this.tabs);

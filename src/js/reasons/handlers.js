@@ -3,28 +3,23 @@
 [(function(exports) {
 
 const shim = require('../shim'),
-    {reasons} = require('./reasons');
+    {Reasons, reasonsArray} = require('./reasons');
 
-/* Dispatcher mixin class.
+/* 
+ * Handler superclass
+ * holds functions and dispatches them
  *
- * it requires you define how to parse the arguments into the dispatch
- * functions to get the `type` and arguments to the function. This is done by
- * parseInput. It should look like:
- *
- * (arguments) => [type, dispatchedArgs];
  */
 class Dispatcher {
-  constructor(parseInput) {
-    Object.assign(this, {parseInput});
+  constructor(name, tabs, store, reasons) {
+    Object.assign(this, {name, tabs, store, reasons});
     this.funcs = new Map();
+
+    this.addReason = this.addReason.bind(this, [{store, tabs}]);
+    this.reasons.map(this.addReason.bind(this));
   }
 
-  addListener(type, callback) {
-    this.funcs.set(type, callback);
-  }
-
-  dispatcher() {
-    let [type, args] = this.parseInput(arguments);
+  dispatcher(type, args) {
     if (this.funcs.has(type)) {
       return (this.funcs.get(type)).apply(undefined, args);
     }
@@ -41,24 +36,27 @@ class Dispatcher {
       return this.addListener(reason.name, reason[this.name].bind(this, ...args));
     }
   }
-}
-
-class PopupHandler extends Dispatcher {
-  constructor(reasons_ = reasons) {
-    super(x => x);
-    Object.assign(this, {name: 'popupHandler'});
-    this.addReason = this.addReason.bind(this, []);
-    reasons_.map(this.addReason.bind(this));
+  addListener(name, func) {
+    return this.funcs.set(name, func);
   }
 }
 
-const mhInputParser = ([messenger, sender]) => [messenger.type, [messenger, sender]];
+class PopupHandler extends Dispatcher {
+  constructor(reasons = Reasons.fromArray(reasonsArray)) {
+    super('popupHandler', undefined, undefined, reasons); // no tabs or store in popup
+  }
+  isInPopup(reasonName) {
+    return this.funcs.has(reasonName);
+  }
+}
+
 class MessageHandler extends Dispatcher {
-  constructor(tabs, store, reasons_ = reasons) {
-    super(mhInputParser);
-    Object.assign(this, {tabs, store, name: 'messageHandler'});
-    this.addReason = this.addReason.bind(this, [{store, tabs}]),
-    reasons_.map(this.addReason.bind(this));
+  constructor(tabs, store, reasons = Reasons.fromArray(reasonsArray)) {
+    super('messageHandler', tabs, store, reasons);
+  }
+
+  dispatcher(messenger, sender) {
+    return super.dispatcher(messenger.type, [messenger, sender]);
   }
 
   startListeners(onMessage = shim.onMessage) {
@@ -68,12 +66,13 @@ class MessageHandler extends Dispatcher {
 }
 
 // todo wrap handler requests to assure main_frame's are not blocked.
-const rhInputParser = ([obj, details]) => [obj.action.reason, [details]];
 class RequestHandler extends Dispatcher {
-  constructor(tabs, store) {
-    super(rhInputParser);
-    Object.assign(this, {tabs, store, name: 'requestHandler'});
-    this.addReason = this.addReason.bind(this, [{store, tabs}]);
+  constructor(tabs, store, reasons) {
+    super('requestHandler', tabs, store, reasons);
+  }
+
+  dispatcher(obj, details) {
+    return super.dispatcher(obj.action.reason, [details]);
   }
 
   handleRequest(obj, details) {
@@ -84,16 +83,17 @@ class RequestHandler extends Dispatcher {
   }
 }
 
-const thInputParser = ([{tab, info}]) => [tab.action.reason, [{tab, info}]];
 class TabHandler extends Dispatcher {
-  constructor(tabs, store) {
-    super(thInputParser);
-    Object.assign(this, {tabs, store, name: 'tabHandler'});
-    this.addReason = this.addReason.bind(this, [{store, tabs}]);
+  constructor(tabs, store, reasons) {
+    super('tabHandler', tabs, store, reasons);
   }
 
   startListeners(onUpdated = shim.onUpdated) {
     onUpdated.addListener(this.handleUpdated.bind(this));
+  }
+
+  dispatcher({tab, info}) {
+    return super.dispatcher(tab.action.reason, [{tab, info}]);
   }
 
   handleUpdated(tabId, info) {
@@ -106,30 +106,22 @@ class TabHandler extends Dispatcher {
   }
 }
 
-
 class Handler {
-  constructor(tabs, store, reasons_ = reasons) {
-    this.requestHandler = new RequestHandler(tabs, store);
+  constructor(tabs, store, reasons = Reasons.fromArray(reasonsArray)) {
+    this.reasons = reasons;
+    this.requestHandler = new RequestHandler(tabs, store, reasons);
     this.handleRequest = this.requestHandler.handleRequest.bind(this.requestHandler);
 
-    this.tabHandler = new TabHandler(tabs, store);
+    this.tabHandler = new TabHandler(tabs, store, reasons);
     this.tabHandler.startListeners();
 
-    this.inPopupSet = new Set();
-
-    reasons_.map(this.addReason.bind(this));
+    this.popupHandler = new PopupHandler(reasons);
+    this.isInPopup = this.popupHandler.isInPopup.bind(this.popupHandler);
   }
-
-  isInPopup(reasonName) {
-    return this.inPopupSet.has(reasonName);
-  }
-
-  addReason(reason) {
-    this.requestHandler.addReason(reason);
-    this.tabHandler.addReason(reason);
-    if (reason.in_popup) {
-      this.inPopupSet.add(reason.name);
-    }
+  addReason(name, reason) {
+    this.requestHandler.addReason(name, reason);
+    this.tabHandler.addReason(name, reason);
+    this.popupHandler.addReason(name, reason);
   }
 }
 

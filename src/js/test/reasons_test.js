@@ -6,16 +6,27 @@ const {assert} = require('chai'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
   {main_frame, third_party} = require('./testing_utils').details,
-  {Reason, tabDeactivate} = require('../reasons/reasons'),
+  {Reason, Reasons, reasonsArray, tabDeactivate} = require('../reasons/reasons'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
+    this.reasons = Reasons.fromArray(reasonsArray);
+  });
+
+  describe('Reasons', function() {
+    it('#addReason', async function() {
+      let reasons = Reasons.fromArray(reasonsArray),
+        result = new Promise(resolve => reasons.addListener(resolve)),
+        value = 'value';
+      reasons.addReason(value);
+      assert.equal(await result, value);
+    });
   });
   describe('PopupHandler', function() {
     beforeEach(function() {
-      this.popupHandler = new PopupHandler();
+      this.popupHandler = new PopupHandler(this.reasons);
     });
     it('fingerprinting popup handler sends url deactivate', function() {
       let url = 'some url',
@@ -38,14 +49,15 @@ describe('reasons.js', function() {
         called = false; // should change to true
 
       let action = new Action({reason: name}),
-        reason = new Reason(name, {tabHandler: ({}, {}) => called = true});
+        reason = new Reason(name, {tabHandler: ({}, {}) => called = true}),
+        reasons = new Reasons();
 
       // setup tab
       this.tabs.addResource(main_frame);
       this.tabs.getTab(main_frame.tabId).action = action;
 
       // setup handler
-      let th = new TabHandler(this.tabs, undefined);
+      let th = new TabHandler(this.tabs, undefined, reasons);
       th.addReason(reason);
       th.startListeners();
 

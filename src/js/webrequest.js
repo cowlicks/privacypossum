@@ -7,11 +7,9 @@ const shim = require('./shim'), {URL} = shim,
   {Handler} = require('./reasons/handlers');
 
 class WebRequest {
-  constructor(tabs, store) {
-    this.handler = new Handler(tabs, store);
+  constructor(tabs, store, handler = new Handler(tabs, store)) {
+    Object.assign(this, {tabs, store, handler});
     this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
-    this.tabs = tabs;
-    this.store = store;
   }
 
   isThirdParty(details) {
