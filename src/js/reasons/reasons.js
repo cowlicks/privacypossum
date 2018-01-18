@@ -49,9 +49,9 @@ class Reasons extends Listener {
   }
 }
 
-const tabDeactivate = new Action({reason: TAB_DEACTIVATE}), // should these go elsewhere?
-  removeAction = new Action({reason: REMOVE_ACTION}),
-  blockAction = new Action({reason: BLOCK});
+const tabDeactivate = new Action(TAB_DEACTIVATE), // should these go elsewhere?
+  removeAction = new Action(REMOVE_ACTION),
+  blockAction = new Action(BLOCK);
 
 function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
   tabs.markAction(removeAction, message.url, message.tabId);
@@ -59,9 +59,10 @@ function onRemoveAction({store, tabs}, message) { // sent from popup so no `send
 }
 
 async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
-  let action = new Action({
-    reason: constants.USER_URL_DEACTIVATE,
-    href: url});
+  let action = new Action(
+    constants.USER_URL_DEACTIVATE,
+    {href: url},
+  );
   tabs.markAction(action, url, tabId);
   await store.setDomainPath(url, action);
 }
@@ -99,10 +100,10 @@ async function onUserHostDeactivate({tabs, store}, {tabId}) {
     } else {
       active = false;
       Object.assign(domain, {
-        action: new Action({
-          reason: constants.USER_HOST_DEACTIVATE,
-          href: url.href,
-        }),
+        action: new Action(
+          constants.USER_HOST_DEACTIVATE,
+          {href: url.href},
+        ),
       });
     }
     return domain;

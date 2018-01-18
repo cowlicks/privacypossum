@@ -62,12 +62,12 @@ describe('tabs.js', function() {
       })
       describe('#markAction', function() {
         it('adds actions', async function() {
-          this.tab.markAction(new Action({reason: BLOCK}), url);
+          this.tab.markAction(new Action(BLOCK), url);
           assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '1');
         })
         it('removes actions', async function() {
-          this.tab.markAction(new Action({reason: BLOCK}), url);
-          this.tab.markAction(new Action({reason: REMOVE_ACTION}), url);
+          this.tab.markAction(new Action(BLOCK), url);
+          this.tab.markAction(new Action(REMOVE_ACTION), url);
           assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '');
         });
       });

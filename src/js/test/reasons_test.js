@@ -48,7 +48,7 @@ describe('reasons.js', function() {
       let name = 'name',
         called = false; // should change to true
 
-      let action = new Action({reason: name}),
+      let action = new Action(name),
         reason = new Reason(name, {tabHandler: ({}, {}) => called = true}),
         reasons = new Reasons();
 
@@ -77,7 +77,7 @@ describe('reasons.js', function() {
           assignedToDetails = true,
           requestHandler = ({}, details) => Object.assign(details, {assignedToDetails}),
           reason = new Reason(name, {requestHandler}),
-          obj = {action: new Action({reason: name})};
+          obj = {action: new Action(name)};
 
         this.handler.addReason(reason);
         this.handler.handleRequest(obj, details);
@@ -96,7 +96,7 @@ describe('reasons.js', function() {
 
     describe('#handleRequest', function() {
       it('fingerprinting', function() {
-        let obj = {action: new Action({reason: constants.FINGERPRINTING})},
+        let obj = {action: new Action(constants.FINGERPRINTING)},
           details = third_party.copy();
         details.urlObj = new URL(details.url);
         this.tabs.addResource(main_frame.copy());
@@ -108,7 +108,7 @@ describe('reasons.js', function() {
 
       it('url deactivate', function() {
         let details = {}, obj = {};
-        obj.action = new Action({reason: constants.USER_URL_DEACTIVATE});
+        obj.action = new Action(constants.USER_URL_DEACTIVATE);
         this.handler.handleRequest(obj, details);
         assert.equal(details.response, constants.NO_ACTION);
       });
@@ -119,7 +119,7 @@ describe('reasons.js', function() {
           tab = new Tab();
 
         this.tabs.setTab(tabId, tab);
-        obj.action = new Action({reason: constants.USER_HOST_DEACTIVATE});
+        obj.action = new Action(constants.USER_HOST_DEACTIVATE);
 
         this.handler.handleRequest(obj, details);
 

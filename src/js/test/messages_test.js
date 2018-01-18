@@ -37,8 +37,8 @@ describe('messages.js', function() {
     describe('Deactivate', function() {
       let {main_frame} = details,
         {url, tabId} = main_frame,
-        urlAction = new Action({reason: constants.USER_URL_DEACTIVATE, href: url}),
-        hostAction = new Action({reason: constants.USER_HOST_DEACTIVATE, href: url});
+        urlAction = new Action(constants.USER_URL_DEACTIVATE, {href: url}),
+        hostAction = new Action(constants.USER_HOST_DEACTIVATE, {href: url});
       beforeEach(function() {
         this.tabs.addResource(main_frame);
       });
@@ -65,12 +65,14 @@ describe('messages.js', function() {
     describe('#onFingerPrinting', function() {
       let url = new URL(details.script.url),
         message = {type: constants.FINGERPRINTING, url: url.href},
-        action = new Action({
-          reason: constants.FINGERPRINTING,
-          href: url.href,
-          frameUrl: undefined,
-          tabUrl: undefined,
-        });
+        action = new Action(
+          constants.FINGERPRINTING,
+          {
+            href: url.href,
+            frameUrl: undefined,
+            tabUrl: undefined,
+          }
+        );
 
       beforeEach(async function() {
         this.ml.tabs.addResource(details.script); // add the resource
@@ -99,7 +101,7 @@ describe('messages.js', function() {
         assert.isTrue(domain.paths.hasOwnProperty(url2.pathname), 'path set on domain');
 
         let path = domain.paths[url2.pathname],
-          action2 = new Action(Object.assign({}, action, {href: url2.href}));
+          action2 = new Action(action.reason, Object.assign({}, action.data, {href: url2.href}));
 
         assert.deepEqual(path.action, action2, 'correct action set');
       });

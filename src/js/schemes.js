@@ -21,8 +21,8 @@
 
 /* `reason` is from constants.reasons* */
 class Action {
-  constructor({reason, href, frameUrl, tabUrl}) {
-    Object.assign(this, {reason, href, frameUrl, tabUrl});
+  constructor(reason, data) {
+    Object.assign(this, {reason, data}, data);
   }
 }
 

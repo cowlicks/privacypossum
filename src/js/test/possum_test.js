@@ -28,7 +28,7 @@ describe('possum.js', function() {
       this.possum.webRequest.handler.addReason(blocker);
       await this.possum.store.setDomainPath(
         details.script.url,
-        new Action({reason: blocker.name, href: details.script.url})
+        new Action(blocker.name, {href: details.script.url})
       );
 
       // set tab

@@ -31,7 +31,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
       tabUrl = tabs.getTabUrl(sender.tab.id),
       {href} = new URL(url);
 
-    let action = new Action({reason, href, frameUrl, tabUrl});
+    let action = new Action(reason, {href, frameUrl, tabUrl});
     tabs.markAction({reason: FINGERPRINTING}, href, sender.tab.id);
     await store.setDomainPath(href, action);
   }
