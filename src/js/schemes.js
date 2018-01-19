@@ -26,19 +26,13 @@ class Action {
   }
 }
 
-class Path {
-  constructor(action) {
-    this.action = action;
-  }
-}
-
 class Domain {
   constructor(data = {paths: {}}) {
     Object.assign(this, data);
   }
 
   setPath(path, action) {
-    this.paths[path] = new Path(action);
+    this.paths[path] = action;
     return this;
   }
 
@@ -56,10 +50,10 @@ class Domain {
   }
 
   updatePath(path, callback) {
-    return this.setPath(path, callback(this.getPath));
+    return this.setPath(path, callback(this.getPath(path)));
   }
 }
 
-Object.assign(exports, {Action, Domain, Path});
+Object.assign(exports, {Action, Domain});
 
 })].map(func => typeof exports == 'undefined' ? define('/schemes', func) : func(exports));
