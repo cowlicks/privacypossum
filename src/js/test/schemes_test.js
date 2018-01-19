@@ -1,27 +1,29 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {Domain, Action} = require('../schemes'),
-  constants = require('../constants');
+  {Domain} = require('../schemes');
 
-
-function makeAction(reason, url, frameUrl, tabUrl) {
-  return new Action({reason, url, frameUrl, tabUrl});
-}
 
 describe('schemes.js', function() {
   describe('Domain', function() {
-    describe('#getResponse', function() {
-      it('gets and sets paths', function() {
-        let [k1, k2] = ['path1', 'path2'],
-          [v1, v2] = ['value1', 'value2'],
-          d = new Domain({paths: {[k1]: v1}});
+    it('get set update path', async function() {
+      let [[k1, v1], [k2, v2]] = [['k1', 'v1'], ['k2', 'v2']],
+        update = 'update',
+        d = new Domain({paths: {[k1]: v1}});
 
-        assert.deepEqual(d.getPath(k1), v1);
+      assert.deepEqual(d.getPath(k1), v1);
 
-        d.setPath(k2, v2);
-        assert.deepEqual(d.getPath(k2), v2);
+      d.setPath(k2, v2);
+      assert.deepEqual(d.getPath(k2), v2);
+
+      let before = await new Promise(resolve => {
+        d.updatePath(k2, value => {
+          resolve(value);
+          return update;
+        });
       });
+      assert.equal(before, v2);
+      assert.equal(d.getPath(k2), update);
     });
   });
 });
