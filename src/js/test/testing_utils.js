@@ -7,6 +7,28 @@ function clone(val) {
   return JSON.parse(JSON.stringify(val));
 }
 
+function makeGetterSetterUpdater(obj, suffix) {
+  return ['get', 'set', 'update'].map(prefix => obj[prefix + suffix].bind(obj));
+}
+
+async function testGetSetUpdate(obj, suffix) {
+  const [getter, setter, updater] = makeGetterSetterUpdater(obj, suffix),
+   {assert} = require('chai'),
+   [k1, v1] = ['k1', 'v1'], update = 'update';
+
+  setter(k1, v1);
+  assert.deepEqual(getter(k1), v1);
+
+  let before = await new Promise(resolve => {
+    updater(k1, value => {
+      resolve(value);
+      return update;
+    });
+  });
+  assert.equal(before, v1);
+  assert.equal(getter(k1), update);
+}
+
 function Mock(retval) {
   let out = function() {
     out.calledWith = Array.from(arguments);
@@ -105,4 +127,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender});
+Object.assign(exports, {watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate});
