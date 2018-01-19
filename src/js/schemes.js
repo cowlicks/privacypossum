@@ -60,6 +60,9 @@ class Domain {
   updatePath(path, callback) {
     return this.setPath(path, callback(this.getPath(path)));
   }
+  updatePathAction(path, callback) {
+    return this.setPathAction(path, callback(this.getPathAction(path)));
+  }
 }
 
 Object.assign(exports, {Action, Domain});
