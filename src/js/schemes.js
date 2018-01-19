@@ -22,7 +22,16 @@
 /* `reason` is from constants.reasons* */
 class Action {
   constructor(reason, data) {
-    Object.assign(this, {reason, data}, data);
+    Object.assign(this, {reason, data});
+  }
+  setData(key, val) {
+    return this.data[key] = val;
+  }
+  getData(key) {
+    return this.data[key];
+  }
+  deleteData(key) {
+    return delete this.data[key];
   }
 }
 

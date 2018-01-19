@@ -48,9 +48,11 @@ describe('messages.js', function() {
           {type: constants.USER_URL_DEACTIVATE, url, tabId},
           undefined
         );
-        let path = this.ml.store.getUrl(url);
-        assert.deepEqual(path.action, urlAction);
+        let action = this.ml.store.getUrl(url);
+        assert.equal(action.reason, urlAction.reason);
+        assert.include(action.data, urlAction.data);
       });
+
 
       it('host deactivate updates storage', async function() {
         await this.ml.dispatcher(
