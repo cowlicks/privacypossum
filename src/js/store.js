@@ -63,7 +63,6 @@ class DomainStore {
     await this.set(key, callback(this.get(key)));
   }
 
-  /* URL specific stuff */
   getDomain(url) {
     url = new URL(url);
     return this.get(url.hostname);
@@ -87,19 +86,22 @@ class DomainStore {
     return await this.setDomain(url, callback(domain));
   }
 
-  getDomainPath(url) {
+  getUrl(url) {
     let {pathname} = new URL(url);
     return this.getDomain(url).getPath(pathname);
   }
 
-  async setDomainPath(url, action) {
+  async setUrl(url, action) {
     await this.updateDomain(url, (domain) => {
       let {pathname} = new URL(url);
       return domain.setPathAction(pathname, action);
     });
   }
 
-  async deleteDomainPath(url) {
+  async updateUrl(url, callback) {
+  }
+
+  async deleteUrl(url) {
     return await this.updateDomain(url, (domain) => {
       let {pathname} = new URL(url);
       return domain.deletePath(pathname);

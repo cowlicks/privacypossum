@@ -25,10 +25,10 @@ describe('store.js', function() {
 
       await this.dtree.set(host, domain);
 
-      await this.dtree.deleteDomainPath(url1);
+      await this.dtree.deleteUrl(url1);
 
-      assert.isUndefined(this.dtree.getDomainPath(url1));
-      assert.equal(this.dtree.getDomainPath(url2), path2);
+      assert.isUndefined(this.dtree.getUrl(url1));
+      assert.equal(this.dtree.getUrl(url2), path2);
       assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: path2}});
 
       let newTree = await loadNewFromTree(this.dtree);

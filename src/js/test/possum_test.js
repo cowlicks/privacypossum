@@ -26,7 +26,7 @@ describe('possum.js', function() {
       let blocker = new Reason('block', {requestHandler: ({}, d) => d.response = constants.CANCEL});
 
       this.possum.webRequest.handler.addReason(blocker);
-      await this.possum.store.setDomainPath(
+      await this.possum.store.setUrl(
         details.script.url,
         new Action(blocker.name, {href: details.script.url})
       );

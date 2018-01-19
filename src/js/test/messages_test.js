@@ -48,7 +48,7 @@ describe('messages.js', function() {
           {type: constants.USER_URL_DEACTIVATE, url, tabId},
           undefined
         );
-        let path = this.ml.store.getDomainPath(url);
+        let path = this.ml.store.getUrl(url);
         assert.deepEqual(path.action, urlAction);
       });
 

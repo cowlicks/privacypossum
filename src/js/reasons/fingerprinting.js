@@ -33,7 +33,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
 
     let action = new Action(reason, {href, frameUrl, tabUrl});
     tabs.markAction({reason: FINGERPRINTING}, href, sender.tab.id);
-    await store.setDomainPath(href, action);
+    await store.setUrl(href, action);
   }
 }
 

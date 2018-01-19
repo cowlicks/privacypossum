@@ -12,7 +12,7 @@ async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
     {href: url},
   );
   tabs.markAction(action, url, tabId);
-  await store.setDomainPath(url, action);
+  await store.setUrl(url, action);
 }
 
 const urlDeactivateReason = {

@@ -51,7 +51,7 @@ const tabDeactivate = new Action(TAB_DEACTIVATE), // should these go elsewhere?
 
 function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
   tabs.markAction(removeAction, message.url, message.tabId);
-  return store.deleteDomainPath(message.url);
+  return store.deleteUrl(message.url);
 }
 
 function setActiveState(possumTab, active) {
