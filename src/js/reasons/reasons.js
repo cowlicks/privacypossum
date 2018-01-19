@@ -3,17 +3,13 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
-  {sendUrlDeactivate, sendRemoveAction} = require('./utils'),
+  {setResponse, sendUrlDeactivate} = require('./utils'),
   {URL} = require('../shim'),
   {Listener, setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
-const {NO_ACTION, CANCEL, USER_URL_DEACTIVATE, BLOCK,
+const {NO_ACTION, CANCEL, BLOCK,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
-
-function setResponse(response, shortCircuit) {
-  return ({}, details) => Object.assign(details, {response, shortCircuit});
-}
 
 /**
  * `name` is the string name of this reasons, see constants.reasons.*
@@ -56,15 +52,6 @@ const tabDeactivate = new Action(TAB_DEACTIVATE), // should these go elsewhere?
 function onRemoveAction({store, tabs}, message) { // sent from popup so no `sender`
   tabs.markAction(removeAction, message.url, message.tabId);
   return store.deleteDomainPath(message.url);
-}
-
-async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
-  let action = new Action(
-    constants.USER_URL_DEACTIVATE,
-    {href: url},
-  );
-  tabs.markAction(action, url, tabId);
-  await store.setDomainPath(url, action);
 }
 
 function setActiveState(possumTab, active) {
@@ -113,15 +100,6 @@ async function onUserHostDeactivate({tabs, store}, {tabId}) {
 
 const reasonsArray = [
   {
-    name: USER_URL_DEACTIVATE,
-    props: {
-      in_popup: true,
-      requestHandler: setResponse(NO_ACTION, true),
-      messageHandler: onUserUrlDeactivate,
-      popupHandler: sendRemoveAction,
-    },
-  },
-  {
     name: TAB_DEACTIVATE,
     props: {
       requestHandler: setResponse(NO_ACTION, true),
@@ -154,6 +132,7 @@ const reasonsArray = [
 ];
 
 reasonsArray.push(require('./fingerprinting').fingerPrintingReason);
+reasonsArray.push(require('./user_url_deactivate').urlDeactivateReason);
 
 Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
 
