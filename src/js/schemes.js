@@ -35,6 +35,9 @@ class Domain {
     this.paths[path] = action;
     return this;
   }
+  setPathAction(path, action) {
+    return this.setPath(path, {action});
+  }
 
   hasPath(path) {
     return this.paths.hasOwnProperty(path);
@@ -42,6 +45,11 @@ class Domain {
 
   getPath(path) {
     return this.paths[path];
+  }
+  getPathAction(path) {
+    if (this.hasPath(path)) {
+      return this.getPath(path).action;
+    }
   }
 
   deletePath(path) {
