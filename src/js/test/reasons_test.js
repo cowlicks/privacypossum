@@ -2,17 +2,36 @@
 
 const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
+  {DomainStore} = require('../store'),
   {URL, onMessage, onUpdated} = require('../shim'),
   constants = require('../constants'),
   {Action} = require('../schemes'),
   {main_frame, third_party} = require('./testing_utils').details,
   {Reason, Reasons, reasonsArray, tabDeactivate} = require('../reasons/reasons'),
+  {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
+    this.store = new DomainStore('name'),
     this.reasons = Reasons.fromArray(reasonsArray);
+  });
+
+  describe('user_url_deactivate', function() {
+    it('saves previous action', async function() {
+      const {url, tabId} = main_frame,
+        {store, tabs} = this,
+        firstAction = new Action('something');
+
+      tabs.addResource(main_frame.copy());
+      await this.store.setUrl(url, firstAction);
+
+      await onUserUrlDeactivate({store, tabs}, {url, tabId});
+      let action = store.getUrl(url);
+      assert.equal(action.reason, constants.USER_URL_DEACTIVATE);
+      assert.deepEqual(action.getData('deactivatedAction'), firstAction);
+    });
   });
 
   describe('Reasons', function() {

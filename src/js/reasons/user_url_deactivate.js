@@ -12,7 +12,10 @@ async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
     {href: url},
   );
   tabs.markAction(action, url, tabId);
-  await store.setUrl(url, action);
+  await store.updateUrl(url, before => {
+    action.setData('deactivatedAction', before);
+    return action;
+  });
 }
 
 const urlDeactivateReason = {
@@ -25,6 +28,6 @@ const urlDeactivateReason = {
   },
 }
 
-Object.assign(exports, {urlDeactivateReason});
+Object.assign(exports, {onUserUrlDeactivate, urlDeactivateReason});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/user_url_deactivate', func) : func(exports));
