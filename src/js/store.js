@@ -99,6 +99,10 @@ class DomainStore {
   }
 
   async updateUrl(url, callback) {
+    return await this.updateDomain(url, (domain) => {
+      let {pathname} = new URL(url);
+      return domain.updatePathAction(pathname, callback);
+    });
   }
 
   async deleteUrl(url) {
