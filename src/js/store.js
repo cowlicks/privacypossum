@@ -70,7 +70,7 @@ class DomainStore {
 
   async setDomain(url, value) {
     url = new URL(url);
-    await this.set(url.hostname, value);
+    return await this.set(url.hostname, value);
   }
 
   async deleteDomain(url) {
@@ -88,7 +88,7 @@ class DomainStore {
 
   getUrl(url) {
     let {pathname} = new URL(url);
-    return this.getDomain(url).getPath(pathname);
+    return this.getDomain(url).getPathAction(pathname);
   }
 
   async setUrl(url, action) {
