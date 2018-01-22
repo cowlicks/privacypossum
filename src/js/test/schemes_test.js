@@ -2,8 +2,8 @@
 
 const assert = require('chai').assert,
   {Domain} = require('../schemes'),
-  {testGetSetUpdate} = require('./testing_utils');
-
+  {testGetSetUpdate} = require('./testing_utils'),
+  {Action} = require('../schemes');
 
 describe('schemes.js', function() {
   describe('Domain', function() {
@@ -17,7 +17,10 @@ describe('schemes.js', function() {
     });
   });
   it('get/set/updatePathAction', async function() {
-    let domain = new Domain();
-    await testGetSetUpdate(domain, 'PathAction');
+    let domain = new Domain(),
+      path = 'path',
+      action = new Action('reason1', 'data1'),
+      update = new Action('reason2', 'data2');
+    await testGetSetUpdate(domain, 'PathAction', [path, action, update]);
   });
 });

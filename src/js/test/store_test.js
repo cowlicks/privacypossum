@@ -2,7 +2,7 @@
 
 const assert = require('chai').assert,
   {DomainStore} = require('../store'),
-  {Domain} = require('../schemes');
+  {Domain, Action} = require('../schemes');
 
 describe('store.js', function() {
   describe('DomainStore', function() {
@@ -20,21 +20,22 @@ describe('store.js', function() {
 
     it('deletes', async function() {
       let host = 'some.key.com', path1 = '/val1', path2 = '/val2',
-        url1 = `https://${host}${path1}`, url2 = `https://${host}${path2}`;
+        url1 = `https://${host}${path1}`, url2 = `https://${host}${path2}`,
+        action1 = new Action(path1), action2 = new Action(path2);
 
-      await this.dtree.setUrl(url1, path1);
-      await this.dtree.setUrl(url2, path2);
+      await this.dtree.setUrl(url1, action1);
+      await this.dtree.setUrl(url2, action2);
 
       await this.dtree.deleteUrl(url1);
 
       assert.isUndefined(this.dtree.getUrl(url1));
-      assert.equal(this.dtree.getUrl(url2), path2);
-      assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: {action: path2}}});
+      assert.equal(this.dtree.getUrl(url2), action2);
+      assert.deepEqual(this.dtree.getDomain(url2), {paths: {[path2]: {action: action2}}});
 
       let newTree = await loadNewFromTree(this.dtree);
 
       // unchanged after loading
-      assert.deepEqual(newTree.getDomain(url2), {paths: {[path2]: {action: path2}}});
+      assert.deepEqual(newTree.getDomain(url2), {paths: {[path2]: {action: action2}}});
 
       await newTree.deleteDomain(url1);
       assert.isUndefined(newTree.getDomain(url1));

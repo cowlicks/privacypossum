@@ -11,10 +11,9 @@ function makeGetterSetterUpdater(obj, suffix) {
   return ['get', 'set', 'update'].map(prefix => obj[prefix + suffix].bind(obj));
 }
 
-async function testGetSetUpdate(obj, suffix) {
+async function testGetSetUpdate(obj, suffix, [k1, v1, update] = ['k1', 'v1', 'update']) {
   const [getter, setter, updater] = makeGetterSetterUpdater(obj, suffix),
-   {assert} = require('chai'),
-   [k1, v1] = ['k1', 'v1'], update = 'update';
+   {assert} = require('chai');
 
   setter(k1, v1);
   assert.deepEqual(getter(k1), v1);
