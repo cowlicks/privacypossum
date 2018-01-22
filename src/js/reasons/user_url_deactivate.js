@@ -3,17 +3,21 @@
 [(function(exports) {
 
 const {USER_URL_DEACTIVATE, NO_ACTION} = require('../constants'),
-    {setResponse, sendRemoveAction} = require('./utils'),
+    {setResponse, sendUrlDeactivate} = require('./utils'),
     {Action} = require('../schemes');
 
 async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
-  let action = new Action(
-    USER_URL_DEACTIVATE,
-    {href: url},
-  );
-  tabs.markAction(action, url, tabId);
-  await store.updateUrl(url, before => {
-    action.setData('deactivatedAction', before);
+  await store.updateUrl(url, currentAction => {
+    let action;
+    if (currentAction.reason === USER_URL_DEACTIVATE) {
+      action = currentAction.getData('deactivatedAction');
+    } else {
+      action = new Action(USER_URL_DEACTIVATE, {
+        href: url,
+        deactivatedAction: currentAction,
+      });
+    }
+    tabs.markAction(action, url, tabId);
     return action;
   });
 }
@@ -24,7 +28,7 @@ const urlDeactivateReason = {
     in_popup: true,
     requestHandler: setResponse(NO_ACTION, true),
     messageHandler: onUserUrlDeactivate,
-    popupHandler: sendRemoveAction,
+    popupHandler: sendUrlDeactivate,
   },
 }
 
