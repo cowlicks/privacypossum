@@ -11,7 +11,7 @@
 
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
-  {POPUP, USER_HOST_DEACTIVATE} = require('./constants');
+  {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE} = require('./constants');
 
 const noActionsText = `No tracking detected`;
 
@@ -134,14 +134,27 @@ class Popup {
     let ul = doc.createElement('ul');
 
     actionsUrlsHandlers.forEach(({action, handler}, url) => {
-      let li = doc.createElement('li');
-      li.className = 'action';
-      li.innerText = `url: ${url} with action: ${action.reason}`;
-      li.onclick = handler;
-      ul.appendChild(li);
+      ul.appendChild(makeActionHtml(action, handler, url));
     });
     return ul;
   }
+}
+
+function makeActionHtml(action, handler, url, doc = document) {
+  let li = doc.createElement('li'),
+    label = doc.createElement('label'),
+    checkbox = doc.createElement('input');
+
+  checkbox.type = 'checkbox',
+    checkbox.checked = action.reason != USER_URL_DEACTIVATE,
+    checkbox.addEventListener('change', handler, false);
+
+  label.appendChild(checkbox);
+  label.appendChild(doc.createTextNode(`${url}`));
+
+  li.className = 'action',
+    li.appendChild(label);
+  return li;
 }
 
 class Server {
