@@ -9,9 +9,11 @@ const assert = require('chai').assert,
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
-let {script, main_frame, first_party_script} = details,
+const {script, main_frame, first_party_script} = details,
   reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
   respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
+
+const {CANCEL, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, FINGERPRINTING, NO_ACTION} = constants;
 
 describe('possum.js', function() {
   beforeEach(function() {
@@ -23,19 +25,19 @@ describe('possum.js', function() {
 
   describe('user deactivates', function() {
     beforeEach(async function() {
-      let blocker = new Reason('block', {requestHandler: ({}, d) => d.response = constants.CANCEL});
+      this.blocker = new Reason('block', {requestHandler: ({}, d) => d.response = CANCEL});
 
-      this.possum.webRequest.handler.addReason(blocker);
+      this.possum.webRequest.handler.addReason(this.blocker);
       await this.possum.store.setUrl(
         details.script.url,
-        new Action(blocker.name, {href: details.script.url})
+        new Action(this.blocker.name, {href: details.script.url})
       );
 
       // set tab
       this.onBeforeRequest(main_frame.copy());
     });
     it('ensure we block block it & strip cookies', function() {
-      assert.deepEqual(this.onBeforeRequest(script.copy()), constants.CANCEL);
+      assert.deepEqual(this.onBeforeRequest(script.copy()), CANCEL);
       // assure it strips cookies
       assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), {'requestHeaders': [notCookie]});
       assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), {'responseHeaders': [notCookie]});
@@ -44,32 +46,34 @@ describe('possum.js', function() {
     describe('unblocked urls', function() {
       beforeEach(async function() {
         let {url, tabId} = script.copy();
-        await sendMessage({type: constants.USER_URL_DEACTIVATE, url, tabId});
+        await sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
       });
 
       it('unblocks requests', function() {
         // assure it is blocked
-        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeRequest(script.copy()), NO_ACTION);
       });
 
       it('does not strip cookies when the url is a 3rd party', function() {
-        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), NO_ACTION);
       });
 
       it('shown in the popup', async function() {
         this.onBeforeRequest(script.copy());
 
-        let tabId = details.script.tabId;
+        const {tabId, url} = details.script;
         tabsQuery.tabs = [{id: tabId}];
 
         let popup = new Popup(tabId);
         await popup.connect();
-        assert.isTrue(popup.urlActions.has(details.script.url), 'popup has the blocked url');
 
-        await popup.urlActions.get(details.script.url).handler();
-        assert.isFalse(popup.urlActions.has(details.script.url), 'url removed from popup');
-        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.NO_ACTION, 'no action');
+        assert.equal(popup.urlActions.get(url).action.reason, USER_URL_DEACTIVATE);
+
+        await popup.urlActions.get(url).handler();
+
+        assert.equal(popup.urlActions.get(url).action.reason, this.blocker.name);
+        assert.deepEqual(this.onBeforeRequest(script.copy()), CANCEL, 'reverted');
       });
     });
 
@@ -79,27 +83,27 @@ describe('possum.js', function() {
         this.onBeforeRequest(main_frame.copy());
 
         // deactivate tab
-        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+        await sendMessage({type: USER_HOST_DEACTIVATE, tabId});
       });
 
       it('does not block on this tab', async function() {
         // not blocked on this tab
         let script_result = this.onBeforeRequest(script.copy());
-        assert.deepEqual(script_result, constants.NO_ACTION);
+        assert.deepEqual(script_result, NO_ACTION);
 
         // re-activate tab
-        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+        await sendMessage({type: USER_HOST_DEACTIVATE, tabId});
 
         // blocked again
-        assert.deepEqual(this.onBeforeRequest(script.copy()), constants.CANCEL);
+        assert.deepEqual(this.onBeforeRequest(script.copy()), CANCEL);
       });
 
       it('does not strip headers', async function() {
-        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), constants.NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), constants.NO_ACTION);
+        assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), NO_ACTION);
 
         // re-activate tab
-        await sendMessage({type: constants.USER_HOST_DEACTIVATE, tabId});
+        await sendMessage({type: USER_HOST_DEACTIVATE, tabId});
 
         // assure it strips cookies again
         assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), {'requestHeaders': [notCookie]});
@@ -117,7 +121,7 @@ describe('possum.js', function() {
 
       // page see's fingerprinting and sends message
       await sendMessage(
-        {type: constants.FINGERPRINTING, url: details.script.url},
+        {type: FINGERPRINTING, url: details.script.url},
         toSender(main_frame.copy())
       );
     });
@@ -125,14 +129,14 @@ describe('possum.js', function() {
     describe('first party fingerprinting', function() {
       beforeEach(async function() {
         await sendMessage(
-          {type: constants.FINGERPRINTING, url: details.first_party_script.url},
+          {type: FINGERPRINTING, url: details.first_party_script.url},
           toSender(main_frame.copy())
         );
       });
 
       it('does not block firstparty fingerprinting scripts', function() {
         let result = this.onBeforeRequest(first_party_script.copy());
-        assert.deepEqual(result, constants.NO_ACTION);
+        assert.deepEqual(result, NO_ACTION);
       })
 
       it('alerts the page script', function() {
@@ -152,7 +156,7 @@ describe('possum.js', function() {
     it('blocks fingerprinting after it is detected', function() {
       // another request for the fingerprinting script is made
       let result = this.onBeforeRequest(script.copy());
-      assert.deepEqual(result, constants.CANCEL);
+      assert.deepEqual(result, CANCEL);
       getBadgeText({tabId: details.script.tabId}, (text) => assert.equal(text, '1'));
     });
 
@@ -161,7 +165,7 @@ describe('possum.js', function() {
 
       possum2.webRequest.onBeforeRequest(main_frame.copy());
       let result = possum2.webRequest.onBeforeRequest(script.copy());
-      assert.deepEqual(result, constants.CANCEL);
+      assert.deepEqual(result, CANCEL);
     });
 
     it('loads 2 blocked paths', async function() {
@@ -172,7 +176,7 @@ describe('possum.js', function() {
       this.onBeforeRequest(details2);
 
       await sendMessage(
-        {type: constants.FINGERPRINTING, url: details2.url},
+        {type: FINGERPRINTING, url: details2.url},
         toSender(main_frame.copy())
       );
 
@@ -181,8 +185,8 @@ describe('possum.js', function() {
 
       let result = possum2.webRequest.onBeforeRequest(script.copy()),
         result2 =  possum2.webRequest.onBeforeRequest(details2);
-      assert.deepEqual(result, constants.CANCEL);
-      assert.deepEqual(result2, constants.CANCEL);
+      assert.deepEqual(result, CANCEL);
+      assert.deepEqual(result2, CANCEL);
       getBadgeText({tabId: details2.tabId}, (text) => assert.equal(text, '2'));
     })
 
@@ -196,11 +200,11 @@ describe('possum.js', function() {
 
       // clicking changes action FP -> user deactivated
       popup.urlActions.get(url).handler();
-      assert.equal(popup.urlActions.get(url).action.reason, constants.USER_URL_DEACTIVATE);
+      assert.equal(popup.urlActions.get(url).action.reason, USER_URL_DEACTIVATE);
 
       // now click changes action user deactivated -> removed
       popup.urlActions.get(url).handler();
-      assert.isFalse(popup.urlActions.has(url), 'second click removes the action');
+      assert.equal(popup.urlActions.get(url).action.reason, FINGERPRINTING);
     });
   });
 });

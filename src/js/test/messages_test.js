@@ -44,13 +44,26 @@ describe('messages.js', function() {
       });
 
       it('url deactivate updates storage', async function() {
-        await this.ml.dispatcher(
+        let beforeAction = new Action('before');
+        await this.ml.store.setUrl(url, beforeAction);
+
+        await this.ml.dispatcher( // deactivate initial action
           {type: constants.USER_URL_DEACTIVATE, url, tabId},
           undefined
         );
-        let action = this.ml.store.getUrl(url);
-        assert.equal(action.reason, urlAction.reason);
-        assert.include(action.data, urlAction.data);
+
+        let action1 = this.ml.store.getUrl(url);
+        assert.equal(action1.reason, urlAction.reason);
+        assert.include(action1.data, urlAction.data);
+        assert.deepEqual(action1.data.deactivatedAction, beforeAction);
+
+        await this.ml.dispatcher( // reactivate initial action
+          {type: constants.USER_URL_DEACTIVATE, url, tabId},
+          undefined
+        );
+
+        let action2 = this.ml.store.getUrl(url);
+        assert.deepEqual(action2, beforeAction);
       });
 
 
