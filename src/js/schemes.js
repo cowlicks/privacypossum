@@ -21,6 +21,9 @@
 
 /* `reason` is from constants.reasons* */
 class Action {
+  static coerce(obj) {
+    return obj instanceof Action ? obj : new Action(obj.reason, obj.data);
+  }
   constructor(reason, data) {
     Object.assign(this, {reason, data});
   }
@@ -45,6 +48,7 @@ class Domain {
     return this;
   }
   setPathAction(path, action) {
+    action = Action.coerce(action);
     return this.setPath(path, {action});
   }
 
@@ -57,7 +61,7 @@ class Domain {
   }
   getPathAction(path) {
     if (this.hasPath(path)) {
-      return this.getPath(path).action;
+      return Action.coerce(this.getPath(path).action);
     }
   }
 
