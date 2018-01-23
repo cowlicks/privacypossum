@@ -111,7 +111,7 @@ class Popup {
   }
 
   showActions() {
-    let html = this.makeActionsHtml(this.urlActions);
+    let html = makeActionsHtml(this.urlActions);
     $('actions').innerHTML = '';
     $('actions').appendChild(html);
   }
@@ -124,20 +124,21 @@ class Popup {
     return out;
   }
 
-  makeActionsHtml(actionsUrlsHandlers, doc = document) {
-    if (actionsUrlsHandlers.size === 0) {
-      let empty = doc.createElement('div');
-      empty.id = 'emptyActions';
-      empty.innerText = noActionsText;
-      return empty;
-    }
-    let ul = doc.createElement('ul');
+}
 
-    actionsUrlsHandlers.forEach(({action, handler}, url) => {
-      ul.appendChild(makeActionHtml(action, handler, url));
-    });
-    return ul;
+function makeActionsHtml(actionsUrlsHandlers, doc = document) {
+  if (actionsUrlsHandlers.size === 0) {
+    let empty = doc.createElement('div');
+    empty.id = 'emptyActions';
+    empty.innerText = noActionsText;
+    return empty;
   }
+  let ul = doc.createElement('ul');
+
+  actionsUrlsHandlers.forEach(({action, handler}, url) => {
+    ul.appendChild(makeActionHtml(action, handler, url));
+  });
+  return ul;
 }
 
 function makeActionHtml(action, handler, url, doc = document) {
@@ -149,8 +150,8 @@ function makeActionHtml(action, handler, url, doc = document) {
     checkbox.checked = action.reason != USER_URL_DEACTIVATE,
     checkbox.addEventListener('change', handler, false);
 
-  label.appendChild(checkbox);
-  label.appendChild(doc.createTextNode(`${url}`));
+  label.appendChild(checkbox),
+    label.appendChild(doc.createTextNode(`${url}`));
 
   li.className = 'action',
     li.appendChild(label);
