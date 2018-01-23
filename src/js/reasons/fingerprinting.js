@@ -40,7 +40,6 @@ async function onFingerPrinting({store, tabs}, message, sender) {
 const fingerPrintingReason = {
   name: FINGERPRINTING,
   props: {
-    in_popup: true,
     requestHandler: fingerPrintingRequestHandler,
     messageHandler: onFingerPrinting,
     popupHandler: sendUrlDeactivate,

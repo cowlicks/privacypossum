@@ -25,7 +25,6 @@ async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
 const urlDeactivateReason = {
   name: USER_URL_DEACTIVATE,
   props: {
-    in_popup: true,
     requestHandler: setResponse(NO_ACTION, true),
     messageHandler: onUserUrlDeactivate,
     popupHandler: sendUrlDeactivate,

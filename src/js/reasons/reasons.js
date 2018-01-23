@@ -118,7 +118,6 @@ const reasonsArray = [
   {
     name: BLOCK,
     props: {
-      in_popup: true,
       requestHandler: setResponse(CANCEL, true),
       popupHandler: sendUrlDeactivate,
     },
