@@ -101,7 +101,7 @@ class Popup {
     }
 
     onOff.setAttribute('active', `${active}`);
-    onOff.title = `click to ${active ? 'deactivate' : 'activate'} for this site`;
+    onOff.title = `click to ${active ? 'disable' : 'enable'} for this site`;
 
     let img = doc.createElement('img');
 
