@@ -54,8 +54,8 @@ class Model {
 
 class Popup {
   constructor(tabId) {
-    this.handlerHandler = new PopupHandler();
-    this.getClickHandler = this.handlerHandler.getFunc.bind(this.handlerHandler);
+    this.handler = new PopupHandler();
+    this.getClickHandler = this.handler.getFunc.bind(this.handler);
     this.tabId = tabId;
     this.setOnOffHandler();
     this.urlActions = new Map();
