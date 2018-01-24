@@ -4,14 +4,13 @@ const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
   {DomainStore} = require('../store'),
   {URL, onMessage, onUpdated} = require('../shim'),
-  constants = require('../constants'),
   {Action} = require('../schemes'),
   {main_frame, third_party} = require('./testing_utils').details,
   {Reason, Reasons, reasonsArray, tabDeactivate} = require('../reasons/reasons'),
   {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
-const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING} = constants;
+const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING} = require('../constants');
 
 describe('reasons.js', function() {
   beforeEach(function() {
