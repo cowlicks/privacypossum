@@ -49,6 +49,22 @@ class PopupHandler extends Dispatcher {
   isInPopup(reasonName) {
     return this.funcs.has(reasonName);
   }
+  getInfo(reasonName) {
+    if (this.info.has(reasonName)) {
+      return this.info.get(reasonName);
+    }
+    return {
+      icon: '/media/block-icon.png',
+      attribution: "CCBY ProSymbols, US",
+    };
+  }
+  addReason(args, reason) {
+    let {name, popup_info} = reason;
+    super.addReason(args, reason);
+    if (popup_info) {
+      this.info.set(name, popup_info);
+    }
+  }
 }
 
 class MessageHandler extends Dispatcher {

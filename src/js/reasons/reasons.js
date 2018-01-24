@@ -17,8 +17,8 @@ const {NO_ACTION, CANCEL, BLOCK,
  * `requestHandler` function with signature ({store, tabs}, details)
  */
 class Reason {
-  constructor(name, {messageHandler, requestHandler, tabHandler, in_popup, popupHandler}) {
-    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, in_popup, popupHandler});
+  constructor(name, {messageHandler, requestHandler, tabHandler, popup_info, popupHandler}) {
+    Object.assign(this, {name, messageHandler, requestHandler, tabHandler, popup_info, popupHandler});
   }
 }
 
