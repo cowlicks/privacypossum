@@ -11,6 +11,8 @@ const {assert} = require('chai'),
   {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
+const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING} = constants;
+
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
@@ -29,7 +31,7 @@ describe('reasons.js', function() {
 
       await onUserUrlDeactivate({store, tabs}, {url, tabId});
       let action = store.getUrl(url);
-      assert.equal(action.reason, constants.USER_URL_DEACTIVATE);
+      assert.equal(action.reason, USER_URL_DEACTIVATE);
       assert.deepEqual(action.getData('deactivatedAction'), firstAction);
     });
   });
@@ -49,9 +51,9 @@ describe('reasons.js', function() {
     });
     it('fingerprinting popup handler sends url deactivate', function() {
       let url = 'some url',
-        expected = {type: constants.USER_URL_DEACTIVATE, url};
+        expected = {type: USER_URL_DEACTIVATE, url};
 
-      this.popupHandler.dispatcher(constants.FINGERPRINTING, [url]);
+      this.popupHandler.dispatcher(FINGERPRINTING, [url]);
       assert.include(onMessage.messages.pop().pop(), expected);
     });
 
@@ -60,6 +62,11 @@ describe('reasons.js', function() {
       this.popupHandler.addReason({name, popupHandler: () => called = true});
       this.popupHandler.dispatcher(name);
       assert.isTrue(called);
+    });
+
+    it('#getInfo', function() {
+      assert.include(this.popupHandler.getInfo(FINGERPRINTING).icon, 'fingerprinting');
+      assert.include(this.popupHandler.getInfo(BLOCK).icon, 'block');
     });
   });
   describe('TabHandler', function() {
@@ -105,31 +112,31 @@ describe('reasons.js', function() {
     });
 
     it('#isInPopup', function() {
-      [constants.FINGERPRINTING, constants.USER_URL_DEACTIVATE].forEach(name => {
+      [FINGERPRINTING, USER_URL_DEACTIVATE].forEach(name => {
         assert.isTrue(this.handler.isInPopup(name), `${name} should be in popup`);
       });
-      [constants.TAB_DEACTIVATE, constants.USER_HOST_DEACTIVATE].forEach(name => {
+      [TAB_DEACTIVATE, USER_HOST_DEACTIVATE].forEach(name => {
         assert.isFalse(this.handler.isInPopup(name), `${name} should be in popup`);
       });
     });
 
     describe('#handleRequest', function() {
       it('fingerprinting', function() {
-        let obj = {action: new Action(constants.FINGERPRINTING)},
+        let obj = {action: new Action(FINGERPRINTING)},
           details = third_party.copy();
         details.urlObj = new URL(details.url);
         this.tabs.addResource(main_frame.copy());
 
         this.handler.handleRequest(obj, details);
 
-        assert.equal(details.response, constants.CANCEL);
+        assert.equal(details.response, CANCEL);
       });
 
       it('url deactivate', function() {
         let details = {}, obj = {};
-        obj.action = new Action(constants.USER_URL_DEACTIVATE);
+        obj.action = new Action(USER_URL_DEACTIVATE);
         this.handler.handleRequest(obj, details);
-        assert.equal(details.response, constants.NO_ACTION);
+        assert.equal(details.response, NO_ACTION);
       });
 
       it('host deactivate', function() {
@@ -138,11 +145,11 @@ describe('reasons.js', function() {
           tab = new Tab();
 
         this.tabs.setTab(tabId, tab);
-        obj.action = new Action(constants.USER_HOST_DEACTIVATE);
+        obj.action = new Action(USER_HOST_DEACTIVATE);
 
         this.handler.handleRequest(obj, details);
 
-        assert.deepEqual(details.response, constants.NO_ACTION);
+        assert.deepEqual(details.response, NO_ACTION);
         assert.isTrue(details.shortCircuit);
         assert.deepEqual(tab.action, tabDeactivate);
       });
@@ -152,7 +159,7 @@ describe('reasons.js', function() {
         tab.action = tabDeactivate;
 
         this.handler.handleRequest(tab, details);
-        assert.deepEqual(details.response, constants.NO_ACTION);
+        assert.deepEqual(details.response, NO_ACTION);
         assert.isTrue(details.shortCircuit);
       });
     })

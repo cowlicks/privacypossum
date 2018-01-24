@@ -14,6 +14,7 @@ class Dispatcher {
   constructor(name, tabs, store, reasons) {
     Object.assign(this, {name, tabs, store, reasons});
     this.funcs = new Map();
+    this.info = new Map();
 
     this.addReason = this.addReason.bind(this, [{store, tabs}]);
     this.reasons.map(this.addReason.bind(this));
