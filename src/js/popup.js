@@ -13,7 +13,9 @@ let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./
   {PopupHandler} = require('./reasons/handlers'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE} = require('./constants');
 
-const noActionsText = `No tracking detected`;
+const noActionsText = `No tracking detected`,
+    enabledText = `ENABLED`,
+    disabledText = `DISABLED`;
 
 /*
  * View of some remote data represented by a `Model`.
@@ -107,11 +109,13 @@ class Popup {
 
     img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
 
-    $('onOff').innerHTML = img.outerHTML;
+    onOff.innerHTML = '';
+    onOff.appendChild(doc.createTextNode(active ? enabledText : disabledText));
+    onOff.appendChild(img);
   }
 
   showActions() {
-    let html = makeActionsHtml(this.urlActions);
+    let html = this.makeActionsHtml(this.urlActions);
     $('actions').innerHTML = '';
     $('actions').appendChild(html);
   }
@@ -124,39 +128,54 @@ class Popup {
     return out;
   }
 
-}
+  icon(action, doc = document) {
+    let reason = (action.reason != USER_URL_DEACTIVATE) ?
+      action.reason :
+      action.getData('deactivatedAction').reason;
 
-function makeActionsHtml(actionsUrlsHandlers, doc = document) {
-  if (actionsUrlsHandlers.size === 0) {
-    let empty = doc.createElement('div');
-    empty.id = 'emptyActions';
-    empty.innerText = noActionsText;
-    return empty;
+    let {icon, attribution} = this.handler.getInfo(reason);
+
+    let img = doc.createElement('img');
+    img.src = getURL(icon);
+    img.className = 'actionIcon';
+    img.setAttribute('attribution', attribution);
+    return img;
   }
-  let ul = doc.createElement('ul');
 
-  actionsUrlsHandlers.forEach(({action, handler}, url) => {
-    ul.appendChild(makeActionHtml(action, handler, url));
-  });
-  return ul;
-}
+  makeActionsHtml(actionsUrlsHandlers, doc = document) {
+    if (actionsUrlsHandlers.size === 0) {
+      let empty = doc.createElement('div');
+      empty.id = 'emptyActions';
+      empty.innerText = noActionsText;
+      return empty;
+    }
+    let ul = doc.createElement('ul');
 
-function makeActionHtml(action, handler, url, doc = document) {
-  let li = doc.createElement('li'),
-    label = doc.createElement('label'),
-    checkbox = doc.createElement('input');
+    actionsUrlsHandlers.forEach(({action, handler}, url) => {
+      ul.appendChild(this.makeActionHtml(action, handler, url));
+    });
+    return ul;
+  }
 
-  checkbox.type = 'checkbox',
-    checkbox.checked = action.reason != USER_URL_DEACTIVATE,
-    checkbox.addEventListener('change', handler, false);
+  makeActionHtml(action, handler, url, doc = document) {
+    let li = doc.createElement('li'),
+      label = doc.createElement('label'),
+      checkbox = doc.createElement('input');
 
-  label.appendChild(checkbox),
+    checkbox.type = 'checkbox',
+      checkbox.checked = action.reason != USER_URL_DEACTIVATE,
+      checkbox.addEventListener('change', handler, false);
+
+    label.appendChild(checkbox);
+    label.appendChild(this.icon(action));
     label.appendChild(doc.createTextNode(`${url}`));
 
-  li.className = 'action',
-    li.appendChild(label);
-  return li;
+    li.className = 'action',
+      li.appendChild(label);
+    return li;
+  }
 }
+
 
 class Server {
   constructor(tabs) {
