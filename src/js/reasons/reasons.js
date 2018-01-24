@@ -120,6 +120,11 @@ const reasonsArray = [
     props: {
       requestHandler: setResponse(CANCEL, true),
       popupHandler: sendUrlDeactivate,
+      popup_info: {
+        icon: '/media/block-icon.png',
+        message: 'url blocked',
+        attribution: "CCBY ProSymbols, US",
+      }
     },
   },
   {

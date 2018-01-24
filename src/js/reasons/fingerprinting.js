@@ -43,6 +43,11 @@ const fingerPrintingReason = {
     requestHandler: fingerPrintingRequestHandler,
     messageHandler: onFingerPrinting,
     popupHandler: sendUrlDeactivate,
+    popup_info: {
+      icon: '/media/fingerprinting-icon.png',
+      message: 'fingerprinting detected and blocked',
+      attribution: "CCBY Ciprian Popescu, RO",
+    }
   },
 };
 
