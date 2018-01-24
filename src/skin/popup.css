@@ -29,3 +29,8 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+.actionIcon {
+  height: 25px;
+  width: 25px;
+}
