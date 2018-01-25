@@ -3,6 +3,7 @@ body {
 }
 
 #header {
+  display: block;
   margin-top: 10;
   height: 40;
 }
@@ -24,6 +25,16 @@ body {
   float: right;
 }
 
+#onOff * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+ul {
+  padding: 0;
+}
+
+
 .action {
   overflow: hidden;
   white-space: nowrap;
@@ -31,6 +42,9 @@ body {
 }
 
 .actionIcon {
-  height: 25px;
-  width: 25px;
+  padding-left: 5;
+  padding-right: 5;
+  vertical-align: middle;
+  height: 20px;
+  width: 20px;
 }

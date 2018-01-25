@@ -102,16 +102,20 @@ class Popup {
       return;
     }
 
+    let button = $('onOff-button'),
+      text = $('onOff-text');
+
+    button.innerHTML = text.innerHTML = '';
+
     onOff.setAttribute('active', `${active}`);
     onOff.title = `click to ${active ? 'disable' : 'enable'} for this site`;
 
-    let img = doc.createElement('img');
 
+    let img = doc.createElement('img');
     img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
 
-    onOff.innerHTML = '';
-    onOff.appendChild(doc.createTextNode(active ? enabledText : disabledText));
-    onOff.appendChild(img);
+    button.appendChild(img);
+    text.appendChild(doc.createTextNode(active ? enabledText : disabledText));
   }
 
   showActions() {
