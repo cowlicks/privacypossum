@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {WebRequest, removeCookies} = require('../webrequest'),
+  {WebRequest, removeHeaders} = require('../webrequest'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
@@ -74,19 +74,19 @@ describe('webrequest.js', function() {
     });
   });
 
-  describe('removeCookies', function() {
-    it('removes cookies', function() {
+  describe('removeHeaders', function() {
+    it('removes cookie headers', function() {
       let one = [],
         two = [cookie, notCookie],
         three = [notCookie, cookie, cookie, notCookie, cookie];
 
-      assert.isFalse(removeCookies(one));
+      assert.equal(removeHeaders(one), 0);
       assert.deepEqual(one, []);
 
-      assert.isTrue(removeCookies(two));
+      assert.equal(removeHeaders(two), 1);
       assert.deepEqual(two, [notCookie]);
 
-      assert.isTrue(removeCookies(three));
+      assert.equal(removeHeaders(three), 3);
       assert.deepEqual(three, [notCookie, notCookie]);
     });
   });

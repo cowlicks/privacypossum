@@ -93,7 +93,7 @@ class WebRequest {
     if (this.isThirdParty(details)) {
       let headers = details[headerPropName];
       this.checkAllRequestActions(details);
-      if (!details.shortCircuit && removeCookies(headers)) {
+      if (!details.shortCircuit && removeHeaders(headers)) {
         details.response = {[headerPropName]: headers};
       }
     }
@@ -103,20 +103,20 @@ class WebRequest {
 
 const badHeaders = new Set(['cookie', 'referer', 'set-cookie']);
 
-// return true if headers are mutated, otherwise false
+// return number of headers mutated
 // todo, attach response to details object?
 // todo rename to removeBadHeaders?
-function removeCookies(headers) {
-  let mutated = false;
+function removeHeaders(headers) {
+  let nmutated = 0;
   for (let i = 0; i < headers.length; i++) {
     while (i < headers.length && badHeaders.has(headers[i].name.toLowerCase())) {
       headers.splice(i, 1);
-      mutated = true;
+      nmutated += 1;
     }
   }
-  return mutated;
+  return nmutated;
 }
 
-Object.assign(exports, {WebRequest, removeCookies});
+Object.assign(exports, {WebRequest, removeHeaders});
 
 })].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));
