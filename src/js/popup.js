@@ -11,6 +11,7 @@
 
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
+  {Counter} = require('./utils'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE} = require('./constants');
 
 const noActionsText = `No tracking detected`,
@@ -65,9 +66,10 @@ class Popup {
 
   connect() {
     this.port = connect({name: POPUP});
-    this.view = new View(this.port, ({active, actions}) => {
+    this.view = new View(this.port, ({active, actions, headerCounts}) => {
       this.active = active;
       this.updateUrlActions(actions);
+      this.headerCounts = new Counter(headerCounts);
       this.show();
     });
     return this.view.ready;

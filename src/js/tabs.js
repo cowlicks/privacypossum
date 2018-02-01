@@ -69,7 +69,11 @@ class Tab extends listenerMixin(Map) {
   }
 
   getData() {
-    return {active: this.active, actions: Array.from(this.actions)};
+    return {
+      active: this.active,
+      actions: Array.from(this.actions),
+      headerCounts: Array.from(this.headerCounts),
+    };
   }
 
   setBadgeText(text) {
@@ -122,6 +126,7 @@ class Tab extends listenerMixin(Map) {
 
   markHeaders(removed) {
     removed.forEach(header => this.headerCounts.add(header.name.toLowerCase()));
+    this.onChange();
   }
 }
 

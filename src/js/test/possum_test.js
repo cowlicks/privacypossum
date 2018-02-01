@@ -9,7 +9,7 @@ const assert = require('chai').assert,
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
-const {script, main_frame, first_party_script} = details,
+const {script, main_frame, first_party_script, third_party} = details,
   reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
   respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
 
@@ -21,6 +21,24 @@ describe('possum.js', function() {
     this.onBeforeRequest = this.possum.webRequest.onBeforeRequest.bind(this.possum.webRequest);
     this.onBeforeSendHeaders = this.possum.webRequest.onBeforeSendHeaders.bind(this.possum.webRequest);
     this.onHeadersReceived = this.possum.webRequest.onHeadersReceived.bind(this.possum.webRequest);
+  });
+
+  it('blocks headers', async function() {
+    let {tabId} = main_frame,
+      cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
+
+    tabsQuery.tabs = [{id: tabId}];
+
+    this.onBeforeRequest(main_frame.copy());
+    this.onBeforeSendHeaders(cookie.copy());
+
+    let popup = new Popup(tabId);
+    await popup.connect();
+
+    assert.deepEqual(Array.from(popup.headerCounts), [['cookie', 1]]);
+    let referer = new Details(Object.assign(cookie, {requestHeaders: [{name: 'referer', value: 'foo.com'}]}));
+    this.onBeforeSendHeaders(referer.copy());
+    assert.deepEqual(Array.from(popup.headerCounts), [['cookie', 1], ['referer', 1]]);
   });
 
   describe('user deactivates', function() {
