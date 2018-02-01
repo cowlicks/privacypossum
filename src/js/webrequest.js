@@ -49,6 +49,10 @@ class WebRequest {
     }
   }
 
+  markHeaders(removed, {tabId}) {
+    return this.tabs.markHeaders(removed, tabId);
+  }
+
   checkAllRequestActions(details) {
     let {tabId} = details,
       {hostname, pathname} = details.urlObj;
@@ -96,6 +100,7 @@ class WebRequest {
       this.checkAllRequestActions(details);
       if (!details.shortCircuit && removed.length) {
         details.response = {[headerPropName]: headers};
+        this.markHeaders(removed, details);
       }
     }
     return details.response;

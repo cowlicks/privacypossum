@@ -5,6 +5,15 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon} = require('./shim');
 
+class Counter extends Map {
+  add(name) {
+    if (!this.has(name)) {
+      this.set(name, 0);
+    }
+    return this.set(name, this.get(name) + 1);
+  }
+}
+
 class FifoMap extends Map {
   constructor(maxSize) {
     super();
@@ -183,6 +192,7 @@ lazyDef(exports, 'log', () => {
 });
 
 Object.assign(exports, {
+  Counter,
   memoize,
   LogBook,
   BrowserDisk,

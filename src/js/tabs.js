@@ -8,7 +8,7 @@
 
 const shim = require('./shim'), {URL, setBadgeText} = shim,
   {REMOVE_ACTION} = require('./constants'),
-  {listenerMixin, setTabIconActive, log} = require('./utils'),
+  {Counter, listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
 class Resource {
@@ -58,9 +58,11 @@ class Frame {
 class Tab extends listenerMixin(Map) {
   constructor(id) {
     super();
-    this.active = true;
     this.id = id;
+
+    this.active = true;
     this.actions = new Map();
+    this.headerCounts = new Counter();
 
     this.onChange = this.onEvent;
     this.setBadgeText(''); // clear badge
@@ -116,6 +118,10 @@ class Tab extends listenerMixin(Map) {
 
     this.onChange();
     this.setBadgeText('' + this.actions.size);
+  }
+
+  markHeaders(removed) {
+    removed.forEach(header => this.headerCounts.add(header.name.toLowerCase()));
   }
 }
 
@@ -210,6 +216,9 @@ class Tabs {
 
   markAction(action, url, tabId) {
     this.getTab(tabId).markAction(action, url);
+  }
+  markHeaders(removed, tabId) {
+    this.getTab(tabId).markHeaders(removed);
   }
 };
 

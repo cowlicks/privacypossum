@@ -4,6 +4,7 @@ let assert = require('chai').assert,
   {BLOCK, REMOVE_ACTION} = require('../constants'),
   {onRemoved, getBadgeText} = require('../shim'),
   {Action} = require('../schemes'),
+  {cookie} = require('./testing_utils'),
   {Tab, Tabs} = require('../tabs');
 
 const tabId = 1,
@@ -70,6 +71,11 @@ describe('tabs.js', function() {
           this.tab.markAction(new Action(REMOVE_ACTION), url);
           assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '');
         });
+      });
+      it('#markHeaders', function() {
+        let removed = [cookie, cookie];
+        this.tab.markHeaders(removed);
+        assert.deepEqual(Array.from(this.tab.headerCounts), [['cookie', 2]]);
       });
     })
   });
