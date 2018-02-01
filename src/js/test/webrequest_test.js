@@ -76,18 +76,16 @@ describe('webrequest.js', function() {
 
   describe('removeHeaders', function() {
     it('removes cookie headers', function() {
-      let one = [],
-        two = [cookie, notCookie],
-        three = [notCookie, cookie, cookie, notCookie, cookie];
-
-      assert.equal(removeHeaders(one), 0);
-      assert.deepEqual(one, []);
-
-      assert.equal(removeHeaders(two), 1);
-      assert.deepEqual(two, [notCookie]);
-
-      assert.equal(removeHeaders(three), 3);
-      assert.deepEqual(three, [notCookie, notCookie]);
+      let data = [
+        [[], [], []],
+        [[cookie, notCookie], [cookie], [notCookie]],
+        [[notCookie, cookie, cookie, notCookie, cookie], [cookie, cookie, cookie], [notCookie, notCookie]],
+      ];
+      for (let [headers, expectedRemoved, expectedHeaders] of data) {
+        let resRemoved = removeHeaders(headers);
+        assert.deepEqual(headers, expectedHeaders);
+        assert.deepEqual(resRemoved, expectedRemoved);
+      }
     });
   });
 });
