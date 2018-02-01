@@ -91,9 +91,10 @@ class WebRequest {
     details.urlObj = new URL(details.url);
 
     if (this.isThirdParty(details)) {
-      let headers = details[headerPropName];
+      let headers = details[headerPropName],
+        removed = removeHeaders(headers);
       this.checkAllRequestActions(details);
-      if (!details.shortCircuit && removeHeaders(headers)) {
+      if (!details.shortCircuit && removed.length) {
         details.response = {[headerPropName]: headers};
       }
     }
@@ -107,14 +108,13 @@ const badHeaders = new Set(['cookie', 'referer', 'set-cookie']);
 // todo, attach response to details object?
 // todo rename to removeBadHeaders?
 function removeHeaders(headers) {
-  let nmutated = 0;
+  let removed = [];
   for (let i = 0; i < headers.length; i++) {
     while (i < headers.length && badHeaders.has(headers[i].name.toLowerCase())) {
-      headers.splice(i, 1);
-      nmutated += 1;
+      removed.push(...headers.splice(i, 1));
     }
   }
-  return nmutated;
+  return removed;
 }
 
 Object.assign(exports, {WebRequest, removeHeaders});
