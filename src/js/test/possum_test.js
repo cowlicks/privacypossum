@@ -56,7 +56,7 @@ describe('possum.js', function() {
 
       it('does not strip cookies when the url is a 3rd party', function() {
         assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), NO_ACTION);
       });
 
       it('shown in the popup', async function() {
@@ -100,7 +100,7 @@ describe('possum.js', function() {
 
       it('does not strip headers', async function() {
         assert.deepEqual(this.onBeforeSendHeaders(reqHeaders.copy()), NO_ACTION);
-        assert.deepEqual(this.onHeadersReceived(reqHeaders.copy()), NO_ACTION);
+        assert.deepEqual(this.onHeadersReceived(respHeaders.copy()), NO_ACTION);
 
         // re-activate tab
         await sendMessage({type: USER_HOST_DEACTIVATE, tabId});
