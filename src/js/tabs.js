@@ -76,6 +76,13 @@ class Tab extends listenerMixin(Map) {
     };
   }
 
+  updateBadge() {
+    if (!this.active) {
+      return this.setBadgeText('');
+    }
+    this.setBadgeText('' + (this.actions.size + this.headerCounts.size));
+  }
+
   setBadgeText(text) {
     if (text == '0') {
       text = '';
@@ -102,11 +109,9 @@ class Tab extends listenerMixin(Map) {
 
   toggleActiveState() {
     this.active = !this.active;
-    if (!this.active) {
-      this.setBadgeText('');
-    }
     setTabIconActive(this.id, this.active);
     this.onChange();
+    this.updateBadge();
   }
 
   markAction(action, url) {
@@ -121,12 +126,13 @@ class Tab extends listenerMixin(Map) {
     }
 
     this.onChange();
-    this.setBadgeText('' + this.actions.size);
+    this.updateBadge();
   }
 
   markHeaders(removed) {
     removed.forEach(header => this.headerCounts.add(header.name.toLowerCase()));
     this.onChange();
+    this.updateBadge();
   }
 }
 
