@@ -121,8 +121,7 @@ class Popup {
   }
 
   showActions() {
-    $('actions').innerHTML = '';
-    this.makeActionsHtml($('actions'));
+    this.makeActionsHtml();
   }
 
   getHandlers(actionsUrls) {
@@ -147,33 +146,32 @@ class Popup {
     return img;
   }
 
-  makeActionsHtml(parent, doc = document) {
+  makeActionsHtml(doc = document) {
     let {urlActions, headerCounts} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
       let empty = doc.createElement('div');
       empty.id = 'emptyActions';
       empty.innerText = noActionsText;
-      return empty;
+      $('actions').innerHTML = '';
+      return $('actions').appendChild(empty);
     }
 
     if (headerCounts.size !== 0) {
-      parent.appendChild(doc.createTextNode('Blocked 3rd party headers:'));
-
+      $('headerCountList').innerHTML = '';
+      $('headerCountList').appendChild(doc.createTextNode('Blocked 3rd party headers:'));
       let ul = doc.createElement('ul');
-      ul.id = 'headerCountList';
       headerCounts.forEach((count, name) => {
         ul.appendChild(this.makeHeaderCountHtml(name, count));
       });
-      parent.appendChild(ul);
+      $('headerCountList').appendChild(ul);
     }
     if (urlActions.size !== 0) {
+      $('actionsList').innerHTML = '';
       let ul = doc.createElement('ul');
-
-      ul.id = 'actionsList';
       urlActions.forEach(({action, handler}, url) => {
         ul.appendChild(this.makeActionHtml(action, handler, url));
       });
-      parent.appendChild(ul);
+      $('actionsList').appendChild(ul);
     }
   }
 
