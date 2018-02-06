@@ -3,6 +3,13 @@
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
 
+async function setDocument(path) {
+  let {JSDOM} = require('jsdom'),
+    {document} = require('../shim'),
+    newDoc = (await JSDOM.fromFile(path)).window.document;
+  document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
+}
+
 function clone(val) {
   return JSON.parse(JSON.stringify(val));
 }
@@ -126,4 +133,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate});
+Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate});

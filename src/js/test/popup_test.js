@@ -7,9 +7,13 @@ const assert = require('chai').assert,
   {Listener} = require('../utils'),
   {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
+  {setDocument} = require('./testing_utils'),
   {Model, View, Server, Popup} = require('../popup');
 
 describe('popup.js', function() {
+  beforeEach(async function() {
+    await setDocument('../skin/popup.html');
+  });
   describe('View and Model', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
