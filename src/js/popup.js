@@ -23,6 +23,7 @@ const noActionsText = `No tracking detected`,
  */
 class View {
   constructor(port, onChange) {
+    Object.assign(this, {onChange});
     this.ready = new Promise(resolve => {
       port.onMessage.addListener(obj => {
         if (obj.change) {
@@ -67,9 +68,15 @@ class Popup {
   connect() {
     this.port = connect({name: POPUP});
     this.view = new View(this.port, ({active, actions, headerCounts}) => {
-      this.active = active;
-      this.updateUrlActions(actions);
-      this.headerCounts = new Counter(headerCounts);
+      if (typeof active !== 'undefined') {
+        this.active = active;
+      }
+      if (actions) {
+        this.updateUrlActions(actions);
+      }
+      if (headerCounts) {
+        this.headerCounts = new Counter(headerCounts);
+      }
       this.show();
     });
     return this.view.ready;
@@ -87,8 +94,8 @@ class Popup {
     $('onOff').onclick = this.onOff.bind(this);
   }
 
-  onOff() {
-    sendMessage({type: USER_HOST_DEACTIVATE, tabId: this.tabId});
+  async onOff() {
+    await sendMessage({type: USER_HOST_DEACTIVATE, tabId: this.tabId});
   }
 
   show() {
@@ -240,6 +247,6 @@ function $(id) {
   return document.getElementById(id);
 }
 
-Object.assign(exports, {Model, View, Popup, Server, currentTab});
+Object.assign(exports, {Model, View, Popup, Server, currentTab, $});
 
 })].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));

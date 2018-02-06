@@ -8,12 +8,13 @@ const assert = require('chai').assert,
   {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
   {setDocument} = require('./testing_utils'),
-  {Model, View, Server, Popup} = require('../popup');
+  {Model, View, Server, Popup, $} = require('../popup');
 
 describe('popup.js', function() {
   beforeEach(async function() {
     await setDocument('../skin/popup.html');
   });
+
   describe('View and Model', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
@@ -38,7 +39,7 @@ describe('popup.js', function() {
   describe('Popup and Server', function() {
     let url1 = 'https://foo.com/stuff',
       url2 = 'https://bar.com/other';
-    beforeEach(function() {
+    beforeEach(async function() {
       this.tabId = 1;
       this.tab = new Tab(this.tabId);
       this.tabs = new Tabs();
@@ -49,13 +50,21 @@ describe('popup.js', function() {
 
       this.server = new Server(this.tabs);
       this.popup = new Popup(this.tabId);
+
+      this.server.start();
+      await this.popup.connect();
     });
+
     describe('action click handlers', function() {
+      it('active is set', async function() {
+        assert.deepEqual([this.popup.active, $('onOff').getAttribute('active')], [true, 'true']);
+
+        this.popup.view.onChange({active: false});
+
+        assert.deepEqual([this.popup.active, $('onOff').getAttribute('active')], [false, 'false']);
+      });
       it('sets click handlers', async function() {
         let popup = this.popup;
-
-        this.server.start();
-        await popup.connect();
 
         assert.isTrue(popup.urlActions.has(url1));
         assert.deepEqual(popup.urlActions.get(url1).action, blockAction);
@@ -69,10 +78,6 @@ describe('popup.js', function() {
     });
 
     describe('updates are sent', function() {
-      beforeEach(async function() {
-        this.server.start();
-        await this.popup.connect();
-      });
       it('actions are sent', function() {
         assert.isTrue(this.popup.urlActions.has(url1), 'initial url is blocked');
 
@@ -88,5 +93,4 @@ describe('popup.js', function() {
       });
     });
   });
-
 });
