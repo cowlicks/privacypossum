@@ -10,13 +10,34 @@ const {assert} = require('chai'),
   {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
-const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING} = require('../constants');
+const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST} = require('../constants');
 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
     this.store = new DomainStore('name'),
     this.reasons = Reasons.fromArray(reasonsArray);
+  });
+
+  describe('header deactivate', function() {
+    let {messageHandler, popupHandler} = require('../reasons/headers');
+    it('popupHandler', function() {
+      let tabId = 1;
+      popupHandler(this, tabId);
+      assert.deepEqual(onMessage.messages.pop().pop(), {HEADER_DEACTIVATE_ON_HOST, tabId});
+    });
+    it('messageHandler', async function() {
+      let {url, tabId} = main_frame;
+      this.tabs.addResource(main_frame);
+
+      await messageHandler(this, {tabId});
+
+      let domain = this.store.getDomain(url);
+      assert.equal(domain.action.reason, HEADER_DEACTIVATE_ON_HOST);
+
+      await messageHandler(this, {tabId});
+      assert.isUndefined(this.store.getDomain(url).action);
+    });
   });
 
   describe('user_url_deactivate', function() {
