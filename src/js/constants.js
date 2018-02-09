@@ -31,6 +31,23 @@ const activeIcons = {
   256: "/media/icon256.png",
 }
 
+const request_methods = {
+  ON_BEFORE_REQUEST: 'onBeforeRequest',
+  ON_HEADERS_RECEIVED: 'onHeadersReceived',
+  ON_BEFORE_SEND_HEADERS: 'onBeforeSendHeaders',
+};
+
+const http_headers = {
+  REQUEST: 'requestHeaders',
+  RESPONSE: 'responseHeaders',
+};
+
+
+const header_methods = new Map([
+  [request_methods.ON_HEADERS_RECEIVED, http_headers.RESPONSE],
+  [request_methods.ON_BEFORE_SEND_HEADERS, http_headers.REQUEST],
+]);
+
 // reasons
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
@@ -57,6 +74,8 @@ Object.assign(exports, {
   inactiveIcons,
   activeIcons,
   reasons,
+  request_methods,
+  header_methods,
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,

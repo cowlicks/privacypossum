@@ -4,7 +4,17 @@
 
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
+  {header_methods, request_methods} = constants,
   {Handler} = require('./reasons/handlers');
+
+function annotateDetails(details, method) {
+  return Object.assign(details, {
+    method,
+    headerPropName: header_methods.get(method),
+    urlObj: new URL(details.url),
+    response: constants.NO_ACTION,
+  });
+}
 
 class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
@@ -70,36 +80,35 @@ class WebRequest {
   }
 
   commitRequest(details) {
-    details.response = constants.NO_ACTION;
     this.checkAllRequestActions(details);
     this.markAction(details);  // record new behavior
     return details.response;
   }
 
   onBeforeRequest(details) {
-    details.urlObj = new URL(details.url);
+    annotateDetails(details, request_methods.ON_BEFORE_REQUEST);
     this.recordRequest(details);
     return this.commitRequest(details);
   }
 
   onBeforeSendHeaders(details) {
-    return this.headerHandler(details, 'requestHeaders');
+    annotateDetails(details, request_methods.ON_BEFORE_SEND_HEADERS);
+    return this.headerHandler(details);
   }
 
   onHeadersReceived(details) {
-    return this.headerHandler(details, 'responseHeaders');
+    annotateDetails(details, request_methods.ON_HEADERS_RECEIVED);
+    return this.headerHandler(details);
   }
 
-  headerHandler(details, headerPropName) {
-    details.response = constants.NO_ACTION;
-    details.urlObj = new URL(details.url);
-
+  headerHandler(details) {
     if (this.isThirdParty(details)) {
-      let headers = details[headerPropName],
+      debugger;
+      let headers = details[details.headerPropName],
         removed = removeHeaders(headers);
       this.checkAllRequestActions(details);
       if (!details.shortCircuit && removed.length) {
-        details.response = {[headerPropName]: headers};
+        details.response = {[details.headerPropName]: headers};
         this.markHeaders(removed, details);
       }
     }
