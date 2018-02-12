@@ -5,12 +5,13 @@ const {assert} = require('chai'),
   {DomainStore} = require('../store'),
   {URL, onMessage, onUpdated} = require('../shim'),
   {Action} = require('../schemes'),
+  {cookie, notCookie} = require('./testing_utils'),
   {main_frame, third_party} = require('./testing_utils').details,
   {Reason, Reasons, reasonsArray, tabDeactivate} = require('../reasons/reasons'),
   {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
-const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST} = require('../constants');
+const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST, request_methods} = require('../constants');
 
 describe('reasons.js', function() {
   beforeEach(function() {
@@ -20,7 +21,7 @@ describe('reasons.js', function() {
   });
 
   describe('header deactivate', function() {
-    let {messageHandler, popupHandler} = require('../reasons/headers');
+    let {messageHandler, tabHeaderHandler, popupHandler, requestHandler} = require('../reasons/headers');
     it('popupHandler', function() {
       let tabId = 1;
       popupHandler(this, tabId);
@@ -37,6 +38,35 @@ describe('reasons.js', function() {
 
       await messageHandler(this, {tabId});
       assert.isUndefined(this.store.getDomain(url).action);
+    });
+
+    describe('requests', function() {
+      beforeEach(function() {
+        let details = third_party.copy(),
+          action = new Action(HEADER_DEACTIVATE_ON_HOST);
+        details.requestHeaders = [cookie, notCookie];
+        this.store.setUrl(details.url, action);
+        this.tabs.addResource(main_frame.copy());
+        Object.assign(this, {details, action});
+      });
+
+      it('host requestHandler', function() {
+        // request gets shorted
+        let {details} = this;
+        requestHandler(this, details);
+        assert.deepEqual(details.response, NO_ACTION);
+        assert.isTrue(details.shortCircuit);
+        // tab is set
+        assert.equal(this.tabs.getTab(details.tabId).action.reason, HEADER_DEACTIVATE_ON_HOST);
+      })
+
+      it('tab requestHandler', function() {
+        let {details} = this;
+        details.method = request_methods.ON_BEFORE_SEND_HEADERS;
+        tabHeaderHandler(this, details);
+        assert.deepEqual(details.response, NO_ACTION);
+        assert.isTrue(details.shortCircuit);
+      });
     });
   });
 
