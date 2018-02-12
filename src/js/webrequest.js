@@ -103,7 +103,6 @@ class WebRequest {
 
   headerHandler(details) {
     if (this.isThirdParty(details)) {
-      debugger;
       let headers = details[details.headerPropName],
         removed = removeHeaders(headers);
       this.checkAllRequestActions(details);
@@ -131,6 +130,6 @@ function removeHeaders(headers) {
   return removed;
 }
 
-Object.assign(exports, {WebRequest, removeHeaders});
+Object.assign(exports, {WebRequest, removeHeaders, annotateDetails});
 
 })].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));
