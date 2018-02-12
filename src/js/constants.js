@@ -42,7 +42,6 @@ const http_headers = {
   RESPONSE: 'responseHeaders',
 };
 
-
 const header_methods = new Map([
   [request_methods.ON_HEADERS_RECEIVED, http_headers.RESPONSE],
   [request_methods.ON_BEFORE_SEND_HEADERS, http_headers.REQUEST],
