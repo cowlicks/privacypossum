@@ -1,5 +1,7 @@
 "use strict"
 
+const {annotateDetails} = require('../webrequest');
+
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
 
@@ -87,13 +89,14 @@ function toSender(details, url) {
 
 class Details {
   constructor (details) {
+    annotateDetails(details);
     Object.assign(this, details);
   }
   toSender(url) {
     return toSender(this, url);
   }
   copy() {
-    return JSON.parse(JSON.stringify(this));
+    return new Details(JSON.parse(JSON.stringify(this)));
   }
 }
 
