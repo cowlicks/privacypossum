@@ -52,9 +52,11 @@ const header_methods = new Map([
 const FINGERPRINTING = 'fingerprinting',
   USER_HOST_DEACTIVATE = 'user_host_deactivate',
   USER_URL_DEACTIVATE = 'user_url_deactivate',
-  BLOCK = 'block';
+  BLOCK = 'block',
+  HEADER_DEACTIVATE_ON_HOST = 'header_deactivate_on_host';
 
-const TAB_DEACTIVATE = 'tab_deactivate';
+const TAB_DEACTIVATE = 'tab_deactivate',
+  TAB_DEACTIVATE_HEADERS = 'tab_deactivate_headers';
 
 const reasons = {FINGERPRINTING, USER_HOST_DEACTIVATE, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE};
 
@@ -79,7 +81,9 @@ Object.assign(exports, {
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
   BLOCK,
+  HEADER_DEACTIVATE_ON_HOST,
   TAB_DEACTIVATE,
+  TAB_DEACTIVATE_HEADERS,
   POPUP,
   REMOVE_ACTION,
 });
