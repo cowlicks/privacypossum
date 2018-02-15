@@ -164,13 +164,17 @@ class Popup {
     }
 
     if (headerCounts.size !== 0) {
-      $('headerCountList').innerHTML = '';
-      $('headerCountList').appendChild(doc.createTextNode('Blocked 3rd party headers:'));
-      let ul = doc.createElement('ul');
+      let parent = $('headerCountList'),
+        checkbox = doc.createElement('input'),
+        ul = doc.createElement('ul');
+
       headerCounts.forEach((count, name) => {
         ul.appendChild(this.makeHeaderCountHtml(name, count));
       });
-      $('headerCountList').appendChild(ul);
+
+      parent.innerHTML = '';
+      parent.appendChild(doc.createTextNode('Blocked 3rd party headers:'));
+      parent.appendChild(ul);
     }
     if (urlActions.size !== 0) {
       $('actionsList').innerHTML = '';
