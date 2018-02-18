@@ -30,7 +30,7 @@ body {
   vertical-align: middle;
 }
 
-#actionsList {
+#actionsList ul {
   padding: 0;
 }
 
