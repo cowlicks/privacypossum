@@ -170,19 +170,28 @@ class Popup {
     return img;
   }
 
-  makeHeaderCountHtml(headerCounts) {
-      let parent = $('headerCountList'),
-        checkbox = makeCheckbox(true),
-        ul = document.createElement('ul');
+  makeHeaderCountHtml(headerCounts, active = true) {
+    let parent = $('headerCountList'),
+      checkbox = makeCheckbox(active, this.headerHandler.bind(this)),
+      ul = document.createElement('ul');
 
-      headerCounts.forEach((count, name) => {
-        ul.appendChild(this.headerHtml(name, count));
-      });
+    checkbox.id = 'headerCheckbox';
 
+    if (!active) {
       parent.innerHTML = '';
       parent.appendChild(checkbox);
-      parent.appendChild(document.createTextNode('Blocked 3rd party headers:'));
-      parent.appendChild(ul);
+      parent.appendChild(document.createTextNode('Blocking tracking headers disabled'));
+      return;
+    }
+
+    headerCounts.forEach((count, name) => {
+      ul.appendChild(this.headerHtml(name, count));
+    });
+
+    parent.innerHTML = '';
+    parent.appendChild(checkbox);
+    parent.appendChild(document.createTextNode('Blocked 3rd party headers:'));
+    parent.appendChild(ul);
   }
 
   makeActionsHtml(actions) {
