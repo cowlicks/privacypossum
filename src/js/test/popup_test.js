@@ -15,6 +15,17 @@ describe('popup.js', function() {
     await setDocument('../skin/popup.html');
   });
 
+  describe('header html', function() {
+    beforeEach(function() {
+      this.tabId = 1;
+      this.popup = new Popup(this.tabId);
+    });
+    it('inactive', function() {
+      this.popup.makeHeaderCountHtml(new Map(), false);
+      assert.isFalse($('headerCheckbox').checked);
+    });
+  });
+
   describe('View and Model', function() {
     it('they can talk', function() {
       let [aPort, bPort] = fakePort('test'),
