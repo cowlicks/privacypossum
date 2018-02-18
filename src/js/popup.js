@@ -128,7 +128,7 @@ class Popup {
   }
 
   showActions() {
-    this.makeActionsHtml();
+    this.makeHtml();
   }
 
   getHandlers(actionsUrls) {
@@ -168,7 +168,7 @@ class Popup {
       parent.appendChild(ul);
   }
 
-  makeActionsHtml() {
+  makeHtml() {
     let {urlActions, headerCounts} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
       let empty = document.createElement('div');
