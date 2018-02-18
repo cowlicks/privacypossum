@@ -14,6 +14,15 @@ let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./
   {Counter} = require('./utils'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE} = require('./constants');
 
+
+function makeCheckbox(checked, handler) {
+  let checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = checked;
+  checkbox.addEventListener('change', handler, false);
+  return checkbox;
+}
+
 const noActionsText = `No tracking detected`,
     enabledText = `ENABLED`,
     disabledText = `DISABLED`;
@@ -155,7 +164,7 @@ class Popup {
 
   makeHeaderCountHtml(headerCounts) {
       let parent = $('headerCountList'),
-        checkbox = document.createElement('input'),
+        checkbox = makeCheckbox(true),
         ul = document.createElement('ul');
 
       headerCounts.forEach((count, name) => {
@@ -209,11 +218,8 @@ class Popup {
   makeActionHtml(action, handler, url) {
     let li = document.createElement('li'),
       label = document.createElement('label'),
-      checkbox = document.createElement('input');
-
-    checkbox.type = 'checkbox',
-      checkbox.checked = action.reason != USER_URL_DEACTIVATE,
-      checkbox.addEventListener('change', handler, false);
+      checked = action.reason != USER_URL_DEACTIVATE,
+      checkbox = makeCheckbox(checked, handler);
 
     label.appendChild(checkbox);
     label.appendChild(this.icon(action));
