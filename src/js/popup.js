@@ -168,6 +168,18 @@ class Popup {
       parent.appendChild(ul);
   }
 
+  makeActionsHtml(actions) {
+    let parent = $('actionsList'),
+      ul = document.createElement('ul');
+
+    actions.forEach(({action, handler}, url) => {
+      ul.appendChild(this.makeActionHtml(action, handler, url));
+    });
+
+    parent.innerHTML = '';
+    parent.appendChild(ul);
+  }
+
   makeHtml() {
     let {urlActions, headerCounts} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
@@ -181,13 +193,9 @@ class Popup {
     if (headerCounts.size !== 0) {
       this.makeHeaderCountHtml(headerCounts);
     }
+
     if (urlActions.size !== 0) {
-      $('actionsList').innerHTML = '';
-      let ul = document.createElement('ul');
-      urlActions.forEach(({action, handler}, url) => {
-        ul.appendChild(this.makeActionHtml(action, handler, url));
-      });
-      $('actionsList').appendChild(ul);
+      this.makeActionsHtml(urlActions);
     }
   }
 
