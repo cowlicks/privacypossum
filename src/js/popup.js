@@ -153,10 +153,25 @@ class Popup {
     return img;
   }
 
-  makeActionsHtml(doc = document) {
+  makeHeaderCountHtml(headerCounts) {
+      let parent = $('headerCountList'),
+        checkbox = document.createElement('input'),
+        ul = document.createElement('ul');
+
+      headerCounts.forEach((count, name) => {
+        ul.appendChild(this.headerHtml(name, count));
+      });
+
+      parent.innerHTML = '';
+      parent.appendChild(checkbox);
+      parent.appendChild(document.createTextNode('Blocked 3rd party headers:'));
+      parent.appendChild(ul);
+  }
+
+  makeActionsHtml() {
     let {urlActions, headerCounts} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
-      let empty = doc.createElement('div');
+      let empty = document.createElement('div');
       empty.id = 'emptyActions';
       empty.innerText = noActionsText;
       $('actions').innerHTML = '';
@@ -164,21 +179,11 @@ class Popup {
     }
 
     if (headerCounts.size !== 0) {
-      let parent = $('headerCountList'),
-        checkbox = doc.createElement('input'),
-        ul = doc.createElement('ul');
-
-      headerCounts.forEach((count, name) => {
-        ul.appendChild(this.makeHeaderCountHtml(name, count));
-      });
-
-      parent.innerHTML = '';
-      parent.appendChild(doc.createTextNode('Blocked 3rd party headers:'));
-      parent.appendChild(ul);
+      this.makeHeaderCountHtml(headerCounts);
     }
     if (urlActions.size !== 0) {
       $('actionsList').innerHTML = '';
-      let ul = doc.createElement('ul');
+      let ul = document.createElement('ul');
       urlActions.forEach(({action, handler}, url) => {
         ul.appendChild(this.makeActionHtml(action, handler, url));
       });
@@ -186,7 +191,7 @@ class Popup {
     }
   }
 
-  makeHeaderCountHtml(name, count, doc = document) {
+  headerHtml(name, count, doc = document) {
     let li = doc.createElement('li'),
       msg = `${name} headers blocked from ${count} sources`;
     li.appendChild(doc.createTextNode(msg));
