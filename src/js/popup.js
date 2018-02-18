@@ -107,6 +107,14 @@ class Popup {
     await sendMessage({type: USER_HOST_DEACTIVATE, tabId: this.tabId});
   }
 
+  async headerHandler() {
+    await sendMessage({
+      type: HEADER_DEACTIVATE_ON_HOST,
+      tabId: this.tabId,
+      checked: $('headerCheckbox').checked
+    });
+  }
+
   show() {
     this.showActive(this.active);
     this.showActions();
