@@ -12,7 +12,7 @@
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
   {Counter} = require('./utils'),
-  {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE} = require('./constants');
+  {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
 
 function makeCheckbox(checked, handler) {
