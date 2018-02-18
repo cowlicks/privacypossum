@@ -199,17 +199,17 @@ class Popup {
     }
   }
 
-  headerHtml(name, count, doc = document) {
-    let li = doc.createElement('li'),
+  headerHtml(name, count) {
+    let li = document.createElement('li'),
       msg = `${name} headers blocked from ${count} sources`;
-    li.appendChild(doc.createTextNode(msg));
+    li.appendChild(document.createTextNode(msg));
     return li;
   }
 
-  makeActionHtml(action, handler, url, doc = document) {
-    let li = doc.createElement('li'),
-      label = doc.createElement('label'),
-      checkbox = doc.createElement('input');
+  makeActionHtml(action, handler, url) {
+    let li = document.createElement('li'),
+      label = document.createElement('label'),
+      checkbox = document.createElement('input');
 
     checkbox.type = 'checkbox',
       checkbox.checked = action.reason != USER_URL_DEACTIVATE,
@@ -217,7 +217,7 @@ class Popup {
 
     label.appendChild(checkbox);
     label.appendChild(this.icon(action));
-    label.appendChild(doc.createTextNode(`${url}`));
+    label.appendChild(document.createTextNode(`${url}`));
 
     li.className = 'action',
       li.appendChild(label);
