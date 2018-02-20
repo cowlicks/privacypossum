@@ -5,7 +5,7 @@ const assert = require('chai').assert,
   {Reason} = require('../reasons/reasons'),
   {Action} = require('../schemes'),
   {tabsOnMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
-  {setDocument, cookie, notCookie, details, Details, toSender} = require('./testing_utils'),
+  {setDocument, cookie, notCookie, details, Details, toSender, makePopup} = require('./testing_utils'),
   {Popup} = require('../popup'),
   {Possum} = require('../possum');
 
@@ -28,13 +28,10 @@ describe('possum.js', function() {
     let {tabId} = main_frame,
       cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
 
-    tabsQuery.tabs = [{id: tabId}];
-
     this.onBeforeRequest(main_frame.copy());
     this.onBeforeSendHeaders(cookie.copy());
 
-    let popup = new Popup(tabId);
-    await popup.connect();
+    let popup = await makePopup(tabId);
 
     assert.deepEqual(Array.from(popup.headerCounts), [['cookie', 1]]);
     let referer = new Details(Object.assign(cookie, {requestHeaders: [{name: 'referer', value: 'foo.com'}]}));
