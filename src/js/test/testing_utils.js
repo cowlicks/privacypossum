@@ -1,5 +1,8 @@
 "use strict"
 
+const {tabsQuery} = require('../shim'),
+  {Popup} = require('../popup');
+
 const {annotateDetails} = require('../webrequest');
 
 const notCookie = {name: 'a', value: 'b'},
@@ -10,6 +13,13 @@ async function setDocument(path) {
     {document} = require('../shim'),
     newDoc = (await JSDOM.fromFile(path)).window.document;
   document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
+}
+
+async function makePopup(tabId) {
+  tabsQuery.tabs = [{id: tabId}];
+  let popup = new Popup(tabId);
+  await popup.connect();
+  return popup;
 }
 
 function clone(val) {
@@ -136,4 +146,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate});
+Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup});
