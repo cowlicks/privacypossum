@@ -12,9 +12,9 @@ function isHeaderRequest(details) {
 }
 
 function requestHandler({tabs}, details) {
-  if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
+  if (details.type === 'main_frame') {
     Object.assign(details, {shortCircuit: true, response: NO_ACTION});
-    tabs.getTab(details.tabId).action = new Action(HEADER_DEACTIVATE_ON_HOST, {href: details.url});
+    tabs.getTab(details.tabId).action = new Action(TAB_DEACTIVATE_HEADERS);
   }
 }
 
@@ -44,7 +44,7 @@ async function messageHandler({tabs, store}, {tabId, checked}) {
   let tab = tabs.getTab(tabId);
   if (!checked) {
     tab.action = new Action(TAB_DEACTIVATE_HEADERS);
-  } else if (checked && tab.action.reason === TAB_DEACTIVATE_HEADERS) {
+  } else if (checked && tab.action && tab.action.reason === TAB_DEACTIVATE_HEADERS) {
     delete tab.action;
   }
 }
