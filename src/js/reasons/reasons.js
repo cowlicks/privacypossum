@@ -137,6 +137,8 @@ const reasonsArray = [
 
 reasonsArray.push(require('./fingerprinting').fingerPrintingReason);
 reasonsArray.push(require('./user_url_deactivate').urlDeactivateReason);
+reasonsArray.push(require('./headers').reason);
+reasonsArray.push(require('./headers').tabReason);
 
 Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
 
