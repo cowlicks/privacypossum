@@ -11,7 +11,7 @@ const {assert} = require('chai'),
   {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
   {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
 
-const {TAB_DEACTIVATE, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST, request_methods} = require('../constants');
+const {TAB_DEACTIVATE, TAB_DEACTIVATE_HEADERS, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST, request_methods} = require('../constants');
 
 describe('reasons.js', function() {
   beforeEach(function() {
@@ -31,13 +31,15 @@ describe('reasons.js', function() {
       let {url, tabId} = main_frame;
       this.tabs.addResource(main_frame);
 
-      await messageHandler(this, {tabId});
+      await messageHandler(this, {tabId, checked: false});
 
       let domain = this.store.getDomain(url);
       assert.equal(domain.action.reason, HEADER_DEACTIVATE_ON_HOST);
+      assert.equal(this.tabs.getTab(tabId).action.reason, TAB_DEACTIVATE_HEADERS);
 
-      await messageHandler(this, {tabId});
+      await messageHandler(this, {tabId, checked: true});
       assert.isUndefined(this.store.getDomain(url).action);
+      assert.isUndefined(this.tabs.getTab(tabId).action);
     });
 
     describe('requests', function() {
