@@ -44,7 +44,7 @@ describe('reasons.js', function() {
 
     describe('requests', function() {
       beforeEach(function() {
-        let details = third_party.copy(),
+        let details = main_frame.copy(),
           action = new Action(HEADER_DEACTIVATE_ON_HOST);
         details.requestHeaders = [cookie, notCookie];
         this.store.setUrl(details.url, action);
@@ -59,7 +59,7 @@ describe('reasons.js', function() {
         assert.deepEqual(details.response, NO_ACTION);
         assert.isTrue(details.shortCircuit);
         // tab is set
-        assert.equal(this.tabs.getTab(details.tabId).action.reason, HEADER_DEACTIVATE_ON_HOST);
+        assert.equal(this.tabs.getTab(details.tabId).action.reason, TAB_DEACTIVATE_HEADERS);
       })
 
       it('tab requestHandler', function() {
