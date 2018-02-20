@@ -27,12 +27,12 @@ function tabHeaderHandler({}, details) {
   }
 }
 
-async function messageHandler({tabs, store}, {tabId}) {
+async function messageHandler({tabs, store}, {tabId, checked}) {
   let url = new URL(tabs.getTabUrl(tabId));
   await store.updateDomain(url.href, (domain) => {
-    if (hasAction(domain, HEADER_DEACTIVATE_ON_HOST)) {
+    if (hasAction(domain, HEADER_DEACTIVATE_ON_HOST) && checked) {
       store.deleteDomain(url.href);
-    } else {
+    } else if (!checked) {
       return Object.assign(domain, {
         action: new Action(
           HEADER_DEACTIVATE_ON_HOST,
@@ -41,6 +41,12 @@ async function messageHandler({tabs, store}, {tabId}) {
       })
     }
   });
+  let tab = tabs.getTab(tabId);
+  if (!checked) {
+    tab.action = new Action(TAB_DEACTIVATE_HEADERS);
+  } else if (checked && tab.action.reason === TAB_DEACTIVATE_HEADERS) {
+    delete tab.action;
+  }
 }
 
 async function popupHandler({}, tabId) {
