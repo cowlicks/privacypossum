@@ -6,14 +6,14 @@ const assert = require('chai').assert,
   {Action} = require('../schemes'),
   {tabsOnMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
   {setDocument, cookie, notCookie, details, Details, toSender, makePopup} = require('./testing_utils'),
-  {Popup} = require('../popup'),
+  {Popup, $} = require('../popup'),
   {Possum} = require('../possum');
 
 const {script, main_frame, first_party_script, third_party} = details,
   reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
   respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
 
-const {CANCEL, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, FINGERPRINTING, NO_ACTION} = constants;
+const {CANCEL, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST, FINGERPRINTING, NO_ACTION} = constants;
 
 describe('possum.js', function() {
   beforeEach(async function() {
@@ -24,6 +24,32 @@ describe('possum.js', function() {
     await setDocument('../skin/popup.html');
   });
 
+  describe('header deactivate', function() {
+    it('deactivate from popup', async function() {
+      let {tabId} = main_frame,
+        cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
+
+      this.onBeforeRequest(main_frame.copy());
+      this.onBeforeSendHeaders(cookie.copy())
+
+      let popup = await makePopup(tabId);
+
+      $('headerCheckbox').checked = false;
+      await popup.headerHandler();
+
+      assert.deepEqual(this.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
+      assert.deepEqual(this.possum.store.getDomain(main_frame.url).action.reason, HEADER_DEACTIVATE_ON_HOST);
+    });
+    it('deactivates from storage', async function() {
+      let cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
+      await this.possum.store.updateDomain(main_frame.url, (domain) => {
+        domain.action = new Action(HEADER_DEACTIVATE_ON_HOST);
+        return domain;
+      });
+      this.onBeforeRequest(main_frame.copy());
+      assert.deepEqual(this.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
+    });
+  });
   it('blocks headers', async function() {
     let {tabId} = main_frame,
       cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
