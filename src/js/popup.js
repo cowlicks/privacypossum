@@ -14,6 +14,12 @@ let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./
   {Counter} = require('./utils'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
+function show(element) {
+  element.className = 'show';
+}
+function hide(element) {
+  element.className = 'hide';
+}
 
 function makeCheckbox(checked, handler) {
   let checkbox = document.createElement('input');
