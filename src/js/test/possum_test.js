@@ -5,7 +5,7 @@ const assert = require('chai').assert,
   {Reason} = require('../reasons/reasons'),
   {Action} = require('../schemes'),
   {tabsOnMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
-  {setDocument, cookie, notCookie, details, Details, toSender, makePopup} = require('./testing_utils'),
+  {clearState, setDocument, cookie, notCookie, details, Details, toSender, makePopup} = require('./testing_utils'),
   {Popup, $} = require('../popup'),
   {Possum} = require('../possum');
 
@@ -14,6 +14,16 @@ const {script, main_frame, first_party_script, third_party} = details,
   respHeaders = new Details(Object.assign(script.copy(), {responseHeaders: [cookie, notCookie]}));
 
 const {CANCEL, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST, FINGERPRINTING, NO_ACTION} = constants;
+
+async function reloadPossum(possum) {
+  return await Possum.load(possum.store.diskMap.disk);
+}
+
+async function reloadEverything(possum) {
+  clearState();
+  await setDocument('../skin/popup.html');
+  return await reloadPossum(possum);
+}
 
 describe('possum.js', function() {
   beforeEach(async function() {
