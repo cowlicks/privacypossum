@@ -31,7 +31,10 @@ const noActionsText = `No tracking detected`,
  */
 class View {
   constructor(port, onChange) {
-    Object.assign(this, {onChange});
+    Object.assign(this, {
+      disconnect: port.disconnect.bind(port),
+      onChange
+    });
     this.ready = new Promise(resolve => {
       port.onMessage.addListener(obj => {
         if (obj.change) {
@@ -57,6 +60,7 @@ class Model {
     this.func = change => port.postMessage({change});
     data.addListener(this.func);
     data.onChange(); // send initial data
+    port.onDisconnect.addListener(() => this.delete());
   }
 
   delete() {
