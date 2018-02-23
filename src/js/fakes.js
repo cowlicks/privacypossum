@@ -65,6 +65,13 @@ class Port {
   setOther(other) {
     this.otherPort = other;
   }
+
+  async disconnect() {
+    for (let func of this.otherPort.onDisconnect.funcs) {
+      await func(...arguments);
+    }
+  }
+
   async postMessage() {
     for (let func of this.otherPort.onMessage.funcs) {
       await func(...arguments);
