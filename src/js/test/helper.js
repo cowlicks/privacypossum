@@ -7,11 +7,8 @@
  * clear them between each stateful interface between each test.
  */
 
-const {onConnect, tabsOnMessage, onMessage, tabsQuery} = require('../shim');
+const {clearState} = require('./testing_utils');
 
 beforeEach(function() {
-  tabsOnMessage.clear();
-  onMessage.clear();
-  onConnect.clear();
-  tabsQuery.clear();
+  clearState();
 });

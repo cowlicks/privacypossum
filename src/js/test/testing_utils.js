@@ -1,12 +1,19 @@
 "use strict"
 
-const {tabsQuery} = require('../shim'),
+const {onConnect, tabsOnMessage, onMessage, tabsQuery} = require('../shim'),
   {Popup} = require('../popup');
 
 const {annotateDetails} = require('../webrequest');
 
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
+
+function clearState() {
+  tabsOnMessage.clear();
+  onMessage.clear();
+  onConnect.clear();
+  tabsQuery.clear();
+}
 
 async function setDocument(path) {
   let {JSDOM} = require('jsdom'),
@@ -146,4 +153,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup});
+Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState});
