@@ -77,6 +77,7 @@ class Popup {
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
     this.tabId = tabId;
     this.setOnOffHandler();
+    $('headerCheckbox').addEventListener('change', this.headerHandler.bind(this), false);
     this.urlActions = new Map();
   }
 
@@ -177,11 +178,7 @@ class Popup {
   }
 
   makeHeaderCountHtml(headerCounts, active = true) {
-    let parent = $('headerCountList'),
-      checkbox = makeCheckbox(active, this.headerHandler.bind(this)),
-      ul = document.createElement('ul');
-
-    checkbox.id = 'headerCheckbox';
+    $('headerCheckbox').checked = active;
 
     if (!active) {
       show($('headersDisabled'));
@@ -192,14 +189,13 @@ class Popup {
       show($('headersActive'));
     }
 
+    let ul = document.createElement('ul');
     headerCounts.forEach((count, name) => {
       ul.appendChild(this.headerHtml(name, count));
     });
 
-    parent.innerHTML = '';
-    parent.appendChild(checkbox);
-    parent.appendChild(document.createTextNode('Blocked 3rd party headers:'));
-    parent.appendChild(ul);
+    $('headersCountList').innerHTML = '';
+    $('headersCountList').appendChild(ul);
   }
 
   makeActionsHtml(actions) {
