@@ -187,8 +187,7 @@ class Popup {
       ul.appendChild(this.headerHtml(name, count));
     });
 
-    $('headersCountList').innerHTML = '';
-    $('headersCountList').appendChild(ul);
+    html($('headersCountList'), ul);
   }
 
   makeActionsHtml(actions) {
@@ -199,8 +198,7 @@ class Popup {
       ul.appendChild(this.makeActionHtml(action, handler, url));
     });
 
-    parent.innerHTML = '';
-    parent.appendChild(ul);
+    html(parent, ul);
   }
 
   makeHtml() {
@@ -289,6 +287,12 @@ function show(element) {
 function hide(element) {
   element.className = 'hide';
 }
+// clear an elements children and replace with `child`
+function html(element, child) {
+  element.innerHTML = '';
+  element.appendChild(child);
+}
+
 
 Object.assign(exports, {Model, View, Popup, Server, currentTab, $});
 
