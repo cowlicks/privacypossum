@@ -204,11 +204,9 @@ class Popup {
   makeHtml() {
     let {urlActions, headerCounts} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
-      let empty = document.createElement('div');
-      empty.id = 'emptyActions';
-      empty.innerText = noActionsText;
-      $('actions').innerHTML = '';
-      return $('actions').appendChild(empty);
+      hide($('headers'));
+      hide($('actionsList'));
+      return show($('emptyActions'));
     }
 
     if (headerCounts.size !== 0) {
