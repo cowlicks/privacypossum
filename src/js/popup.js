@@ -184,10 +184,12 @@ class Popup {
     checkbox.id = 'headerCheckbox';
 
     if (!active) {
-      parent.innerHTML = '';
-      parent.appendChild(checkbox);
-      parent.appendChild(document.createTextNode('Blocking tracking headers disabled'));
+      show($('headersDisabled'));
+      hide($('headersActive'));
       return;
+    } else {
+      hide($('headersDisabled'));
+      show($('headersActive'));
     }
 
     headerCounts.forEach((count, name) => {
