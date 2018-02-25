@@ -80,7 +80,7 @@ class Popup {
 
   connect() {
     this.port = connect({name: POPUP});
-    this.view = new View(this.port, ({active, actions, headerCounts}) => {
+    this.view = new View(this.port, ({active, actions, headerCounts, headerCountsActive}) => {
       if (typeof active !== 'undefined') {
         this.active = active;
       }
@@ -89,6 +89,9 @@ class Popup {
       }
       if (headerCounts) {
         this.headerCounts = new Counter(headerCounts);
+      }
+      if (typeof headerCountsActive !== 'undefined') {
+        this.headerCountsActive = headerCountsActive;
       }
       this.show();
     });
@@ -206,15 +209,15 @@ class Popup {
   }
 
   makeHtml() {
-    let {urlActions, headerCounts} = this;
+    let {urlActions, headerCounts, headerCountsActive} = this;
     if (urlActions.size === 0 && headerCounts.size === 0) {
       hide($('headers'));
       hide($('actionsList'));
       return show($('emptyActions'));
     }
 
-    if (headerCounts.size !== 0) {
-      this.makeHeaderCountHtml(headerCounts);
+    if (headerCounts.size !== 0 || !headerCountsActive) {
+      this.makeHeaderCountHtml(headerCounts, headerCountsActive);
     }
 
     if (urlActions.size !== 0) {
