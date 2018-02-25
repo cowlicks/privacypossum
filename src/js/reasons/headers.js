@@ -14,7 +14,10 @@ function isHeaderRequest(details) {
 function requestHandler({tabs}, details) {
   if (details.type === 'main_frame') {
     Object.assign(details, {shortCircuit: true, response: NO_ACTION});
-    tabs.getTab(details.tabId).action = new Action(TAB_DEACTIVATE_HEADERS);
+    let tab = tabs.getTab(details.tabId);
+    tab.action = new Action(TAB_DEACTIVATE_HEADERS);
+    tab.headerCountsActive = false;
+    tab.onChange();
   }
 }
 
@@ -42,11 +45,13 @@ async function messageHandler({tabs, store}, {tabId, checked}) {
     }
   });
   let tab = tabs.getTab(tabId);
+  tab.headerCountsActive = checked;
   if (!checked) {
     tab.action = new Action(TAB_DEACTIVATE_HEADERS);
   } else if (checked && tab.action && tab.action.reason === TAB_DEACTIVATE_HEADERS) {
     delete tab.action;
   }
+  tab.onChange();
 }
 
 async function popupHandler({}, tabId) {
