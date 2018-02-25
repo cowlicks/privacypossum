@@ -63,6 +63,7 @@ class Tab extends listenerMixin(Map) {
     this.active = true;
     this.actions = new Map();
     this.headerCounts = new Counter();
+    this.headerCountsActive = true;
 
     this.onChange = this.onEvent;
     this.setBadgeText(''); // clear badge
@@ -73,6 +74,7 @@ class Tab extends listenerMixin(Map) {
       active: this.active,
       actions: Array.from(this.actions),
       headerCounts: Array.from(this.headerCounts),
+      headerCountsActive: this.headerCountsActive,
     };
   }
 
