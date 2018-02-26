@@ -180,21 +180,20 @@ class Popup {
   makeHeaderCountHtml(headerCounts, active = true) {
     $('headerCheckbox').checked = active;
 
-    if (!active) {
+    if (active) {
+      show($('headersActive'));
+      hide($('headersDisabled'));
+      if (headerCounts.size !== 0) {
+        let ul = document.createElement('ul');
+        headerCounts.forEach((count, name) => {
+          ul.appendChild(this.headerHtml(name, count));
+        });
+        html($('headersCountList'), ul);
+      }
+    } else {
       show($('headersDisabled'));
       hide($('headersActive'));
-      return;
-    } else {
-      hide($('headersDisabled'));
-      show($('headersActive'));
     }
-
-    let ul = document.createElement('ul');
-    headerCounts.forEach((count, name) => {
-      ul.appendChild(this.headerHtml(name, count));
-    });
-
-    html($('headersCountList'), ul);
   }
 
   makeActionsHtml(actions) {
