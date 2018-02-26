@@ -3,15 +3,19 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
+  {log} = require('../utils'),
   {sendUrlDeactivate} = require('./utils'),
   {URL, tabsSendMessage} = require('../shim'),
   {FINGERPRINTING, CANCEL} = require('../constants');
 
 function fingerPrintingRequestHandler({tabs}, details) {
+  log(`request for fingerprinting script seen at ${details.url}`);
   if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
+    log(`blocking 3rd party fingerprinting request`);
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
     // send set fp signal
+    log(`intercepting 1st party fingerprinting script in page`);
     let {tabId, frameId} = details;
     tabs.markAction({reason: FINGERPRINTING}, details.url, details.tabId);
     tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
@@ -24,6 +28,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
     {url} = message,
     type = 'script';
 
+  log(`received fingerprinting message from tab ${sender.tab.url} for url ${url}`);
   // NB: the url could be dangerous user input, so we check it is an existing resource.
   if (tabs.hasResource({tabId, frameId, url, type})) {
     let reason = FINGERPRINTING,
@@ -31,6 +36,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
       tabUrl = tabs.getTabUrl(sender.tab.id),
       {href} = new URL(url);
 
+    log(`Store fingerprinting data`);
     let action = new Action(reason, {href, frameUrl, tabUrl});
     tabs.markAction({reason: FINGERPRINTING}, href, sender.tab.id);
     await store.setUrl(href, action);
