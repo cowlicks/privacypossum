@@ -37,18 +37,49 @@ describe('possum.js', function() {
   describe('header deactivate', function() {
     it('deactivate from popup', async function() {
       let {tabId} = main_frame,
+        show = 'show', hide = 'hide',
+        {possum} = this,
         cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
 
       this.onBeforeRequest(main_frame.copy());
-      this.onBeforeSendHeaders(cookie.copy())
+      let strippedCookies = this.onBeforeSendHeaders(cookie.copy())
 
       let popup = await makePopup(tabId);
+
+      assert.equal($('headersDisabled').className, hide);
+      assert.equal($('headersActive').className, show);
 
       $('headerCheckbox').checked = false;
       await popup.headerHandler();
 
+      assert.equal($('headersDisabled').className, show);
+      assert.equal($('headersActive').className, hide);
+
       assert.deepEqual(this.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
       assert.deepEqual(this.possum.store.getDomain(main_frame.url).action.reason, HEADER_DEACTIVATE_ON_HOST);
+
+      possum = await reloadEverything(possum);
+
+      possum.webRequest.onBeforeRequest(main_frame.copy());
+      assert.deepEqual(possum.webRequest.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
+
+      popup = await makePopup(tabId);
+      assert.equal($('headersDisabled').className, show);
+      assert.equal($('headersActive').className, hide);
+
+      assert.isFalse($('headerCheckbox').checked);
+
+      $('headerCheckbox').checked = true;
+      await popup.headerHandler();
+
+      possum = await reloadEverything(possum);
+      possum.webRequest.onBeforeRequest(main_frame.copy());
+      assert.deepEqual(possum.webRequest.onBeforeSendHeaders(cookie.copy()), strippedCookies);
+
+      popup = await makePopup(tabId);
+
+      assert.isTrue($('headerCheckbox').checked);
+      assert.equal($('headersActive').className, show);
     });
     it('deactivates from storage', async function() {
       let cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
