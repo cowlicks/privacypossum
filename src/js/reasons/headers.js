@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {Action} = require('../schemes'),
-  {URL, sendMessage} = require('../shim'),
+  {URL} = require('../shim'),
   {hasAction} = require('../utils'),
   {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
@@ -54,16 +54,11 @@ async function messageHandler({tabs, store}, {tabId, checked}) {
   tab.onChange();
 }
 
-async function popupHandler({}, tabId) {
-  return await sendMessage({HEADER_DEACTIVATE_ON_HOST, tabId});
-}
-
 const reason = {
   name: HEADER_DEACTIVATE_ON_HOST,
   props: {
     requestHandler,
     messageHandler,
-    popupHandler,
   },
 }
 
@@ -74,6 +69,6 @@ const tabReason = {
   }
 }
 
-Object.assign(exports, {requestHandler, tabHeaderHandler, messageHandler, popupHandler, reason, tabReason});
+Object.assign(exports, {requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/headers', func) : func(exports));
