@@ -209,15 +209,16 @@ class Popup {
 
   makeHtml() {
     let {urlActions, headerCounts, headerCountsActive} = this;
-    if (urlActions.size === 0 && headerCounts.size === 0) {
+    if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
       hide($('headers'));
       hide($('actionsList'));
       return show($('emptyActions'));
+    } else {
+      show($('headers'));
+      show($('actionsList'));
     }
 
-    if (headerCounts.size !== 0 || !headerCountsActive) {
-      this.makeHeaderCountHtml(headerCounts, headerCountsActive);
-    }
+    this.makeHeaderCountHtml(headerCounts, headerCountsActive);
 
     if (urlActions.size !== 0) {
       this.makeActionsHtml(urlActions);
