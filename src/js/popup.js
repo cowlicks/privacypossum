@@ -12,6 +12,7 @@
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
   {Counter} = require('./utils'),
+  {Action} = require('./schemes'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
 function makeCheckbox(checked, handler) {
@@ -100,8 +101,8 @@ class Popup {
 
   updateUrlActions(actions) {
     this.urlActions = new Map();
-
     actions.forEach(([url, action]) => {
+      action = Action.coerce(action);
       this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url, this.tabId])});
     });
   }
