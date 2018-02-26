@@ -22,11 +22,6 @@ describe('reasons.js', function() {
 
   describe('header deactivate', function() {
     let {messageHandler, tabHeaderHandler, popupHandler, requestHandler} = require('../reasons/headers');
-    it('popupHandler', function() {
-      let tabId = 1;
-      popupHandler(this, tabId);
-      assert.deepEqual(onMessage.messages.pop().pop(), {HEADER_DEACTIVATE_ON_HOST, tabId});
-    });
     it('messageHandler', async function() {
       let {url, tabId} = main_frame;
       this.tabs.addResource(main_frame);
