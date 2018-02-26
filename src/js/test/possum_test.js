@@ -196,11 +196,15 @@ describe('possum.js', function() {
   });
 
   describe('fingerprinting', function() {
+    function loadPage(possum) {
+      // load a page, with a script
+      possum.webRequest.onBeforeRequest(main_frame.copy());
+      possum.webRequest.onBeforeRequest(script.copy());
+      possum.webRequest.onBeforeRequest(first_party_script.copy());
+    }
     beforeEach(async function() {
       // load a page, with a script
-      this.onBeforeRequest(main_frame.copy());
-      this.onBeforeRequest(script.copy());
-      this.onBeforeRequest(first_party_script.copy());
+      loadPage(this.possum);
 
       // page see's fingerprinting and sends message
       await sendMessage(
@@ -273,21 +277,41 @@ describe('possum.js', function() {
       getBadgeText({tabId: details2.tabId}, (text) => assert.equal(text, '2'));
     })
 
-    it('has the fp script blocked in the popup', async function() {
+    describe('popup', async function() {
       let {tabId} = details.script,
         url = details.script.url;
 
-      tabsQuery.tabs = [{id: tabId}];
-      let popup = new Popup(tabId);
-      await popup.connect();
+      async function resetPagePossumPopup(possum, tabId) {
+        possum = await reloadEverything(possum);
+        loadPage(possum);
+        return [possum, await makePopup(tabId)];
+      }
 
-      // clicking changes action FP -> user deactivated
-      popup.urlActions.get(url).handler();
-      assert.equal(popup.urlActions.get(url).action.reason, USER_URL_DEACTIVATE);
+      beforeEach(async function() {
+        this.popup = await makePopup(tabId);
+      });
+      it('is shown in the popup', function() {
+        assert.equal(this.popup.urlActions.get(url).action.reason, FINGERPRINTING);
+        assert.include($('actionsList').innerHTML, url)
+      });
+      it('unblock fp in the popup', async function() {
+        let {possum, popup} = this;
+        // clicking changes action FP -> user deactivated
+        await popup.urlActions.get(url).handler();
 
-      // now click changes action user deactivated -> removed
-      popup.urlActions.get(url).handler();
-      assert.equal(popup.urlActions.get(url).action.reason, FINGERPRINTING);
+        [possum, popup] = await resetPagePossumPopup(possum, tabId);
+
+        assert.include($('actionsList').innerHTML, USER_URL_DEACTIVATE);
+        assert.notInclude($('actionsList').innerHTML, FINGERPRINTING);
+
+        // now click changes action user deactivated -> removed
+        await popup.urlActions.get(url).handler();
+
+        [possum, popup] = await resetPagePossumPopup(possum, tabId);
+
+        assert.include($('actionsList').innerHTML, FINGERPRINTING);
+        assert.notInclude($('actionsList').innerHTML, USER_URL_DEACTIVATE);
+      });
     });
   });
 });
