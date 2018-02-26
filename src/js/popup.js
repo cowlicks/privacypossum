@@ -239,6 +239,7 @@ class Popup {
       checked = action.reason != USER_URL_DEACTIVATE,
       checkbox = makeCheckbox(checked, handler);
 
+    label.dataset.reason = action.reason;
     label.appendChild(checkbox);
     label.appendChild(this.icon(action));
     label.appendChild(document.createTextNode(`${url}`));
