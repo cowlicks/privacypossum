@@ -7,8 +7,11 @@
  * clear them between each stateful interface between each test.
  */
 
-const {clearState} = require('./testing_utils');
+const {clearState} = require('./testing_utils'),
+  {logger} = require('../utils');
+
 
 beforeEach(function() {
+  logger.print = false;
   clearState();
 });

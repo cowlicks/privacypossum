@@ -31,6 +31,7 @@ class FifoMap extends Map {
 class LogBook extends FifoMap {
   constructor() {
     super(...arguments);
+    this.print = true;
     this.count = 0;
   }
 
@@ -39,7 +40,9 @@ class LogBook extends FifoMap {
   }
 
   log(entry) {
-    console.log(entry); // eslint-disable-line
+    if (this.print) {
+      console.log(entry); // eslint-disable-line
+    }
     this.set(this.count, entry);
     this.count += 1;
     return this;
