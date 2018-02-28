@@ -87,8 +87,11 @@ class DomainStore {
   }
 
   getUrl(url) {
-    let {pathname} = new URL(url);
-    return this.getDomain(url).getPathAction(pathname);
+    let {pathname} = new URL(url),
+      domain = this.getDomain(url);
+    if (domain instanceof Domain) {
+      return domain.getPathAction(pathname);
+    }
   }
 
   async setUrl(url, action) {
