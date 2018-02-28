@@ -213,6 +213,20 @@ describe('possum.js', function() {
       );
     });
 
+    describe('deactivate', function() {
+      let {url, tabId} = script.copy();
+      beforeEach(async function() {
+        await sendMessage({type: USER_URL_DEACTIVATE, url, tabId});
+      });
+      it('doesnt block when deactivated', function() {
+        assert.deepEqual(this.possum.webRequest.onBeforeRequest(script.copy()), NO_ACTION);
+      });
+      it('new fingerprinting message does not override deactivate', async function() {
+        await sendMessage({type: FINGERPRINTING, url}, toSender(main_frame.copy()));
+        assert.deepEqual(this.possum.webRequest.onBeforeRequest(script.copy()), NO_ACTION);
+      });
+    });
+
     describe('first party fingerprinting', function() {
       beforeEach(async function() {
         await sendMessage(
