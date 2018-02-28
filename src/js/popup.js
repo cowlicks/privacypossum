@@ -216,7 +216,7 @@ class Popup {
       ul = document.createElement('ul');
 
     actions.forEach(({action, handler}, url) => {
-      ul.appendChild(this.makeActionHtml(action, handler, url));
+      ul.appendChild(this.actionHtml(action, handler, url));
     });
 
     html(parent, ul);
@@ -234,7 +234,7 @@ class Popup {
     return li;
   }
 
-  makeActionHtml(action, handler, url) {
+  actionHtml(action, handler, url) {
     let li = document.createElement('li'),
       label = document.createElement('label'),
       checked = action.reason != USER_URL_DEACTIVATE,
