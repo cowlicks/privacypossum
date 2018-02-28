@@ -3,7 +3,19 @@
 [(function(exports) {
 
 const {activeIcons, inactiveIcons} = require('./constants'),
-    {setIcon} = require('./shim');
+    {setIcon, tabsQuery} = require('./shim');
+
+function currentTab() {
+  return new Promise(resolve => {
+    tabsQuery(
+      {
+        active: true,
+        lastFocusedWindow: true,
+      },
+      (tabs) => resolve(tabs[0])
+    );
+  });
+}
 
 /*
  * View of some remote data represented by a `Model`.
@@ -237,6 +249,7 @@ lazyDef(exports, 'log', () => {
 });
 
 Object.assign(exports, {
+  currentTab,
   View,
   Model,
   Counter,

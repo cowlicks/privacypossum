@@ -1,6 +1,7 @@
 "use strict";
 
-const {Popup, currentTab} = require('./popup');
+const {Popup} = require('./popup'),
+  {currentTab} = require('./utils');
 
 let popup;
 currentTab().then(tab => {

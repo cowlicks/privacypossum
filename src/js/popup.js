@@ -9,9 +9,9 @@
 
 [(function(exports) {
 
-let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
+let {connect, onConnect, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
-  {View, Model, Counter} = require('./utils'),
+  {currentTab, View, Model, Counter} = require('./utils'),
   {Action} = require('./schemes'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
@@ -231,18 +231,6 @@ class Server {
   }
 }
 
-function currentTab() {
-  return new Promise(resolve => {
-    tabsQuery(
-      {
-        active: true,
-        lastFocusedWindow: true,
-      },
-      (tabs) => resolve(tabs[0])
-    );
-  });
-}
-
 function $(id) {
   return document.getElementById(id);
 }
@@ -259,6 +247,6 @@ function html(element, child) {
 }
 
 
-Object.assign(exports, {Popup, Server, currentTab, $});
+Object.assign(exports, {Popup, Server, $});
 
 })].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));
