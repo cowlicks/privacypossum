@@ -9,6 +9,16 @@ body {
 .show {
 }
 
+.grey {
+  color: rgb(76, 76, 76);
+}
+
+code {
+  background-color: rgb(238, 238, 238);
+  padding-left: 3;
+  padding-right: 3;
+}
+
 #header {
   display: block;
   margin-top: 10;
@@ -19,11 +29,16 @@ body {
   height: 30;
 }
 
-#title {
-  font-size: 20;
+#header * {
+  vertical-align: middle;
 }
 
-#logo {
+#title {
+  font-size: 20;
+  padding-left: 5;
+}
+
+#branding {
   float: left;
   margin-right: 20;
 }
@@ -34,7 +49,11 @@ body {
 
 #onOff * {
   display: inline-block;
-  vertical-align: middle;
+}
+
+#onOff-text {
+  font-size: 10;
+  padding-right: 5;
 }
 
 #actionsList ul {
