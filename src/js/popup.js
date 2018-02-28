@@ -166,7 +166,7 @@ class Popup {
     this.makeHeaderCountHtml(headerCounts, headerCountsActive);
 
     if (urlActions.size !== 0) {
-      this.makeActionsHtml(urlActions);
+      this.allActionsHtml(urlActions);
     }
   }
 
@@ -211,7 +211,7 @@ class Popup {
     }
   }
 
-  makeActionsHtml(actions) {
+  allActionsHtml(actions) {
     let parent = $('actionsList'),
       ul = document.createElement('ul');
 
