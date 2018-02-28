@@ -228,8 +228,13 @@ class Popup {
 
   headerHtml(name, count) {
     let li = document.createElement('li'),
-      msg = `${name} headers blocked from ${count} sources`;
-    li.appendChild(document.createTextNode(msg));
+      code = document.createElement('code'),
+      header = document.createTextNode(name),
+      msg = document.createTextNode(` headers blocked from ${count} sources`);
+
+    code.appendChild(header);
+    li.appendChild(code);
+    li.appendChild(msg);
     return li;
   }
 
