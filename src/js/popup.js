@@ -153,7 +153,21 @@ class Popup {
   }
 
   showActions() {
-    this.makeHtml();
+    let {urlActions, headerCounts, headerCountsActive} = this;
+    if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
+      hide($('headers'));
+      hide($('actionsList'));
+      return show($('emptyActions'));
+    } else {
+      show($('headers'));
+      show($('actionsList'));
+    }
+
+    this.makeHeaderCountHtml(headerCounts, headerCountsActive);
+
+    if (urlActions.size !== 0) {
+      this.makeActionsHtml(urlActions);
+    }
   }
 
   getHandlers(actionsUrls) {
@@ -206,24 +220,6 @@ class Popup {
     });
 
     html(parent, ul);
-  }
-
-  makeHtml() {
-    let {urlActions, headerCounts, headerCountsActive} = this;
-    if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
-      hide($('headers'));
-      hide($('actionsList'));
-      return show($('emptyActions'));
-    } else {
-      show($('headers'));
-      show($('actionsList'));
-    }
-
-    this.makeHeaderCountHtml(headerCounts, headerCountsActive);
-
-    if (urlActions.size !== 0) {
-      this.makeActionsHtml(urlActions);
-    }
   }
 
   headerHtml(name, count) {
