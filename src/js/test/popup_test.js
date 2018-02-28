@@ -21,11 +21,11 @@ describe('popup.js', function() {
       this.popup = new Popup(this.tabId);
     });
     it('inactive', function() {
-      this.popup.makeHeaderCountHtml(new Map(), false);
+      this.popup.allHeadersHtml(new Map(), false);
       assert.isFalse($('headerCheckbox').checked);
     });
     it('headerHandler', async function() {
-      this.popup.makeHeaderCountHtml(new Map(), true);
+      this.popup.allHeadersHtml(new Map(), true);
       await this.popup.headerHandler();
       assert.isTrue(onMessage.messages.pop().pop().checked);
     });
@@ -33,7 +33,7 @@ describe('popup.js', function() {
       let name = 'headerName',
         count = 42,
         headerCounts = new Map([[name, count]]);
-      this.popup.makeHeaderCountHtml(headerCounts, true);
+      this.popup.allHeadersHtml(headerCounts, true);
       assert.isTrue($('headerCheckbox').checked);
       assert.include($('headersCountList').innerHTML, name);
       assert.include($('headersCountList').innerHTML, count);

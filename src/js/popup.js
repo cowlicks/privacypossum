@@ -163,7 +163,7 @@ class Popup {
       show($('actionsList'));
     }
 
-    this.makeHeaderCountHtml(headerCounts, headerCountsActive);
+    this.allHeadersHtml(headerCounts, headerCountsActive);
 
     if (urlActions.size !== 0) {
       this.allActionsHtml(urlActions);
@@ -192,7 +192,7 @@ class Popup {
     return img;
   }
 
-  makeHeaderCountHtml(headerCounts, active = true) {
+  allHeadersHtml(headerCounts, active = true) {
     $('headerCheckbox').checked = active;
 
     if (active) {
