@@ -11,7 +11,7 @@
 
 let {connect, onConnect, tabsQuery, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
-  {Counter} = require('./utils'),
+  {View, Model, Counter} = require('./utils'),
   {Action} = require('./schemes'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
@@ -23,51 +23,8 @@ function makeCheckbox(checked, handler) {
   return checkbox;
 }
 
-const noActionsText = `No tracking detected`,
-    enabledText = `ENABLED`,
+const enabledText = `ENABLED`,
     disabledText = `DISABLED`;
-
-/*
- * View of some remote data represented by a `Model`.
- */
-class View {
-  constructor(port, onChange) {
-    Object.assign(this, {
-      disconnect: port.disconnect.bind(port),
-      onChange
-    });
-    this.ready = new Promise(resolve => {
-      port.onMessage.addListener(obj => {
-        if (obj.change) {
-          onChange(obj.change);
-          resolve();
-        }
-      });
-    });
-  }
-}
-
-/* 
- * Model that sends data changes to a corresponding view.
- *
- * Takes a `port` and an object with an `onChange` and `addListener`
- * methods. `onChange` is called directly first to send the initial data.
- *
- * todo: add a mixin that conforms to changer interface
- */
-class Model {
-  constructor(port, data) {
-    this.data = data;
-    this.func = change => port.postMessage({change});
-    data.addListener(this.func);
-    data.onChange(); // send initial data
-    port.onDisconnect.addListener(() => this.delete());
-  }
-
-  delete() {
-    this.data.removeListener(this.func);
-  }
-}
 
 class Popup {
   constructor(tabId) {
@@ -302,6 +259,6 @@ function html(element, child) {
 }
 
 
-Object.assign(exports, {Model, View, Popup, Server, currentTab, $});
+Object.assign(exports, {Popup, Server, currentTab, $});
 
 })].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));

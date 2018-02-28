@@ -1,9 +1,39 @@
 'use strict';
 
 const assert = require('chai').assert,
+  {fakePort} = require('../fakes'),
+  {View, Model, Listener} = require('../utils'),
   {LogBook, wrap, zip} = require('../utils');
 
 describe('utils.js', function() {
+  describe('View and Model', function() {
+    it('they can talk', async function() {
+      let [aPort, bPort] = fakePort('test'),
+        result,
+        data = new Listener();
+
+      data.getData = () => data.x;
+      data.x = 'initial';
+
+      let view = new View(aPort, out => result = out);
+      new Model(bPort, data),
+
+      assert.equal(result, 'initial');
+
+      data.x = 'new data';
+      data.onChange();
+
+      assert.equal(result, 'new data');
+
+      await view.disconnect();
+
+      data.x = 'should not change to this';
+      data.onChange();
+
+      assert.equal(result, 'new data');
+    });
+  });
+
   it('wraps', function() {
     let splitter = (string) => string.split(''),
       after = (s) => s.join(''),

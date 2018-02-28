@@ -1,14 +1,12 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {fakePort} = require('../fakes'),
   {USER_URL_DEACTIVATE} = require('../constants'),
   {Tab, Tabs} = require('../tabs'),
-  {Listener} = require('../utils'),
   {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
   {setDocument} = require('./testing_utils'),
-  {Model, View, Server, Popup, $} = require('../popup');
+  {Server, Popup, $} = require('../popup');
 
 describe('popup.js', function() {
   beforeEach(async function() {
@@ -37,34 +35,6 @@ describe('popup.js', function() {
       assert.isTrue($('headerCheckbox').checked);
       assert.include($('headersCountList').innerHTML, name);
       assert.include($('headersCountList').innerHTML, count);
-    });
-  });
-
-  describe('View and Model', function() {
-    it('they can talk', async function() {
-      let [aPort, bPort] = fakePort('test'),
-        result,
-        data = new Listener();
-
-      data.getData = () => data.x;
-      data.x = 'initial';
-
-      let view = new View(aPort, out => result = out);
-      new Model(bPort, data),
-
-      assert.equal(result, 'initial');
-
-      data.x = 'new data';
-      data.onChange();
-
-      assert.equal(result, 'new data');
-
-      await view.disconnect();
-
-      data.x = 'should not change to this';
-      data.onChange();
-
-      assert.equal(result, 'new data');
     });
   });
 

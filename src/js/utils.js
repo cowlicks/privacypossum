@@ -5,6 +5,48 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon} = require('./shim');
 
+/*
+ * View of some remote data represented by a `Model`.
+ */
+class View {
+  constructor(port, onChange) {
+    Object.assign(this, {
+      disconnect: port.disconnect.bind(port),
+      onChange
+    });
+    this.ready = new Promise(resolve => {
+      port.onMessage.addListener(obj => {
+        if (obj.change) {
+          onChange(obj.change);
+          resolve();
+        }
+      });
+    });
+  }
+}
+
+/*
+ * Model that sends data changes to a corresponding view.
+ *
+ * Takes a `port` and an object with an `onChange` and `addListener`
+ * methods. `onChange` is called directly first to send the initial data.
+ *
+ * todo: add a mixin that conforms to changer interface
+ */
+class Model {
+  constructor(port, data) {
+    this.data = data;
+    this.func = change => port.postMessage({change});
+    data.addListener(this.func);
+    data.onChange(); // send initial data
+    port.onDisconnect.addListener(() => this.delete());
+  }
+
+  delete() {
+    this.data.removeListener(this.func);
+  }
+}
+
 class Counter extends Map {
   add(name) {
     if (!this.has(name)) {
@@ -195,6 +237,8 @@ lazyDef(exports, 'log', () => {
 });
 
 Object.assign(exports, {
+  View,
+  Model,
   Counter,
   memoize,
   LogBook,
