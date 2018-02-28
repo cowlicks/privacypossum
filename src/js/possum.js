@@ -8,7 +8,7 @@ const constants = require('./constants'),
   {Reasons, reasonsArray} = require('./reasons/reasons'),
   {Handler, MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
-  PopupServer = require('./popup').Server;
+  PopupServer = require('./popup_server').Server;
 
 class Possum {
   constructor(store = new DomainStore(constants.DISK_NAME)) {

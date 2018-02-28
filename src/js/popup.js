@@ -9,9 +9,9 @@
 
 [(function(exports) {
 
-let {connect, onConnect, document, sendMessage, getURL} = require('./shim'),
+let {connect, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
-  {currentTab, View, Model, Counter} = require('./utils'),
+  {View, Counter} = require('./utils'),
   {Action} = require('./schemes'),
   {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
@@ -209,28 +209,6 @@ class Popup {
 }
 
 
-class Server {
-  constructor(tabs) {
-    this.tabs = tabs;
-    this.connections = new Map();
-  }
-
-  start() {
-    onConnect.addListener(port => {
-      if (port.name === POPUP) {
-        currentTab().then(tab => {
-          let model = new Model(port, this.tabs.getTab(tab.id));
-          this.connections.set(tab.id, model);
-          port.onDisconnect.addListener(() => {
-            this.connections.delete(tab.id);
-            model.delete();
-          });
-        });
-      }
-    });
-  }
-}
-
 function $(id) {
   return document.getElementById(id);
 }
@@ -247,6 +225,6 @@ function html(element, child) {
 }
 
 
-Object.assign(exports, {Popup, Server, $});
+Object.assign(exports, {Popup, $});
 
 })].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));

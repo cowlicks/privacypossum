@@ -65,6 +65,7 @@
       "js/webrequest.js",
       "js/store.js",
       "js/popup.js",
+      "js/popup_server.js",
 
       "js/possum.js",
       "js/initialize.js"

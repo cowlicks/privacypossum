@@ -6,7 +6,8 @@ const assert = require('chai').assert,
   {onMessage, tabsQuery} = require('../shim'),
   {blockAction} = require('../reasons/reasons'),
   {setDocument} = require('./testing_utils'),
-  {Server, Popup, $} = require('../popup');
+  {Server} = require('../popup_server'),
+  {Popup, $} = require('../popup');
 
 describe('popup.js', function() {
   beforeEach(async function() {
