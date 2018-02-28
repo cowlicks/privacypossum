@@ -29,11 +29,11 @@ function getScriptLocation() {  // todo: to do split('\n') we do a O(n) read of 
   return getUrlFromStackLine(new Error().stack.split('\n')[3]);
 }
 
-const innerMostParens = /\(([^\(\)]+)\)/;
 const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
 function getUrlFromStackLine(line) {
-  if (line.endsWith(')')) { // there are parenthese
-    line = line.match(innerMostParens)[1]; // get innermost parens
+  while (line.endsWith(')')) { // there are parenthese
+    line = line.slice(line.lastIndexOf('(') + 1);
+    line = line.slice(0, line.indexOf(')'));
   }
   line = line.split(' ').pop(); // remove stuff up to the url
   return line.match(urlEndRegex)[0]; // strip stuff after the path of url (query, hash, and line numbers);

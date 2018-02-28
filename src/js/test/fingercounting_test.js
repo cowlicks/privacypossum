@@ -36,7 +36,11 @@ describe('fingercounting.js', function() {
       [// at functionName [as methodName] (location)
         '    at _.Dg.xg [as constructor] (http://og/initial.js:116:154)',
         'http://og/initial.js',
-      ]
+      ],
+      [// at clause has parenthese and location does too
+        '    at Array.F.k.(anonymous function) [as user.agent] (https://docs.google.com/spreadsheets/d/1QJetruKfHrO5bpaLDk_smXYpLSvGlzytda_6koMjlCc/edit:642:1484)',
+        'https://docs.google.com/spreadsheets/d/1QJetruKfHrO5bpaLDk_smXYpLSvGlzytda_6koMjlCc/edit',
+      ],
     ];
     it('extracts urls correctly', function() {
       data.forEach(([line, expected]) => assert.equal(getUrlFromStackLine(line), expected));
