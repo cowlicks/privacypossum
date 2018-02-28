@@ -10,16 +10,16 @@ const {USER_URL_DEACTIVATE, NO_ACTION} = require('../constants'),
 async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
   await store.updateUrl(url, currentAction => {
     let action;
-    log(`got user deactivate message for action: ${currentAction} with url: ${url}`);
+    log(`got user deactivate message for action: '${currentAction.reason}' with url: '${url}'`);
     if (currentAction.reason === USER_URL_DEACTIVATE) {
       action = currentAction.getData('deactivatedAction');
-      log(`reactivating action: ${action} for url: ${url}`);
+      log(`reactivating action: '${action.reason}' for url: '${url}'`);
     } else {
       action = new Action(USER_URL_DEACTIVATE, {
         href: url,
         deactivatedAction: currentAction,
       });
-      log(`deactivating action: ${currentAction} for url: ${url}`);
+      log(`deactivating action: '${currentAction.reason}' for url: '${url}'`);
     }
     tabs.markAction(action, url, tabId);
     return action;
