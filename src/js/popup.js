@@ -141,7 +141,7 @@ class Popup {
 
     let img = doc.createElement('img');
     img.src = getURL(icon);
-    img.className = 'actionIcon';
+    img.className = 'action-icon';
     img.setAttribute('attribution', attribution);
     return img;
   }
