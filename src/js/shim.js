@@ -130,6 +130,7 @@ let shims = [
       return out;
     },
   ],
+  ['tabsGet', 'chrome.tabs.get', passThru, () => (tabId, callback) => callback(tabId)],
   ['setBadgeText', 'chrome.browserAction.setBadgeText', passThru, setAndGetBadgeText],
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],

@@ -6,7 +6,7 @@
 
 [(function(exports) {
 
-const shim = require('./shim'), {URL, setBadgeText} = shim,
+const shim = require('./shim'), {URL, tabsGet, setBadgeText} = shim,
   {REMOVE_ACTION} = require('./constants'),
   {Counter, listenerMixin, setTabIconActive, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
@@ -95,11 +95,14 @@ class Tab extends listenerMixin(Map) {
     }
     this.currentBadgeText = text;
 
-    try {
-      setBadgeText({text, tabId: this.id});
-    } catch (e) {
-      log(`Error setting badge text with tabId ${this.id} got error ${e}.`);
-    }
+    tabsGet(this.id, () => {  // you cant try/catch this error in chrome
+      // so we check the tab exists before setting badgeText
+      if (!(typeof chrome !== 'undefined' && chrome.runtime.lastError)){
+        setBadgeText({text, tabId: this.id});
+      } else {
+        log(`Error setting badge text with tabId ${this.id} got error ${chrome.runtime.lastError.message}.`);
+      }
+    });
   }
 
   setActiveState(active) {
