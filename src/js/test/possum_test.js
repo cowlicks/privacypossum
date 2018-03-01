@@ -300,7 +300,7 @@ describe('possum.js', function() {
       });
       it('is shown in the popup', function() {
         assert.equal(this.popup.urlActions.get(url).action.reason, FINGERPRINTING);
-        assert.include($('actionsList').innerHTML, url)
+        assert.include($('actions').innerHTML, url)
       });
       it('unblock fp in the popup', async function() {
         let {possum, popup} = this;
@@ -309,16 +309,16 @@ describe('possum.js', function() {
 
         [possum, popup] = await resetPagePossumPopup(possum, tabId);
 
-        assert.include($('actionsList').innerHTML, USER_URL_DEACTIVATE);
-        assert.notInclude($('actionsList').innerHTML, FINGERPRINTING);
+        assert.include($('actions').innerHTML, USER_URL_DEACTIVATE);
+        assert.notInclude($('actions').innerHTML, FINGERPRINTING);
 
         // now click changes action user deactivated -> removed
         await popup.urlActions.get(url).handler();
 
         [possum, popup] = await resetPagePossumPopup(possum, tabId);
 
-        assert.include($('actionsList').innerHTML, FINGERPRINTING);
-        assert.notInclude($('actionsList').innerHTML, USER_URL_DEACTIVATE);
+        assert.include($('actions').innerHTML, FINGERPRINTING);
+        assert.notInclude($('actions').innerHTML, USER_URL_DEACTIVATE);
       });
     });
   });

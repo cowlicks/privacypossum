@@ -171,7 +171,7 @@ class Popup {
   }
 
   allActionsHtml(actions) {
-    let parent = $('actionsList'),
+    let parent = $('actions'),
       ul = document.createElement('ul');
 
     actions.forEach(({action, handler}, url) => {
