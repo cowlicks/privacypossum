@@ -21,7 +21,7 @@ describe('reasons.js', function() {
   });
 
   describe('header deactivate', function() {
-    let {messageHandler, tabHeaderHandler, popupHandler, requestHandler} = require('../reasons/headers');
+    let {messageHandler, tabHeaderHandler, requestHandler} = require('../reasons/headers');
     it('messageHandler', async function() {
       let {url, tabId} = main_frame;
       this.tabs.addResource(main_frame);
