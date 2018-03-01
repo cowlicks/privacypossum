@@ -53,7 +53,7 @@ class Domain {
   }
 
   hasPath(path) {
-    return this.paths.hasOwnProperty(path);
+    return this.paths && this.paths.hasOwnProperty(path);
   }
 
   getPath(path) {

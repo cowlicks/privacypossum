@@ -35,7 +35,6 @@ class Popup {
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
 
     $('on-off').onclick = this.onOff.bind(this);
-    $('headerCheckbox').addEventListener('change', this.headerHandler.bind(this), false);
   }
 
   connect() {
@@ -110,12 +109,12 @@ class Popup {
   showActions() {
     let {urlActions, headerCounts, headerCountsActive} = this;
     if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
-      hide($('headers'));
-      hide($('actionsList'));
-      return show($('emptyActions'));
+      show($('empty'));
+      hide($('base'));
+      return;
     } else {
       show($('headers'));
-      show($('actionsList'));
+      hide($('empty'));
     }
 
     this.allHeadersHtml(headerCounts, headerCountsActive);
@@ -148,22 +147,27 @@ class Popup {
   }
 
   allHeadersHtml(headerCounts, active = true) {
-    $('headerCheckbox').checked = active;
+    let div = document.createElement('div'),
+      checkbox = makeCheckbox(active, this.headerHandler.bind(this));
+
+    checkbox.id = 'headerCheckbox';
+
+    div.appendChild(checkbox);
 
     if (active) {
-      show($('headersActive'));
-      hide($('headersDisabled'));
+      div.appendChild(document.createTextNode('Blocked tracking headers:'));
       if (headerCounts.size !== 0) {
         let ul = document.createElement('ul');
+        ul.id = 'headersCountList';
         headerCounts.forEach((count, name) => {
           ul.appendChild(this.headerHtml(name, count));
         });
-        html($('headersCountList'), ul);
+        div.appendChild(ul);
       }
     } else {
-      show($('headersDisabled'));
-      hide($('headersActive'));
+      div.appendChild(document.createTextNode('Blocking tracking headers disabled'));
     }
+    html($('headers'), div);
   }
 
   allActionsHtml(actions) {
