@@ -28,12 +28,14 @@ const enabledText = `ENABLED`,
 
 class Popup {
   constructor(tabId) {
-    this.handler = new PopupHandler();
-    this.getClickHandler = this.handler.getFunc.bind(this.handler);
-    this.tabId = tabId;
-    this.setOnOffHandler();
-    $('headerCheckbox').addEventListener('change', this.headerHandler.bind(this), false);
     this.urlActions = new Map();
+    this.handler = new PopupHandler();
+    this.tabId = tabId;
+
+    this.getClickHandler = this.handler.getFunc.bind(this.handler);
+
+    $('onOff').onclick = this.onOff.bind(this);
+    $('headerCheckbox').addEventListener('change', this.headerHandler.bind(this), false);
   }
 
   connect() {
@@ -62,10 +64,6 @@ class Popup {
       action = Action.coerce(action);
       this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url, this.tabId])});
     });
-  }
-
-  setOnOffHandler() {
-    $('onOff').onclick = this.onOff.bind(this);
   }
 
   async onOff() {
