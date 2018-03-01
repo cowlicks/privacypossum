@@ -19,17 +19,17 @@ code {
   padding-right: 3;
 }
 
-#header {
+#title-bar {
   display: block;
   margin-top: 10;
   height: 40;
 }
 
-#header img {
+#title-bar img {
   height: 30;
 }
 
-#header * {
+#title-bar * {
   vertical-align: middle;
 }
 
