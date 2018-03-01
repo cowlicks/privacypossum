@@ -19,8 +19,8 @@ function fingerPrintingRequestHandler({tabs}, details) {
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
     // send set fp signal
-    log(`intercepting 1st party fingerprinting script in page`);
     let {tabId, frameId} = details;
+    log(`intercepting 1st party fingerprinting script for tabId: ${tabId}, url: ${details.url}, and frameId ${frameId}`);
     tabs.markAction({reason: FINGERPRINTING}, details.url, details.tabId);
     tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
   }
