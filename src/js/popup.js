@@ -119,9 +119,7 @@ class Popup {
 
     this.allHeadersHtml(headerCounts, headerCountsActive);
 
-    if (urlActions.size !== 0) {
-      this.allActionsHtml(urlActions);
-    }
+    this.allActionsHtml(urlActions);
   }
 
   getHandlers(actionsUrls) {

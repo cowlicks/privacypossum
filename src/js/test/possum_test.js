@@ -37,7 +37,6 @@ describe('possum.js', function() {
   describe('header deactivate', function() {
     it('deactivate from popup', async function() {
       let {tabId} = main_frame,
-        show = 'show', hide = 'hide',
         {possum} = this,
         cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));
 
