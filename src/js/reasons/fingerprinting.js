@@ -20,9 +20,14 @@ function fingerPrintingRequestHandler({tabs}, details) {
   } else {
     // send set fp signal
     let {tabId, frameId} = details;
-    log(`intercepting 1st party fingerprinting script for tabId: ${tabId}, url: ${details.url}, and frameId ${frameId}`);
-    tabs.markAction({reason: FINGERPRINTING}, details.url, details.tabId);
-    tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
+    if (tabId >= 0) {
+      log(`intercepting 1st party fingerprinting script for
+        tabId: ${tabId}, url: ${details.url}, and frameId ${frameId}`);
+      tabs.markAction({reason: FINGERPRINTING}, details.url, details.tabId);
+      tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
+    } else {
+      log(`Error: fingerprinting request from negative tabId, why does this happen`);
+    }
   }
 }
 

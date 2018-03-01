@@ -90,15 +90,17 @@ class Tab extends listenerMixin(Map) {
       text = '';
     }
 
-    if (text === this.currentBadgeText) {
+    let tabId = this.id;
+
+    if (tabId < 0 || text === this.currentBadgeText) {
       return;
     }
     this.currentBadgeText = text;
 
-    tabsGet(this.id, () => {  // you cant try/catch this error in chrome
+    tabsGet(tabId, () => {  // you cant try/catch this error in chrome
       // so we check the tab exists before setting badgeText
       if (!(typeof chrome !== 'undefined' && chrome.runtime.lastError)){
-        setBadgeText({text, tabId: this.id});
+        setBadgeText({text, tabId});
       } else {
         log(`Error setting badge text with tabId ${this.id} got error ${chrome.runtime.lastError.message}.`);
       }
