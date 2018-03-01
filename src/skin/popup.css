@@ -43,15 +43,15 @@ code {
   margin-right: 20;
 }
 
-#onOff {
+#on-off {
   float: right;
 }
 
-#onOff * {
+#on-off * {
   display: inline-block;
 }
 
-#onOff-text {
+#on-off-text {
   font-size: 10;
   padding-right: 5;
 }

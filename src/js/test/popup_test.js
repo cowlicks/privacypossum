@@ -60,11 +60,11 @@ describe('popup.js', function() {
 
     describe('action click handlers', function() {
       it('active is set', async function() {
-        assert.deepEqual([this.popup.active, $('onOff').getAttribute('active')], [true, 'true']);
+        assert.deepEqual([this.popup.active, $('on-off').getAttribute('active')], [true, 'true']);
 
         this.popup.view.onChange({active: false});
 
-        assert.deepEqual([this.popup.active, $('onOff').getAttribute('active')], [false, 'false']);
+        assert.deepEqual([this.popup.active, $('on-off').getAttribute('active')], [false, 'false']);
       });
       it('sets click handlers', async function() {
         let popup = this.popup;

@@ -34,7 +34,7 @@ class Popup {
 
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
 
-    $('onOff').onclick = this.onOff.bind(this);
+    $('on-off').onclick = this.onOff.bind(this);
     $('headerCheckbox').addEventListener('change', this.headerHandler.bind(this), false);
   }
 
@@ -85,14 +85,14 @@ class Popup {
 
   // show the onOff button
   showActive(active, doc = document) {
-    let onOff = $('onOff');
+    let onOff = $('on-off');
 
     if (onOff.getAttribute('active') === `${active}`) {
       return;
     }
 
-    let button = $('onOff-button'),
-      text = $('onOff-text');
+    let button = $('on-off-button'),
+      text = $('on-off-text');
 
     button.innerHTML = text.innerHTML = '';
 
