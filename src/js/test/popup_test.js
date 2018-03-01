@@ -34,8 +34,8 @@ describe('popup.js', function() {
         headerCounts = new Map([[name, count]]);
       this.popup.allHeadersHtml(headerCounts, true);
       assert.isTrue($('header-checkbox').checked);
-      assert.include($('headersCountList').innerHTML, name);
-      assert.include($('headersCountList').innerHTML, count);
+      assert.include($('headers-count-list').innerHTML, name);
+      assert.include($('headers-count-list').innerHTML, count);
     });
   });
 

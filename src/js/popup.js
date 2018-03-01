@@ -158,7 +158,7 @@ class Popup {
       div.appendChild(document.createTextNode('Blocked tracking headers:'));
       if (headerCounts.size !== 0) {
         let ul = document.createElement('ul');
-        ul.id = 'headersCountList';
+        ul.id = 'headers-count-list';
         headerCounts.forEach((count, name) => {
           ul.appendChild(this.headerHtml(name, count));
         });
