@@ -46,12 +46,12 @@ describe('possum.js', function() {
 
       let popup = await makePopup(tabId);
 
-      assert.isTrue($('headerCheckbox').checked);
+      assert.isTrue($('header-checkbox').checked);
 
-      $('headerCheckbox').checked = false;
+      $('header-checkbox').checked = false;
       await popup.headerHandler();
 
-      assert.isFalse($('headerCheckbox').checked);
+      assert.isFalse($('header-checkbox').checked);
 
       assert.deepEqual(this.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
       assert.deepEqual(this.possum.store.getDomain(main_frame.url).action.reason, HEADER_DEACTIVATE_ON_HOST);
@@ -62,9 +62,9 @@ describe('possum.js', function() {
       assert.deepEqual(possum.webRequest.onBeforeSendHeaders(cookie.copy()), NO_ACTION);
 
       popup = await makePopup(tabId);
-      assert.isFalse($('headerCheckbox').checked);
+      assert.isFalse($('header-checkbox').checked);
 
-      $('headerCheckbox').checked = true;
+      $('header-checkbox').checked = true;
       await popup.headerHandler();
 
       possum = await reloadEverything(possum);
@@ -73,7 +73,7 @@ describe('possum.js', function() {
 
       popup = await makePopup(tabId);
 
-      assert.isTrue($('headerCheckbox').checked);
+      assert.isTrue($('header-checkbox').checked);
     });
     it('deactivates from storage', async function() {
       let cookie = new Details(Object.assign(reqHeaders.copy(), third_party.copy()));

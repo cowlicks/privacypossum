@@ -21,7 +21,7 @@ describe('popup.js', function() {
     });
     it('inactive', function() {
       this.popup.allHeadersHtml(new Map(), false);
-      assert.isFalse($('headerCheckbox').checked);
+      assert.isFalse($('header-checkbox').checked);
     });
     it('headerHandler', async function() {
       this.popup.allHeadersHtml(new Map(), true);
@@ -33,7 +33,7 @@ describe('popup.js', function() {
         count = 42,
         headerCounts = new Map([[name, count]]);
       this.popup.allHeadersHtml(headerCounts, true);
-      assert.isTrue($('headerCheckbox').checked);
+      assert.isTrue($('header-checkbox').checked);
       assert.include($('headersCountList').innerHTML, name);
       assert.include($('headersCountList').innerHTML, count);
     });

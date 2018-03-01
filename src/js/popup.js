@@ -73,7 +73,7 @@ class Popup {
     await sendMessage({
       type: HEADER_DEACTIVATE_ON_HOST,
       tabId: this.tabId,
-      checked: $('headerCheckbox').checked
+      checked: $('header-checkbox').checked
     });
   }
 
@@ -150,7 +150,7 @@ class Popup {
     let div = document.createElement('div'),
       checkbox = makeCheckbox(active, this.headerHandler.bind(this));
 
-    checkbox.id = 'headerCheckbox';
+    checkbox.id = 'header-checkbox';
 
     div.appendChild(checkbox);
 
