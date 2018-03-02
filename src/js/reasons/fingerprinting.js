@@ -13,20 +13,20 @@ function isDeactivated(action) {
 }
 
 function fingerPrintingRequestHandler({tabs}, details) {
-  log(`request for fingerprinting script seen at ${details.url}`);
-  if (tabs.isThirdParty(details.tabId, details.urlObj.hostname)) {
+  const {url, tabId, frameId} = details;
+  log(`request for fingerprinting script seen at
+    tabId: ${tabId}, url: ${url}, and frameId ${frameId}`);
+  if (tabs.isThirdParty(tabId, details.urlObj.hostname)) {
     log(`blocking 3rd party fingerprinting request`);
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
     // send set fp signal
-    let {tabId, frameId} = details;
     if (tabId >= 0) {
-      log(`intercepting 1st party fingerprinting script for
-        tabId: ${tabId}, url: ${details.url}, and frameId ${frameId}`);
-      tabs.markAction({reason: FINGERPRINTING}, details.url, details.tabId);
-      tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url: details.url}, {frameId});
+      log(`intercepting 1st party fingerprinting script`);
+      tabs.markAction({reason: FINGERPRINTING}, url, tabId);
+      tabsSendMessage(tabId, {type: 'firstparty-fingerprinting', url}, {frameId});
     } else {
-      log(`Error: fingerprinting request from negative tabId, why does this happen`);
+      log(`Error: 1st party fingerprinting request from negative tabId, probably from a cache thing`);
     }
   }
 }
