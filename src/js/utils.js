@@ -5,15 +5,18 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon, tabsQuery} = require('./shim');
 
-function currentTab() {
+async function currentTab() {
+  const active = true, lastFocusedWindow = true;
   return new Promise(resolve => {
-    tabsQuery(
-      {
-        active: true,
-        lastFocusedWindow: true,
-      },
-      (tabs) => resolve(tabs[0])
-    );
+    tabsQuery({active, lastFocusedWindow}, tabsFirstTry => {
+      if (tabsFirstTry.length > 0) {
+        resolve(tabsFirstTry[0]);
+      } else { // tab not focused
+        tabsQuery({active}, tabsSecondTry => {
+          resolve(tabsSecondTry[0]);
+        });
+      }
+    });
   });
 }
 
