@@ -5,6 +5,7 @@
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
+  {isThirdParty} = require('./domains/parties'),
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, method) {
@@ -16,6 +17,15 @@ function annotateDetails(details, method) {
   });
 }
 
+// takes an annoted `details` object
+function isThirdPartyForNoTab({tabId, initiator, urlObj: {hostname}}) {
+  if (typeof initiator !== 'undefined') {
+    let initiatorHostname = (new URL(initiator)).hostname;
+    return isThirdParty(initiatorHostname, hostname);
+  }
+  return false; // no associated tab, so 3rd party isn't applicable
+}
+
 class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
     Object.assign(this, {tabs, store, handler});
@@ -23,8 +33,8 @@ class WebRequest {
   }
 
   isThirdParty(details) {
-    if (details.tabId < 0) {
-      return false; // no associated tab, so 3rd party isn't applicable
+    if (details.tabId === -1) {
+      return isThirdPartyForNoTab(details);
     }
     return this.tabs.isThirdParty(details.tabId, details.urlObj.hostname);
   }
