@@ -59,7 +59,7 @@ describe('reasons.js', function() {
 
       it('tab requestHandler', function() {
         let {details} = this;
-        details.method = request_methods.ON_BEFORE_SEND_HEADERS;
+        details.requestType = request_methods.ON_BEFORE_SEND_HEADERS;
         tabHeaderHandler(this, details);
         assert.deepEqual(details.response, NO_ACTION);
         assert.isTrue(details.shortCircuit);

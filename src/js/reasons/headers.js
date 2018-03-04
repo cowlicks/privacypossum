@@ -8,7 +8,7 @@ const {Action} = require('../schemes'),
   {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
 function isHeaderRequest(details) {
-  return header_methods.has(details.method);
+  return header_methods.has(details.requestType);
 }
 
 function requestHandler({tabs}, details) {
