@@ -11,12 +11,13 @@ const shim = require('../shim'),
  *
  */
 class Dispatcher {
-  constructor(name, tabs, store, reasons) {
-    Object.assign(this, {name, tabs, store, reasons});
+  constructor(name, dependencies, reasons) {
+    Object.assign(this, {name, reasons});
+    Object.assign(this, dependencies);
     this.funcs = new Map();
     this.info = new Map();
 
-    this.addReason = this.addReason.bind(this, [{store, tabs}]);
+    this.addReason = this.addReason.bind(this, [dependencies]);
     this.reasons.map(this.addReason.bind(this));
   }
 
@@ -44,7 +45,7 @@ class Dispatcher {
 
 class PopupHandler extends Dispatcher {
   constructor(reasons = Reasons.fromArray(reasonsArray)) {
-    super('popupHandler', undefined, undefined, reasons); // no tabs or store in popup
+    super('popupHandler', {}, reasons); // no tabs or store in popup
   }
   isInPopup(reasonName) {
     return this.funcs.has(reasonName);
@@ -69,7 +70,7 @@ class PopupHandler extends Dispatcher {
 
 class MessageHandler extends Dispatcher {
   constructor(tabs, store, reasons = Reasons.fromArray(reasonsArray)) {
-    super('messageHandler', tabs, store, reasons);
+    super('messageHandler', {tabs, store}, reasons);
   }
 
   dispatcher(messenger, sender) {
@@ -85,7 +86,7 @@ class MessageHandler extends Dispatcher {
 // todo wrap handler requests to assure main_frame's are not blocked.
 class RequestHandler extends Dispatcher {
   constructor(tabs, store, reasons) {
-    super('requestHandler', tabs, store, reasons);
+    super('requestHandler', {tabs, store}, reasons);
   }
 
   dispatcher(obj, details) {
@@ -102,7 +103,7 @@ class RequestHandler extends Dispatcher {
 
 class TabHandler extends Dispatcher {
   constructor(tabs, store, reasons) {
-    super('tabHandler', tabs, store, reasons);
+    super('tabHandler', {tabs, store}, reasons);
   }
 
   startListeners(onUpdated = shim.onUpdated) {
