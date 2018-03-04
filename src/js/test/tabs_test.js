@@ -63,7 +63,7 @@ describe('tabs.js', function() {
       })
       describe('#markAction', function() {
         it('adds actions', async function() {
-          this.tab.markAction(new Action(BLOCK), url);
+          await this.tab.markAction(new Action(BLOCK), url);
           assert.equal(await new Promise(resolve => getBadgeText({tabId}, resolve)), '1');
         })
         it('removes actions', async function() {

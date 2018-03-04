@@ -6,9 +6,9 @@
 
 [(function(exports) {
 
-const shim = require('./shim'), {URL, tabsGet, setBadgeText} = shim,
+const shim = require('./shim'), {URL} = shim,
   {REMOVE_ACTION} = require('./constants'),
-  {Counter, listenerMixin, setTabIconActive, log} = require('./utils'),
+  {Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
 class Resource {
@@ -66,7 +66,7 @@ class Tab extends listenerMixin(Map) {
     this.headerCountsActive = true;
 
     this.onChange = this.onEvent;
-    this.setBadgeText(''); // clear badge
+    this.updateBadge();
   }
 
   getData() {
@@ -78,38 +78,25 @@ class Tab extends listenerMixin(Map) {
     };
   }
 
-  updateBadge() {
-    if (!this.active) {
-      return this.setBadgeText('');
-    }
-    this.setBadgeText('' + (this.actions.size + this.headerCounts.size));
+  async updateBadge() {
+    let {active, actions, headerCounts} = this;
+    this.setIcon();
+    this.setBadgeText(active ? ('' + (actions.size + headerCounts.size)) : '');
   }
 
-  setBadgeText(text) {
+  setIcon() {
+    setTabIconActive(this.id, this.active);
+  }
+
+  async setBadgeText(text) {
     if (text == '0') {
       text = '';
     }
-
-    let tabId = this.id;
-
-    if (tabId < 0 || text === this.currentBadgeText) {
-      return;
-    }
-    this.currentBadgeText = text;
-
-    tabsGet(tabId, () => {  // you cant try/catch this error in chrome
-      // so we check the tab exists before setting badgeText
-      if (!(typeof chrome !== 'undefined' && chrome.runtime.lastError)){
-        setBadgeText({text, tabId});
-      } else {
-        log(`Error setting badge text with tabId ${this.id} got error ${chrome.runtime.lastError.message}.`);
-      }
-    });
+    await safeSetBadgeText(this.id, text);
   }
 
   setActiveState(active) {
     this.active = active;
-    setTabIconActive(this.id, this.active);
     this.onChange();
     this.updateBadge();
   }
@@ -118,7 +105,7 @@ class Tab extends listenerMixin(Map) {
     this.setActiveState(!this.active);
   }
 
-  markAction(action, url) {
+  async markAction(action, url) {
     if (!this.active) {
       return;
     }
@@ -130,7 +117,7 @@ class Tab extends listenerMixin(Map) {
     }
 
     this.onChange();
-    this.updateBadge();
+    await this.updateBadge();
   }
 
   markHeaders(removed) {

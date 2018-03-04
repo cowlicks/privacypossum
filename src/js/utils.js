@@ -269,6 +269,7 @@ lazyDef(exports, 'log', () => {
 
 Object.assign(exports, {
   currentTab,
+  safeSetBadgeText,
   View,
   Model,
   Counter,
