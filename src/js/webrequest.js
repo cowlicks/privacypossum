@@ -39,7 +39,7 @@ class WebRequest {
     return this.tabs.isThirdParty(details.tabId, details.urlObj.hostname);
   }
 
-  start({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
+  startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
       {urls: ["<all_urls>"]},

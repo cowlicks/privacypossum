@@ -22,7 +22,7 @@ class Possum {
     this.handler = new Handler(this.tabs, this.store, this.reasons);
 
     this.webRequest = new WebRequest(this.tabs, this.store, this.handler);
-    this.webRequest.start()
+    this.webRequest.startListeners()
 
     this.messageListener = new MessageHandler(this.tabs, this.store, this.reasons),
     this.messageListener.startListeners();
