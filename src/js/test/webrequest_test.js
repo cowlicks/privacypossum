@@ -11,9 +11,29 @@ describe('webrequest.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs(),
     this.wr = new WebRequest(this.tabs, new DomainStore());
-
   });
   describe('WebRequest', function() {
+    describe('#isThirdParty', function() {
+      beforeEach(function() {
+        let tabId = -1, initiator = 'https://firstparty.com', urlObj = {};
+        this.details = {tabId, initiator, urlObj};
+      });
+      describe('tabId is -1', function() {
+        it('thirdparty', function() {
+          this.details.urlObj.hostname = 'thirdparty.com';
+          assert.isTrue(this.wr.isThirdParty(this.details));
+        });
+        it('firstparty', function() {
+          this.details.urlObj.hostname = 'firstparty.com';
+          assert.isFalse(this.wr.isThirdParty(this.details));
+        });
+        it('thirdparty but no initiator', function() {
+          this.details.urlObj.hostname = 'thirdparty.com';
+          delete this.details.initiator;
+          assert.isFalse(this.wr.isThirdParty(this.details));
+        });
+      });
+    });
     describe('#onBeforeRequest', function() {
       it('adds frames', function() {
         this.wr.onBeforeRequest(details.main_frame);
