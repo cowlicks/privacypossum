@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {activeIcons, inactiveIcons} = require('./constants'),
-    {setIcon, tabsQuery} = require('./shim');
+    {setIcon, setBadgeText, tabsQuery, tabsGet} = require('./shim');
 
 async function currentTab() {
   const active = true, lastFocusedWindow = true;
@@ -18,6 +18,28 @@ async function currentTab() {
       }
     });
   });
+}
+
+async function tabExists(tabId) {
+  return await new Promise(resolve => {
+    tabsGet(tabId, () => {
+      resolve(!(typeof chrome !== 'undefined' && chrome.runtime.lastError));
+    });
+  });
+}
+
+// todo after setIcon return's a promise, make this return a promise
+async function setTabIconActive(tabId, active) {
+  if (await tabExists(tabId)) {
+    let icons = active ? activeIcons : inactiveIcons;
+    setIcon({tabId: tabId, path: icons});
+  }
+}
+
+async function safeSetBadgeText(tabId, text) {
+  if (await tabExists(tabId)) {
+    setBadgeText({text, tabId});
+  }
 }
 
 /*
@@ -196,12 +218,6 @@ let listenerMixin = (Base) => class extends Base {
   getData(event_) {
     return event_;
   }
-}
-
-// todo after setIcon return's a promise, make this return a promise
-function setTabIconActive(tabId, active) {
-  let icons = active ? activeIcons : inactiveIcons;
-  setIcon({tabId: tabId, path: icons});
 }
 
 function hasAction(obj, reason) {
