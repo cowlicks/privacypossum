@@ -8,10 +8,10 @@ const shim = require('./shim'), {URL} = shim,
   {isThirdParty} = require('./domains/parties'),
   {Handler} = require('./reasons/handlers');
 
-function annotateDetails(details, method) {
+function annotateDetails(details, requestType) {
   return Object.assign(details, {
-    method,
-    headerPropName: header_methods.get(method),
+    requestType,
+    headerPropName: header_methods.get(requestType),
     urlObj: new URL(details.url),
     response: constants.NO_ACTION,
   });
