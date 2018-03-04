@@ -12,23 +12,19 @@ const constants = require('./constants'),
 
 class Possum {
   constructor(store = new DomainStore(constants.DISK_NAME)) {
-    this.store = store;
+    const tabs = new Tabs(),
+      reasons = Reasons.fromArray(reasonsArray),
+      handler = new Handler(tabs, store, reasons),
+      webRequest = new WebRequest(tabs, store, handler),
+      messageListener = new MessageHandler(tabs, store, reasons),
+      popup = new PopupServer(tabs);
 
-    this.tabs = new Tabs();
-    this.tabs.startListeners();
+    tabs.startListeners();
+    webRequest.startListeners()
+    messageListener.startListeners();
+    popup.start();
 
-    this.reasons = Reasons.fromArray(reasonsArray);
-
-    this.handler = new Handler(this.tabs, this.store, this.reasons);
-
-    this.webRequest = new WebRequest(this.tabs, this.store, this.handler);
-    this.webRequest.startListeners()
-
-    this.messageListener = new MessageHandler(this.tabs, this.store, this.reasons),
-    this.messageListener.startListeners();
-
-    this.popup = new PopupServer(this.tabs);
-    this.popup.start();
+    Object.assign(this, {store, tabs, reasons, handler, webRequest, messageListener, popup});
   }
 
   static async load(disk) {
