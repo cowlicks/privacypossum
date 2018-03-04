@@ -108,17 +108,14 @@ class Tab extends listenerMixin(Map) {
   }
 
   setActiveState(active) {
-    if (active === this.active) {
-      return;
-    }
-    this.toggleActiveState();
-  }
-
-  toggleActiveState() {
-    this.active = !this.active;
+    this.active = active;
     setTabIconActive(this.id, this.active);
     this.onChange();
     this.updateBadge();
+  }
+
+  toggleActiveState() {
+    this.setActiveState(!this.active);
   }
 
   markAction(action, url) {
