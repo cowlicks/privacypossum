@@ -33,16 +33,14 @@
 * consider injecting contentscripts programatically
 * fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
 * strip 1st party refer headers too?
-* add url deactivate to popup, add tests, make sure deactivated urls show up in popup, and can be toggled
 * add html tooling
-* show user-deactivated urls in popup
-* make it take an action as an argument
 * update psl script to reflect new location
 * add MessageDispatcher to Handler
 * isThirdParty error on tabs for internal tabs
 * setBadgeText error when new tab is made?
 * error getting fingerprinting message from tabId=-1? from extension?
 * error when inspect popup creates it, make currentTab work with this
+* fix webrequest requestHandler loop
 
 
 ## techniques
