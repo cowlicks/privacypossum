@@ -22,9 +22,13 @@ async function currentTab() {
 
 async function tabExists(tabId) {
   return await new Promise(resolve => {
-    tabsGet(tabId, () => {
-      resolve(!(typeof chrome !== 'undefined' && chrome.runtime.lastError));
-    });
+    if (tabId >= 0) {
+      tabsGet(tabId, () => {
+        resolve(!(typeof chrome !== 'undefined' && chrome.runtime.lastError));
+      });
+    } else {
+      resolve(false);
+    }
   });
 }
 
