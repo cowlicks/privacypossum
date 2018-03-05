@@ -18,7 +18,7 @@ function annotateDetails(details, requestType) {
 }
 
 // takes an annoted `details` object
-function isThirdPartyForNoTab({tabId, initiator, urlObj: {hostname}}) {
+function isThirdPartyForNoTab({initiator, urlObj: {hostname}}) {
   if (typeof initiator !== 'undefined') {
     let initiatorHostname = (new URL(initiator)).hostname;
     return isThirdParty(initiatorHostname, hostname);
