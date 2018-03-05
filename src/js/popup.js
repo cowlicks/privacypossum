@@ -107,13 +107,19 @@ class Popup {
   }
 
   showActions() {
-    let {urlActions, headerCounts, headerCountsActive} = this;
-    if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
+    let {active, urlActions, headerCounts, headerCountsActive} = this;
+    if (!active) {
       show($('empty'));
       hide($('base'));
+      html($('empty'), document.createTextNode(`Disabled for this site`));
+      return;
+    } else if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
+      show($('empty'));
+      hide($('base'));
+      html($('empty'), document.createTextNode(`Nothing to do`));
       return;
     } else {
-      show($('headers'));
+      show($('base'));
       hide($('empty'));
     }
 
