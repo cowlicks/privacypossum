@@ -193,6 +193,8 @@ class Tabs {
   addResource(details) {
     // if new tab, or new main_frame for existing tab
     if (!this.hasTab(details.tabId) || (details.type === 'main_frame')) {
+      log(`creatig a new tab for with details:
+        type: ${details.type}, url: ${details.url}, tabId: ${details.tabId}`);
       this.setTab(details.tabId, new Tab(details.tabId));
     }
     let tab = this.getTab(details.tabId);
