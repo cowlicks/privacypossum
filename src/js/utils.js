@@ -95,6 +95,11 @@ class Counter extends Map {
     }
     return this.set(name, this.get(name) + 1);
   }
+  merge(other) {
+    other.forEach((value, key) => {
+      this.set(key, (this.has(key) ? this.get(key) : 0) + value);
+    });
+  }
 }
 
 class FifoMap extends Map {

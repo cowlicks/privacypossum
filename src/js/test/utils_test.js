@@ -2,10 +2,26 @@
 
 const assert = require('chai').assert,
   {fakePort} = require('../fakes'),
-  {View, Model, Listener} = require('../utils'),
+  {View, Model, Listener, Counter} = require('../utils'),
   {LogBook, wrap, zip} = require('../utils');
 
 describe('utils.js', function() {
+  describe('Counter', function() {
+    beforeEach(function() {
+      this.counter = new Counter();
+      [1, 2, 2, 3, 3, 3].forEach(x => this.counter.add(x));
+    });
+    it('adds', function() {
+      assert.deepEqual(Array.from(this.counter), [[1, 1], [2, 2], [3, 3]]);
+    });
+    it('merges', function() {
+      let c2 = new Counter();
+      c2.add(1);
+      c2.add(4);
+      this.counter.merge(c2);
+      assert.deepEqual(Array.from(this.counter), [[1, 2], [2, 2], [3, 3], [4, 1]]);
+    });
+  });
   describe('View and Model', function() {
     it('they can talk', async function() {
       let [aPort, bPort] = fakePort('test'),
