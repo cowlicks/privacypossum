@@ -61,6 +61,24 @@ describe('tabs.js', function() {
       beforeEach(function() {
         this.tab = new Tab(tabId);
       })
+      it('merge', async function() {
+        let block = new Action(BLOCK),
+          {tab} = this,
+          removed = [{name: 'foo'}, {name: 'bar'}],
+          tabId2 = 2, url2 = 'https://other.com',
+          removed2 = [{name: 'foo'}, {name: 'qux'}],
+          tab2 = new Tab(tabId2);
+
+        await tab.markAction(block, url);
+        await tab.markHeaders(removed);
+
+        await tab2.markAction(block, url2);
+        await tab2.markHeaders(removed2);
+
+        tab.merge(tab2);
+        assert.deepEqual(Array.from(tab.actions), [[url, block]], 'url isnt overwritten');
+        assert.deepEqual(Array.from(tab.headerCounts), [['foo', 2], ['bar', 1], ['qux', 1]])
+      });
       describe('#markAction', function() {
         it('adds actions', async function() {
           await this.tab.markAction(new Action(BLOCK), url);

@@ -69,6 +69,16 @@ class Tab extends listenerMixin(Map) {
     this.updateBadge();
   }
 
+  // merge from anotherTab, don't overite own values
+  merge(otherTab) {
+    this.headerCounts.merge(otherTab.headerCounts);
+    otherTab.forEach((value, key) => {
+      if (!this.has(key)) {
+        this.set(key, value);
+      }
+    });
+  }
+
   getData() {
     return {
       active: this.active,
@@ -120,10 +130,10 @@ class Tab extends listenerMixin(Map) {
     await this.updateBadge();
   }
 
-  markHeaders(removed) {
+  async markHeaders(removed) {
     removed.forEach(header => this.headerCounts.add(header.name.toLowerCase()));
-    this.onChange();
-    this.updateBadge();
+    await this.onChange();
+    await this.updateBadge();
   }
 }
 
