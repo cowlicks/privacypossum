@@ -119,6 +119,15 @@ let shims = [
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
   ['tabsOnMessage', 'chrome.tabs.onMessage', passThru, tabsOnAndSendMessage],
   ['tabsSendMessage', 'chrome.tabs.sendMessage', passThru, tabsOnAndSendMessage],
+  ['onErrorOccurred', 'chrome.webNavigation.onErrorOccurred', passThru, makeFakeMessages],
+  ['getAllFrames', 'chrome.webNavigation.getAllFrames', passThru,
+    () => {
+      let out = (obj, callback) => callback(out.data);
+      out.data = [];
+      out.clear = () => out.data = [];
+      return out;
+    },
+  ],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
   ['document', 'document', passThru, () => (new (require('jsdom').JSDOM)()).window.document],
