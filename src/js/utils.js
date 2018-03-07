@@ -5,6 +5,14 @@
 const {activeIcons, inactiveIcons} = require('./constants'),
     {setIcon, setBadgeText, tabsQuery, tabsGet} = require('./shim');
 
+function errorOccurred() {
+  if (typeof chrome !== 'undefined' && chrome.runtime.lastError) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 async function currentTab() {
   const active = true, lastFocusedWindow = true;
   return new Promise(resolve => {
@@ -21,10 +29,14 @@ async function currentTab() {
 }
 
 async function tabExists(tabId) {
-  return await new Promise(resolve => {
+  return new Promise(resolve => {
     if (tabId >= 0) {
       tabsGet(tabId, () => {
-        resolve(!(typeof chrome !== 'undefined' && chrome.runtime.lastError));
+        if (!errorOccurred()) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
       });
     } else {
       resolve(false);
@@ -294,6 +306,7 @@ Object.assign(exports, {
   lazyDef,
   wrap,
   zip,
+  errorOccurred,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));
