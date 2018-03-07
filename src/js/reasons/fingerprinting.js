@@ -4,6 +4,7 @@
 
 const {Action} = require('../schemes'),
   {log} = require('../utils'),
+  {isRequestThirdParty} = require('../domains/parties'),
   {sendUrlDeactivate} = require('./utils'),
   {URL, tabsSendMessage} = require('../shim'),
   {FINGERPRINTING, USER_URL_DEACTIVATE, CANCEL} = require('../constants');
@@ -16,7 +17,7 @@ function fingerPrintingRequestHandler({tabs}, details) {
   const {url, tabId, frameId} = details;
   log(`request for fingerprinting script seen at
     tabId: ${tabId}, url: ${url}, and frameId ${frameId}`);
-  if (tabs.isThirdParty(tabId, details.urlObj.hostname)) {
+  if (isRequestThirdParty(tabs, details)) {
     log(`blocking 3rd party fingerprinting request`);
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
