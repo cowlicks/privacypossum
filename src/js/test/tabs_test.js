@@ -35,7 +35,7 @@ describe('tabs.js', function() {
 
     describe('#startListeners', function() {
       it('removes tabs on message', async function() {
-        this.tabs.startListeners({onRemoved});
+        this.tabs.startListeners();
         assert.isTrue(this.tabs.hasTab(main_frame.tabId));
         await onRemoved.sendMessage(main_frame.tabId)
         assert.isFalse(this.tabs.hasTab(main_frame.tabId));
