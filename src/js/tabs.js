@@ -6,9 +6,9 @@
 
 [(function(exports) {
 
-const shim = require('./shim'), {URL, tabsQuery} = shim,
+const shim = require('./shim'), {URL, tabsGet, tabsQuery} = shim,
   {REMOVE_ACTION} = require('./constants'),
-  {Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
+  {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
 class Resource {
@@ -153,8 +153,9 @@ class Tabs {
     });
   }
 
-  startListeners({onRemoved} = shim) {
+  async startListeners({onRemoved, onErrorOccurred} = shim) {
     onRemoved.addListener(this.removeTab.bind(this));
+    onErrorOccurred.addListener(this.onErrorOccurred.bind(this));
 
     await this.getCurrentData();
   }
@@ -174,6 +175,17 @@ class Tabs {
   removeTab(tabId) {
     log(`removing tabId: ${tabId}`);
     return this._data.delete(tabId);
+  }
+
+  onErrorOccurred({tabId}) {
+    log(`Navigation error on ${tabId}`);
+    if (this.hasTab(tabId)) {
+      tabsGet(tabId, tab => {
+        if (errorOccurred()) {
+          this.removeTab(tabId);
+        }
+      });
+    }
   }
 
   getTabUrl(tabId) {
