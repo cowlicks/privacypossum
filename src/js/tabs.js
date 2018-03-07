@@ -6,7 +6,7 @@
 
 [(function(exports) {
 
-const shim = require('./shim'), {URL} = shim,
+const shim = require('./shim'), {URL, tabsQuery} = shim,
   {REMOVE_ACTION} = require('./constants'),
   {Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
@@ -142,8 +142,21 @@ class Tabs {
     this._data = new Map();
   }
 
+  async getCurrentData() {
+    (await getAllTabIds()).forEach(async (tabId) => {
+      (await getAllFrames(tabId)).forEach(({frameId, parentFrameId, url}) => {
+        this.addResource({
+          tabId, frameId, parentFrameId, url,
+          type: (frameId === 0 ? 'main_frame' : 'sub_frame'),
+        });
+      });
+    });
+  }
+
   startListeners({onRemoved} = shim) {
     onRemoved.addListener(this.removeTab.bind(this));
+
+    await this.getCurrentData();
   }
 
   getTab(tabId) {
@@ -159,6 +172,7 @@ class Tabs {
   }
 
   removeTab(tabId) {
+    log(`removing tabId: ${tabId}`);
     return this._data.delete(tabId);
   }
 
@@ -203,8 +217,6 @@ class Tabs {
   addResource(details) {
     // if new tab, or new main_frame for existing tab
     if (!this.hasTab(details.tabId) || (details.type === 'main_frame')) {
-      log(`creatig a new tab for with details:
-        type: ${details.type}, url: ${details.url}, tabId: ${details.tabId}`);
       this.setTab(details.tabId, new Tab(details.tabId));
     }
     let tab = this.getTab(details.tabId);
@@ -231,10 +243,21 @@ class Tabs {
   markAction(action, url, tabId) {
     this.getTab(tabId).markAction(action, url);
   }
+
   markHeaders(removed, tabId) {
     this.getTab(tabId).markHeaders(removed);
   }
 };
+
+async function getAllTabIds() {
+  return new Promise(resolve => {
+    tabsQuery({}, tabs => resolve(tabs.map(t => t.id)));
+  });
+}
+
+async function getAllFrames(tabId) {
+  return new Promise(resolve => shim.getAllFrames({tabId}, resolve));
+}
 
 Object.assign(exports, {Frame, Tabs, Tab});
 
