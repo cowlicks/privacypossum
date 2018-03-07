@@ -5,7 +5,6 @@
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
-  {isRequestThirdParty} = require('./domains/parties'),
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, requestType) {
@@ -21,7 +20,6 @@ class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
     Object.assign(this, {tabs, store, handler});
     this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
-    this.isThirdParty = isRequestThirdParty.bind(this, tabs);
   }
 
   startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
@@ -42,6 +40,10 @@ class WebRequest {
       {urls: ["<all_urls>"]},
       ["blocking", "responseHeaders"]
     );
+  }
+
+  isThirdParty(details) {
+    return this.tabs.isRequestThirdParty(details);
   }
 
   recordRequest(details) {

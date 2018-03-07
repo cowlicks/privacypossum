@@ -8,6 +8,7 @@
 
 const shim = require('./shim'), {URL, tabsGet, tabsQuery} = shim,
   {REMOVE_ACTION} = require('./constants'),
+  {isRequestThirdParty} = require('./domains/parties'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -206,6 +207,10 @@ class Tabs {
 
   getFrame(tabId, frameId) {
     return this.getTab(tabId).get(frameId);
+  }
+
+  isRequestThirdParty(details) {
+    return isRequestThirdParty(this, details);
   }
 
   isThirdParty(tabId, hostname) {

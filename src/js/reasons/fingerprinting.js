@@ -13,12 +13,11 @@ function isDeactivated(action) {
 }
 
 function fingerPrintingRequestHandler({tabs}, details) {
-  const {url, tabId, frameId} = details,
-    {isRequestThirdParty} = require('../domains/parties');
+  const {url, tabId, frameId} = details;
 
   log(`request for fingerprinting script seen at
     tabId: ${tabId}, url: ${url}, and frameId ${frameId}`);
-  if (isRequestThirdParty(tabs, details)) {
+  if (tabs.isRequestThirdParty(details)) {
     log(`blocking 3rd party fingerprinting request`);
     Object.assign(details, {response: CANCEL, shortCircuit: false});
   } else {
