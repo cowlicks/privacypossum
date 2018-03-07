@@ -180,7 +180,7 @@ class Tabs {
   onErrorOccurred({tabId}) {
     log(`Navigation error on ${tabId}`);
     if (this.hasTab(tabId)) {
-      tabsGet(tabId, tab => {
+      tabsGet(tabId, () => {
         if (errorOccurred()) {
           this.removeTab(tabId);
         }
