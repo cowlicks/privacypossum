@@ -41,6 +41,13 @@
 * error getting fingerprinting message from tabId=-1? from extension?
 * error when inspect popup creates it, make currentTab work with this
 * fix webrequest requestHandler loop
+* change badge text color to grey
+* add short name to manifest for chrome store
+* make icon not blurry in chrome store?
+* add screenshots for chrome store, resize current ones to 1280 pixels wide and 800 pixels high
+* add video of fingerprint blocking
+* add a help me link to github issues or email me
+* install time starts app with many tabs open, and when enabling incognito, add live starting code
 
 
 ## techniques
@@ -77,7 +84,7 @@ intended to protect you from all tracking, but they are intended to protect you
 from common commercial tracking.
 
 We want to threaten trarcking on a large scale, we want to be the threat model
-of the tracking industry.
+of the tra1280 pixels wide and 800 pixels highcking industry.
 
 ## architecture
 
@@ -99,3 +106,11 @@ about them in a synchronous way. This is defined in tabs.js.
 ### shims
 
 We extensively test the project headlessly. To do this, we shim all the browser extension interfaces in shim.js. We define the fake interfaces in fakes.js.
+
+# developing
+
+## packaging
+
+To create a zip file for distribution run `git ls-files src | zip possum.zip -@`
+
+## testing
