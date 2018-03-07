@@ -4,7 +4,6 @@
 
 const {Action} = require('../schemes'),
   {log} = require('../utils'),
-  {isRequestThirdParty} = require('../domains/parties'),
   {sendUrlDeactivate} = require('./utils'),
   {URL, tabsSendMessage} = require('../shim'),
   {FINGERPRINTING, USER_URL_DEACTIVATE, CANCEL} = require('../constants');
@@ -14,7 +13,9 @@ function isDeactivated(action) {
 }
 
 function fingerPrintingRequestHandler({tabs}, details) {
-  const {url, tabId, frameId} = details;
+  const {url, tabId, frameId} = details,
+    {isRequestThirdParty} = require('../domains/parties');
+
   log(`request for fingerprinting script seen at
     tabId: ${tabId}, url: ${url}, and frameId ${frameId}`);
   if (isRequestThirdParty(tabs, details)) {
