@@ -111,6 +111,6 @@ We extensively test the project headlessly. To do this, we shim all the browser 
 
 ## packaging
 
-To create a zip file for distribution run `git ls-files src | zip possum.zip -@`
+To create a zip file for distribution, inside `src/` run `git ls-files | zip possum.zip -@`
 
 ## testing
