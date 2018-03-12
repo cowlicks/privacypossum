@@ -71,7 +71,7 @@ let multiDomainFirstPartiesArray = [
   ["ameritrade.com", "tdameritrade.com"],
   ["ancestry.com", "mfcreative.com"],
   ["androidcentral.com", "mobilenations.com"],
-  ["apple.com", "icloud.com"],
+  ["apple.com", "icloud.com", "cdn-apple.com"],
   ["applefcu.org", "applefcuonline.org"],
   ["archive.org", "openlibrary.org"],
   ["autodesk.com", "tinkercad.com"],
