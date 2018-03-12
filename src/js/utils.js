@@ -145,7 +145,6 @@ class LogBook extends FifoMap {
     }
     this.set(this.count, entry);
     this.count += 1;
-    return this;
   }
 }
 
