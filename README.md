@@ -12,6 +12,19 @@
 * t.co unwrapping
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
 
+## etag tracking
+
+Disable Etag tracking for 3rd party requests. We can send a false Etag, if the
+server sends back an etag that was the same as the previously set Etag, we can
+verify that it is authentic since they are sending the same etag repeatedly for
+the same request.
+
+Unfortunately, chrome witholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests). So we can't prevent the browser from revealing some data via sending cache information. We can still prevent 3rd parties from setting it.
+
+We should report this as a privacy bug in chrome.
+
+This is slightly more invasive than cookie & referer header blocking, it should probably have a seperate UI thing.
+
 # Usuage features Roadmap
 
 * disable actions for urls in popup

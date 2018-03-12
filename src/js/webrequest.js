@@ -112,7 +112,7 @@ class WebRequest {
   }
 }
 
-const badHeaders = new Set(['cookie', 'referer', 'set-cookie']);
+const badHeaders = new Set(['cookie', 'referer', 'set-cookie', 'etag', 'if-none-match']);
 
 // return number of headers mutated
 // todo, attach response to details object?
