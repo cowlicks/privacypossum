@@ -180,7 +180,7 @@ class Tabs {
   }
 
   removeTab(tabId) {
-    log(`removing tabId: ${tabId}`);
+    log(`Removing tabId: ${tabId}`);
     return this._data.delete(tabId);
   }
 
