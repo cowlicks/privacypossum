@@ -184,8 +184,11 @@ class Tabs {
     return this._data.delete(tabId);
   }
 
-  onErrorOccurred({tabId}) {
-    log(`Navigation error on ${tabId}`);
+  onErrorOccurred({tabId, url, initiator}) {
+    log(`Navigation error
+      tabId: ${tabId}
+      url: ${url}
+      initiator: ${initiator}`);
     if (this.hasTab(tabId)) {
       tabsGet(tabId, () => {
         if (errorOccurred()) {
