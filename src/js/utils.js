@@ -29,8 +29,8 @@ async function currentTab() {
 }
 
 async function tabExists(tabId) {
-  return new Promise(resolve => {
-    if (tabId >= 0) {
+  if (tabId >= 0) {
+    return await new Promise(resolve => {
       tabsGet(tabId, () => {
         if (!errorOccurred()) {
           resolve(true);
@@ -38,10 +38,10 @@ async function tabExists(tabId) {
           resolve(false);
         }
       });
-    } else {
-      resolve(false);
-    }
-  });
+    });
+  } else {
+    return true;
+  }
 }
 
 // todo after setIcon return's a promise, make this return a promise
