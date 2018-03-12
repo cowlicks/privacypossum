@@ -91,14 +91,14 @@ class Tab extends listenerMixin(Map) {
 
   async updateBadge() {
     let {active, actions, headerCounts} = this;
-    this.setIcon();
+    this.setIcon(active);
     this.setBadgeText(active ? ('' + (actions.size + headerCounts.size)) : '');
   }
 
-  async setIcon() {
-    if (this.currentIcon != this.active) {
-      await setTabIconActive(this.id, this.active);
-      this.currentIcon = this.active;
+  async setIcon(active) {
+    if (this.currentIcon != active) {
+      await setTabIconActive(this.id, active);
+      this.currentIcon = active;
     }
   }
 
