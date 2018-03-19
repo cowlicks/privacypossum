@@ -1,8 +1,16 @@
 ![logo](/src/media/logo-med256.png)
 
+# Current features
+* blocks browser fingerprinting
+  - Requests for 3rd party fingerprinting scripts are cancelled
+  - 1st party fingerprinting is fed randomized results, see http://valve.github.io/fingerprintjs2/ for a demonstration
+  * blocks 3rd party tracking headers:
+  - Cookie/Set-Cookie - these are the 1st line of online commercial tracking
+  - etags - in a 3rd party context trackers use this caching mechanism to give you a unique id, this can even persist into incognito mode
+  - 
 # Tracking Feature Roadmap
 
-* add blocker blocking
+* add blocker blocking?
 * surrogates
 * widgets
 * rules like:
@@ -10,7 +18,14 @@
     - inject header for twitter
 
 * t.co unwrapping
+
 * evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
+
+* tracking pixels
+    -reddit sets pixels specific per ad on reddit.com. Advertisers embed a pixel in their home pages. Reddit tracks conversion between these.
+* 301 (permanant) redirect cache tracking. Browser store redirects so if you make the first redirect specific per request like `foo.com/stuff -> foo.com/stuff?tracker=some-tracking_id`, then the next time the person loads that page they'll load it with the given tracking query param
+* 304 Not Modified tracking - if you load a script once, `foo.com/script.js` and the server sends it with some unique id embedded in it, then the next time you load that script the server can respond that you already have that script stored. Then you will load the script, it will check the unique id.
+* pixel cache tracking
 
 ## etag tracking
 
@@ -24,6 +39,13 @@ Unfortunately, chrome witholds the `if-none-match` headers from `onBeforeSendHea
 We should report this as a privacy bug in chrome.
 
 This is slightly more invasive than cookie & referer header blocking, it should probably have a seperate UI thing.
+
+setup etag flask app, send etag in incog, with no extension, ctrl-r on etag makes client send if-none-match in incognito. ctrl-shift-r does not send if-none-match
+
+sometimes 'if-none-match' is visible to extension
+
+## 301 moved permanently redirects
+
 
 # Usuage features Roadmap
 
@@ -60,7 +82,6 @@ This is slightly more invasive than cookie & referer header blocking, it should 
 * add screenshots for chrome store, resize current ones to 1280 pixels wide and 800 pixels high
 * add video of fingerprint blocking
 * add a help me link to github issues or email me
-* install time starts app with many tabs open, and when enabling incognito, add live starting code
 
 
 ## techniques
