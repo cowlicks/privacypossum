@@ -41,6 +41,14 @@ describe('fingercounting.js', function() {
         '    at Array.F.k.(anonymous function) [as user.agent] (https://docs.google.com/spreadsheets/d/1QJetruKfHrO5bpaLDk_smXYpLSvGlzytda_6koMjlCc/edit:642:1484)',
         'https://docs.google.com/spreadsheets/d/1QJetruKfHrO5bpaLDk_smXYpLSvGlzytda_6koMjlCc/edit',
       ],
+      [// firefox
+        '@https://cdn.sstatic.net/Js/stub.en.js?v=319f8d18e447:1:223',
+        'https://cdn.sstatic.net/Js/stub.en.js',
+      ],
+      [// firefox
+        'userAgentKey@http://valve.github.io/fingerprintjs2/fingerprint2.js:104:46',
+        'http://valve.github.io/fingerprintjs2/fingerprint2.js'
+      ],
     ];
     it('extracts urls correctly', function() {
       data.forEach(([line, expected]) => assert.equal(getUrlFromStackLine(line), expected));
