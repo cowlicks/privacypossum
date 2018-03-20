@@ -13,28 +13,30 @@ describe('suffixtree.js', function() {
   });
 
   it('get and set', function() {
+    let {tree} = this;
     for (let i = 2; i <= len; i++) {
       let name = parts.slice(-i).join('.');
 
-      this.tree.set(name, i);
+      tree.set(name, i);
 
-      assert.equal(this.tree.get(name), i);
+      assert.equal(tree.get(name), i);
     }
 
   });
 
   describe('#aggregate', function() {
     it('gathers along a path', function() {
-      let expected = new Map();
+      let expected = new Map(),
+        {tree} = this;
       for (let i = 2; i <= len; i++) {
         let n = parts.slice(-i).join('.');
 
-        this.tree.set(n, i);
+        tree.set(n, i);
 
         expected.set(n.split('.').shift(), i);
       }
 
-      let result = this.tree.getBranchData(host);
+      let result = tree.getBranchData(host);
       assert.deepEqual(result, expected);
       expected.forEach(key => assert.equal(result.get(key), expected.get(key)));
     });
@@ -53,34 +55,37 @@ describe('suffixtree.js', function() {
     });
 
     it('deletes item', function() {
-      assert.equal(this.tree.get(host1), host1);
+      let {tree} = this;
+      assert.equal(tree.get(host1), host1);
 
-      assert.isTrue(this.tree.delete(host1));
-      assert.equal(typeof this.tree.get(host1), 'undefined');
+      assert.isTrue(tree.delete(host1));
+      assert.equal(typeof tree.get(host1), 'undefined');
 
-      assert.isFalse(this.tree.delete(host1));
-      assert.isFalse(this.tree.delete(host2));
+      assert.isFalse(tree.delete(host1));
+      assert.isFalse(tree.delete(host2));
     })
 
     it('does not effect intermediates', function() {
-      this.tree.set(host2, host2);
+      let {tree} = this;
+      tree.set(host2, host2);
 
-      this.tree.delete(host2);
-      assert.equal(this.tree.get(host1), host1);
+      tree.delete(host2);
+      assert.equal(tree.get(host1), host1);
     });
 
     it('deleting intermediate does not effect children', function() {
-      assert.isFalse(this.tree.delete(host3), 'cant delete intermediate domain');
+      let {tree} = this;
+      assert.isFalse(tree.delete(host3), 'cant delete intermediate domain');
 
-      this.tree.set(host3, host3); // set the intermediate
-      assert.isTrue(this.tree.delete(host3), 'deletes set intermediate');
-      assert.isUndefined(this.tree.get(host3), 'cant get it');
-      assert.equal(this.tree.get(host1), host1, 'subdomains uneffected');
+      tree.set(host3, host3); // set the intermediate
+      assert.isTrue(tree.delete(host3), 'deletes set intermediate');
+      assert.isUndefined(tree.get(host3), 'cant get it');
+      assert.equal(tree.get(host1), host1, 'subdomains uneffected');
 
-      this.tree.set(host3, host3); // set the intermediate
-      assert.isTrue(this.tree.delete(host1), 'deletes subdomain');
-      assert.isUndefined(this.tree.get(host1), 'subdomain gone');
-      assert.equal(this.tree.get(host3), host3);
+      tree.set(host3, host3); // set the intermediate
+      assert.isTrue(tree.delete(host1), 'deletes subdomain');
+      assert.isUndefined(tree.get(host1), 'subdomain gone');
+      assert.equal(tree.get(host3), host3);
     });
   });
 });
