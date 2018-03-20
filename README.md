@@ -1,13 +1,33 @@
 ![logo](/src/media/logo-med256.png)
 
+Privacy Possum makes tracking you less profitable.
+Companies gobble up data about you to create an asymmetry of information that they leverage in ever expanding way, to make a profit.
+They're profit comes from your informational disadvantage.
+Privacy Possum monkey wrenches common commercial tracking methods by reducing and falsefying the data gathered by tracking companies.
+
+
 # Current features
-* blocks browser fingerprinting
-  - Requests for 3rd party fingerprinting scripts are cancelled
-  - 1st party fingerprinting is fed randomized results, see http://valve.github.io/fingerprintjs2/ for a demonstration
-  * blocks 3rd party tracking headers:
-  - Cookie/Set-Cookie - these are the 1st line of online commercial tracking
-  - etags - in a 3rd party context trackers use this caching mechanism to give you a unique id, this can even persist into incognito mode
-  - 
+
+* blocks cookies that lets trackers uniquely identify you across websites
+* blocks `refer` headers that reveal your browsing location
+* blocks `etag` tracking which leverages browser caching to uniquely identify you, even in incognito mode
+* blocks browser fingerprinting which tracks the inherent uniqueness of you browser
+
+## Why not Privacy Badger?
+
+[Privacy Badger]() is another privacy focuses browser extension maintained by the Electronic Frontier Foundation.
+I worked on the project for quite some time, and found that it's current privacy benifits to be limted.
+Adding new privacy protections was difficult, or impossible with the current architecture.
+And the project maintainers were not interested in fixing these issues.
+
+# browser fingerprinting
+
+Visit [valve.github.io/fingerprintjs2](https://valve.github.io/fingerprintjs2/) with Privacy Possum installed for a demo.
+You'll see that you get a new fingerprint each time.
+
+* Requests for 3rd party fingerprinting scripts are cancelled
+* 1st party fingerprinting is fed randomized results, see http://valve.github.io/fingerprintjs2/ for a demonstration
+
 # Tracking Feature Roadmap
 
 * add blocker blocking?
