@@ -8,7 +8,6 @@
 
 const shim = require('./shim'), {URL, tabsGet, tabsQuery} = shim,
   {REMOVE_ACTION} = require('./constants'),
-  {isRequestThirdParty} = require('./domains/parties'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -219,7 +218,15 @@ class Tabs {
   }
 
   isRequestThirdParty(details) {
-    return isRequestThirdParty(this, details);
+    let {tabId, initiator, urlObj: {hostname}} = details;
+    if (tabId === -1) {
+      if (typeof initiator !== 'undefined') {
+        let initiatorHostname = (new URL(initiator)).hostname;
+        return isThirdParty(initiatorHostname, hostname);
+      }
+      return false; // no associated tab, so 3rd party isn't applicable
+    }
+    return this.isThirdParty(tabId, hostname);
   }
 
   isThirdParty(tabId, hostname) {
