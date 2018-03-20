@@ -29,13 +29,19 @@ function getScriptLocation() {  // todo: to do split('\n') we do a O(n) read of 
   return getUrlFromStackLine(new Error().stack.split('\n')[3]);
 }
 
-const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/;
+const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/,
+  startsWithHttpScheme = /^https?:\/\//;
+
 function getUrlFromStackLine(line) {
   while (line.endsWith(')')) { // there are parenthese
     line = line.slice(line.lastIndexOf('(') + 1);
     line = line.slice(0, line.indexOf(')'));
   }
   line = line.split(' ').pop(); // remove stuff up to the url
+  if (!startsWithHttpScheme.test(line) && !line.startsWith('/')) {
+    // in firefox we have to strip func name
+    line = line.slice(line.indexOf('@') + 1);
+  }
   return line.match(urlEndRegex)[0]; // strip stuff after the path of url (query, hash, and line numbers);
 }
 
