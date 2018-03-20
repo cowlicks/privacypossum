@@ -12,7 +12,7 @@
  */
 
 // stuff for default config in browser
-const threshold = 0.75;
+const threshold = 0.60;
 
 let event_id;
 
