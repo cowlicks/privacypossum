@@ -43,6 +43,7 @@ class WebRequest {
   }
 
   isThirdParty(details) {
+    // cache isThirdParty status per details and requestId
     return this.tabs.isRequestThirdParty(details);
   }
 
