@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {WebRequest, removeHeaders} = require('../webrequest'),
+  {WebRequest} = require('../webrequest'),
+  {http_methods: {POST}} = require('../constants'),
+  {removeHeaders} = require('../reasons/headers'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
@@ -102,10 +104,18 @@ describe('webrequest.js', function() {
         [[notCookie, cookie, cookie, notCookie, cookie], [cookie, cookie, cookie], [notCookie, notCookie]],
       ];
       for (let [headers, expectedRemoved, expectedHeaders] of data) {
-        let resRemoved = removeHeaders(headers);
+        let resRemoved = removeHeaders({}, headers);
         assert.deepEqual(headers, expectedHeaders);
         assert.deepEqual(resRemoved, expectedRemoved);
       }
+    });
+    it('does not remove posted cookies', function() {
+      let details = {method: POST},
+        headers = [cookie, notCookie],
+        removed = removeHeaders(details, headers);
+
+      assert.deepEqual(headers, [cookie, notCookie], 'headers unchanged');
+      assert.deepEqual(removed, [], 'none removed');
     });
   });
 });

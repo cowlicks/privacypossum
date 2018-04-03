@@ -5,6 +5,7 @@
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
+  {removeHeaders} = require('./reasons/headers'),
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, requestType) {
@@ -102,7 +103,7 @@ class WebRequest {
   headerHandler(details) {
     if (this.isThirdParty(details)) {
       let headers = details[details.headerPropName],
-        removed = removeHeaders(headers);
+        removed = removeHeaders(details, headers);
       this.checkAllRequestActions(details);
       if (!details.shortCircuit && removed.length) {
         details.response = {[details.headerPropName]: headers};
@@ -113,21 +114,6 @@ class WebRequest {
   }
 }
 
-const badHeaders = new Set(['cookie', 'referer', 'set-cookie', 'etag', 'if-none-match']);
-
-// return number of headers mutated
-// todo, attach response to details object?
-// todo rename to removeBadHeaders?
-function removeHeaders(headers) {
-  let removed = [];
-  for (let i = 0; i < headers.length; i++) {
-    while (i < headers.length && badHeaders.has(headers[i].name.toLowerCase())) {
-      removed.push(...headers.splice(i, 1));
-    }
-  }
-  return removed;
-}
-
-Object.assign(exports, {WebRequest, removeHeaders, annotateDetails});
+Object.assign(exports, {WebRequest, annotateDetails});
 
 })].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));
