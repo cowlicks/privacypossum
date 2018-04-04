@@ -2,6 +2,11 @@ body {
   width: 300px;
 }
 
+header {
+  border-bottom: 1px solid rgb(238, 238, 238);
+  margin-bottom: 8px;
+}
+
 .hide {
   display: none;
 }
@@ -53,6 +58,7 @@ code {
 
 #on-off-text {
   font-size: 10;
+  padding-top: 4;
   padding-right: 5;
 }
 
