@@ -82,8 +82,8 @@ sometimes 'if-none-match' is visible to extension
 # todo
 
 * move todos to issues on github
+* add promotional titles to chrome Small tile - 440x280, Large tile - 920x680, Marquee - 1400x560
 * handlers should just be for dispatching stuff, not starting listeners
-* multiple Reasons on a single thing, so when a user action is reverted, it goes back to the original thing?
 
 * consider injecting contentscripts programatically
 * fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
