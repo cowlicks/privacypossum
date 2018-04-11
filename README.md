@@ -170,12 +170,12 @@ We extensively test the project headlessly. To do this, we shim all the browser 
 * run release.sh, this tags the repo with the manifest version and builds a zip file
 * test the zip file in a fresh instances of supported browsers.
     - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
-    - for firefox you cannot test the zip. Test the extension by loading the extension from its directory.
+    - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
     - visit https://valve.github.io/fingerprintjs2/ https://reddit.com/
-
 * upload the zip.
     - for chrome visit https://chrome.google.com/webstore/developer/edit/ommfjecdpepadiafbnidoiggfpbnkfbj record any other edits to the chrome store profile in this repo
-
+    - for firefox visit https://addons.mozilla.org/en-US/developers/addon/privacy-possum/edit
+* notify users
 
 ## packaging
 
