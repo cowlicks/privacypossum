@@ -19,32 +19,23 @@ I worked for the EFF on the project full time for 6 months, and found that it's 
 Adding new privacy protections was difficult, or impossible with the current architecture.
 And the project maintainers were not interested in fixing these issues.
 
-# browser fingerprinting
+# Tracker blocking
 
-Visit [valve.github.io/fingerprintjs2](https://valve.github.io/fingerprintjs2/) with Privacy Possum installed for a demo.
-You'll see that you get a new fingerprint each time.
+## browser fingerprinting
 
-* Requests for 3rd party fingerprinting scripts are cancelled
-* 1st party fingerprinting is fed randomized results, see http://valve.github.io/fingerprintjs2/ for a demonstration
+### problem
 
-# Tracking Feature Roadmap
+Sites can inspect aspects of your browser itself to determine its uniqueness, and therefore track you. This tracking technique widely used.
 
-* add blocker blocking?
-* surrogates
-* widgets
-* rules like:
-    - youtube -> youtube-nocookie
-    - inject header for twitter
+Privacy Badger's fingerprinting blocking has a large deficiency, when fingerprinting is detected, the *origin* is marked as tracking (not the URL). So everything from that origin is blocked in a 3rd party context. This is a problem because it can lead you to block everything from a cdn. To get around this, Privacy Badger adds CDN's to the "cookieblock list". This prevents cookies from being sent to origin's on the list. However, it then *prevents* fingerprinting scripts from being blocked, thus allowing fingerprinting.
 
-* t.co unwrapping
+For example [many sites](https://publicwww.com/websites/cdn.jsdelivr.net%2Fnpm%2Ffingerprintjs2/) load fingerprintjs2 from the jsdelivr CDN, but this is on Privacy Badger's [cookie block list](https://github.com/EFForg/privacybadger/blob/08b61e85e5c361fe8b535ec9e33950431e28632a/src/data/yellowlist.txt#L314). So Privacy Badger will allow sites to load this script fingerprint you.
 
-* evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
+### solution
 
-* tracking pixels
-    -reddit sets pixels specific per ad on reddit.com. Advertisers embed a pixel in their home pages. Reddit tracks conversion between these.
-* 301 (permanant) redirect cache tracking. Browser store redirects so if you make the first redirect specific per request like `foo.com/stuff -> foo.com/stuff?tracker=some-tracking_id`, then the next time the person loads that page they'll load it with the given tracking query param
-* 304 Not Modified tracking - if you load a script once, `foo.com/script.js` and the server sends it with some unique id embedded in it, then the next time you load that script the server can respond that you already have that script stored. Then you will load the script, it will check the unique id.
-* pixel cache tracking
+Fingerprinting ususually aggregates information across many esoteric browser API's, so we watch for this behavior. When we detect it, we block it.
+
+However many sites load first party fingerprinting code alongside other neccessary code, like on reddit.com, so we can't simply block the script, or it will break the page. Instead when we see first party fingerprinting, we inject random data to spoil the fingerprint. Visit [valve.github.io/fingerprintjs2](https://valve.github.io/fingerprintjs2/) to see this. "get your fingerprint" multiple times, and see it change each time.
 
 ## etag tracking
 
@@ -63,14 +54,22 @@ setup etag flask app, send etag in incog, with no extension, ctrl-r on etag make
 
 sometimes 'if-none-match' is visible to extension
 
-## 301 moved permanently redirects
+## 301 moved permanent redirect tracking
 
+### problem
+If you visit a site, it might load a resource that has a 301 redirect. The resource can redirect you to url that is *unique* to you. Then, the next time you see the original resource, your browser will load the unique url from the cache, and fetch the resource from there. Making you uniquely identified.
 
-# Usuage features Roadmap
+This is a well known technique, but its pervasiveness is unknown to me.
 
-* disable actions for urls in popup
-* undo disable action in popup
-* disable for site
+### solution
+One solution to this would be to used cached 301 redirects from 3rd party sources.
+
+However we have not found a way to disable the cache like this in chrome's extension api. It is possible to intercept the redirect, but if you redirect back to the original url, you fetch from the cache again.
+One hack to disable the cache is to append a dummy query parameter, like `?` or `&`. With this you can re-try the url redirect to determine if it is unique per request.
+
+If this tests positive for a tracking redirect, we can't simply bust the cache everytime by appending dummy query parameters because we'd end up with urls like `https://foo.com/?&&&&&&&&&&&&&&&....`.
+
+The next best solution would be to just block the request. This is yet to be implemented.
 
 # Testing roadmap
 
