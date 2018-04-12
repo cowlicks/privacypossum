@@ -170,8 +170,23 @@ We extensively test the project headlessly. To do this, we shim all the browser 
     - for firefox visit https://addons.mozilla.org/en-US/developers/addon/privacy-possum/edit
 * notify users
 
-## packaging
-
-To create a zip file for distribution, inside `src/` run `git ls-files | zip possum.zip -@`
-
 ## testing
+
+From inside `src/js/` run `npm test`. To check coverage run `npm run cover`.
+
+# Tracking Feature Roadmap
+
+* add blocker blocking?
+* surrogates
+* widgets
+* rules like:
+    - youtube -> youtube-nocookie
+    - inject header for twitter
+
+* evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
+
+* tracking pixels
+    -reddit sets pixels specific per ad on reddit.com. Advertisers embed a pixel in their home pages. Reddit tracks conversion between these.
+* 304 Not Modified tracking - if you load a script once, `foo.com/script.js` and the server sends it with some unique id embedded in it, then the next time you load that script the server can respond that you already have that script stored. Then you will load the script, it will check the unique id.
+* pixel cache tracking
+
