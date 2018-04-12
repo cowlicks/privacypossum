@@ -84,13 +84,8 @@ The next best solution would be to just block the request. This is yet to be imp
 * handlers should just be for dispatching stuff, not starting listeners
 
 * consider injecting contentscripts programatically
-* fix script locating issues. Throws error when accessed in terminal. (see bugs bookmarks).
-* strip 1st party refer headers too?
 * add html tooling
 * update psl script to reflect new location
-* add MessageDispatcher to Handler
-* isThirdParty error on tabs for internal tabs
-* setBadgeText error when new tab is made?
 * error getting fingerprinting message from tabId=-1? from extension?
 * error when inspect popup creates it, make currentTab work with this
 * fix webrequest requestHandler loop
