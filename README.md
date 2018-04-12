@@ -71,6 +71,42 @@ If this tests positive for a tracking redirect, we can't simply bust the cache e
 
 The next best solution would be to just block the request. This is yet to be implemented.
 
+# developing
+
+## releasing
+
+* edit the manifest.json version number to the form year.month.day with no leading zeros.
+* save and commit
+* run release.sh, this tags the repo with the manifest version and builds a zip file
+* test the zip file in a fresh instances of supported browsers.
+    - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
+    - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
+    - visit https://valve.github.io/fingerprintjs2/ https://reddit.com/
+* upload the zip.
+    - for chrome visit https://chrome.google.com/webstore/developer/edit/ommfjecdpepadiafbnidoiggfpbnkfbj record any other edits to the chrome store profile in this repo
+    - for firefox visit https://addons.mozilla.org/en-US/developers/addon/privacy-possum/edit
+* notify users
+
+## testing
+
+From inside `src/js/` run `npm test`. To check coverage run `npm run cover`.
+
+# Tracking Feature Roadmap
+
+* add blocker blocking?
+* surrogates
+* widgets
+* rules like:
+    - youtube -> youtube-nocookie
+    - inject header for twitter
+
+* evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
+
+* tracking pixels
+    -reddit sets pixels specific per ad on reddit.com. Advertisers embed a pixel in their home pages. Reddit tracks conversion between these.
+* 304 Not Modified tracking - if you load a script once, `foo.com/script.js` and the server sends it with some unique id embedded in it, then the next time you load that script the server can respond that you already have that script stored. Then you will load the script, it will check the unique id.
+* pixel cache tracking
+
 # Testing roadmap
 
 * integration testing with selenium
@@ -153,40 +189,4 @@ about them in a synchronous way. This is defined in tabs.js.
 ### shims
 
 We extensively test the project headlessly. To do this, we shim all the browser extension interfaces in shim.js. We define the fake interfaces in fakes.js.
-
-# developing
-
-## releasing
-
-* edit the manifest.json version number to the form year.month.day with no leading zeros.
-* save and commit
-* run release.sh, this tags the repo with the manifest version and builds a zip file
-* test the zip file in a fresh instances of supported browsers.
-    - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
-    - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
-    - visit https://valve.github.io/fingerprintjs2/ https://reddit.com/
-* upload the zip.
-    - for chrome visit https://chrome.google.com/webstore/developer/edit/ommfjecdpepadiafbnidoiggfpbnkfbj record any other edits to the chrome store profile in this repo
-    - for firefox visit https://addons.mozilla.org/en-US/developers/addon/privacy-possum/edit
-* notify users
-
-## testing
-
-From inside `src/js/` run `npm test`. To check coverage run `npm run cover`.
-
-# Tracking Feature Roadmap
-
-* add blocker blocking?
-* surrogates
-* widgets
-* rules like:
-    - youtube -> youtube-nocookie
-    - inject header for twitter
-
-* evercookie/supercookie protection, start with localstorage read/write in 3rd party frames
-
-* tracking pixels
-    -reddit sets pixels specific per ad on reddit.com. Advertisers embed a pixel in their home pages. Reddit tracks conversion between these.
-* 304 Not Modified tracking - if you load a script once, `foo.com/script.js` and the server sends it with some unique id embedded in it, then the next time you load that script the server can respond that you already have that script stored. Then you will load the script, it will check the unique id.
-* pixel cache tracking
 
