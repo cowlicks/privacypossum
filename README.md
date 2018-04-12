@@ -1,10 +1,9 @@
 ![logo](/src/media/logo-med256.png)
 
 Privacy Possum makes tracking you less profitable.
-Companies gobble up data about you to create an asymmetry of information that they leverage in ever expanding way, to make a profit.
+Companies gobble up data about you to create an asymmetry of information that they leverage for profit in ever expanding ways.
 They're profit comes from your informational disadvantage.
-Privacy Possum monkey wrenches common commercial tracking methods by reducing and falsefying the data gathered by tracking companies.
-
+Privacy Possum monkey wrenches common commercial tracking methods by reducing and falsifying the data gathered by tracking companies.
 
 # Current features
 
