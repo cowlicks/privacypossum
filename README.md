@@ -73,6 +73,32 @@ The next best solution would be to just block the request. This is yet to be imp
 
 # developing
 
+## dependencies
+
+The packaged extension contains *no* external dependencies. However we maintain our own copy of Mozilla's Public Suffix List, and Privacy Badger's Multi-domain First Parties list. These are used to determine if a given domain is "first party" or "third party".
+
+There are dependencies for development. These are all installed by running `npm install` inside `src/js`.
+
+## module system
+
+We use a lightweight implementation of nodes `require` function to implement modules without requiring a compilation step between running in the browser, and running in node.
+
+For this to work, we wrap each module in code like this (from `src/js/reasons/utils.js`):
+
+```
+"use strict";
+
+[(function(exports) {
+
+...
+
+Object.assign(exports, {sendUrlDeactivate, ...});
+
+})].map(func => typeof exports == 'undefined' ? define('/reasons/utils', func) : func(exports));
+```
+Note the path to this module must be passed in as a string to the `define` function.
+Exported stuff is assigned to properties on `exports` just like in node.
+
 ## releasing
 
 * edit the manifest.json version number to the form year.month.day with no leading zeros.
