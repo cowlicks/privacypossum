@@ -1,4 +1,5 @@
 body {
+  margin-top: 2px;
   background-color: white;
   font-family: Cantarell, Arial, sans-serif;
   width: 300px;
@@ -32,17 +33,19 @@ code {
 }
 
 #title-bar {
-  display: block;
-  margin-top: 10;
-  height: 40;
+  height: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between
 }
 
 #title-bar img {
-  height: 30;
+  height: 35;
 }
 
-#title-bar * {
-  vertical-align: middle;
+#branding {
+  display: flex;
+  align-items: center;
 }
 
 #title {
@@ -50,22 +53,13 @@ code {
   padding-left: 5;
 }
 
-#branding {
-  float: left;
-  margin-right: 20;
-}
-
 #on-off {
-  float: right;
-}
-
-#on-off * {
-  display: inline-block;
+  display: flex;
+  align-items: center;
 }
 
 #on-off-text {
   font-size: 10;
-  padding-top: 4;
   padding-right: 5;
 }
 
