@@ -1,5 +1,7 @@
 ![logo](/src/media/logo-med256.png)
 
+Install for [Chrome](https://chrome.google.com/webstore/detail/privacy-possum/ommfjecdpepadiafbnidoiggfpbnkfbj) and for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/privacy-possum/).
+
 Privacy Possum makes tracking you less profitable.
 Companies gobble up data about you to create an asymmetry of information that they leverage for profit in ever expanding ways.
 They're profit comes from your informational disadvantage.
