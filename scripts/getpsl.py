@@ -8,19 +8,16 @@ https://github.com/cowlicks/privacybadgerchrome/blob/300d41eb1de22493aabdb46201a
 # https://github.com/adblockplus/buildtools/blob/d090e00610a58cebc78478ae33e896e6b949fc12/publicSuffixListUpdater.py
 
 import json
-import subprocess
-import os
 
 import urllib.request
 
 psl_url = 'https://publicsuffix.org/list/public_suffix_list.dat'
-psl_destination = 'src/js/basedomain/psl.js'
 
 file_text = '''
 /* eslint-disable */
 "use strict";
 
-(function(exports) {
+[(function(exports) {
 
 const publicSuffixes = new Map(
 %s
@@ -28,12 +25,8 @@ const publicSuffixes = new Map(
 
 Object.assign(exports, {publicSuffixes});
 
-})(typeof exports == 'undefined' ? require.scopes.psl = {} : exports);
+})].map(func => typeof exports == 'undefined' ? define('/domains/psl', func) : func(exports));
 '''
-
-parse_stdout = lambda res: res.strip().decode('utf-8')
-run_shell_command = lambda command: parse_stdout(subprocess.check_output(command))
-get_git_root = lambda: run_shell_command(['git', 'rev-parse', '--show-toplevel'])
 
 
 def get_psl_text():
@@ -63,8 +56,4 @@ def convert(psl_lines):
 
 if __name__ == '__main__':
     psl_lines = get_psl_text().decode().split('\n')
-    psl = convert(psl_lines)
-    with open(os.path.join(get_git_root(), psl_destination), 'r+') as f:
-        f.seek(0)
-        f.write(psl)
-        f.truncate()
+    print(convert(psl_lines))
