@@ -45,20 +45,21 @@ Privacy Possum blocks all 3rd party cookies.
 
 ## etag tracking
 
-Disable Etag tracking for 3rd party requests. We can send a false Etag, if the
+Etags are a well known tracking vector, commonly used in lieu of cookies. 
+
+We disable incommning etags for 3rd party requests.
+
+Ideally we would be able to create a heuristic for testing etags. We can send a false Etag, if the
 server sends back an etag that was the same as the previously set Etag, we can
 verify that it is authentic since they are sending the same etag repeatedly for
 the same request.
 
 Unfortunately, chrome witholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests). So we can't prevent the browser from revealing some data via sending cache information. We can still prevent 3rd parties from setting it.
 
-We should report this as a privacy bug in chrome.
+We should report this as a privacy bug in chrome but also sometimes 'if-none-match' is visible to extension.
 
-This is slightly more invasive than cookie & referer header blocking, it should probably have a seperate UI thing.
+This is slightly more invasive than cookie & referer header blocking, it should probably have a seperate UI element.
 
-setup etag flask app, send etag in incog, with no extension, ctrl-r on etag makes client send if-none-match in incognito. ctrl-shift-r does not send if-none-match
-
-sometimes 'if-none-match' is visible to extension
 
 ## 301 moved permanent redirect tracking
 
