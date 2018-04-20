@@ -21,6 +21,8 @@ I worked for the EFF on the project full time for 6 months, and found that it's 
 Adding new privacy protections was difficult, or impossible with the current architecture.
 And the project maintainers were not interested in fixing these issues.
 
+Comparisons with other anti-tracking projects can be found [here](docs/).
+
 # Tracker blocking
 
 ## browser fingerprinting
