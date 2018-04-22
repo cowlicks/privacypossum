@@ -2,7 +2,7 @@ toplevel=$(git rev-parse --show-toplevel)
 src_dir=${toplevel}/src
 manifest=${src_dir}/manifest.json
 today=$(date '+%Y.%-m.%-d')
-out_file=${src_dir}/possum.zip
+out_file=${toplevel}/possum.zip
 
 manifest_version=$(jq ".version" ${manifest})
 if [ ${manifest_version} != "\"${today}\"" ]; then
