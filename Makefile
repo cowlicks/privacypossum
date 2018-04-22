@@ -5,4 +5,3 @@ release:
 	./scripts/release.sh
 
 .PHONY: psl release
-
