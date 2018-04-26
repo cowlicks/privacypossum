@@ -14,7 +14,18 @@ Privacy Possum monkey wrenches common commercial tracking methods by reducing an
 * blocks `etag` tracking which leverages browser caching to uniquely identify you, even in incognito mode
 * blocks browser fingerprinting which tracks the inherent uniqueness of you browser
 
-# Why not Privacy Badger?
+# Threat model
+
+__Privacy Possum does not have a threat model.__ Weird huh? We prioritize costing tracking companies money over protecting you. When considering some anti-tracking measure we do not ask "Is it possible to circumvent this?". Instead we ask "Is it cost-effective for a tracking company to circumvent this?". If the answer is "yes, no" we accept it.
+
+Tracking companies are growing, they own more infrastructure, and make more money than ever. This means they have a growing economic, technical, and political influence. And they are guiding the internet into a ever less private place.
+
+We think tackling the problem from an economic angle is extremely important, and will ultimately help shift the internet into more private place.
+
+
+# Related projects
+
+## Why not Privacy Badger?
 
 [Privacy Badger](https://github.com/EFForg/privacybadger) is another privacy focussed browser extension maintained by the Electronic Frontier Foundation.
 I worked for the EFF on the project full time for 6 months, and found that it's current privacy benefits to be limited.
