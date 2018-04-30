@@ -45,7 +45,7 @@ async function onFingerPrinting({store, tabs}, message, sender) {
       frameUrl = tabs.getFrameUrl(tabId, frameId),
       tabUrl = tabs.getTabUrl(sender.tab.id),
       {href} = new URL(url),
-      currentAction = await store.getUrl(href);
+      currentAction = store.getUrl(href);
 
     if (!isDeactivated(currentAction)) {
       log(`store fingerprinting data`);
