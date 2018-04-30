@@ -109,13 +109,5 @@ describe('webrequest.js', function() {
         assert.deepEqual(resRemoved, expectedRemoved);
       }
     });
-    it('does not remove posted cookies', function() {
-      let details = {method: POST},
-        headers = [cookie, notCookie],
-        removed = removeHeaders(details, headers);
-
-      assert.deepEqual(headers, [cookie, notCookie], 'headers unchanged');
-      assert.deepEqual(removed, [], 'none removed');
-    });
   });
 });

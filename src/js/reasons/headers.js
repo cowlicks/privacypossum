@@ -7,12 +7,11 @@ const {Action} = require('../schemes'),
   {hasAction} = require('../utils'),
   {http_methods: {POST}, HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
-const isNotPostRequest = ({method}) => method !== POST,
-    alwaysTrue = () => true;
+const alwaysTrue = () => true;
 
 const badHeaders = new Map([
-  ['cookie', isNotPostRequest],
-  ['set-cookie',isNotPostRequest],
+  ['cookie', alwaysTrue],
+  ['set-cookie', alwaysTrue],
   ['referer', alwaysTrue],
   ['etag', alwaysTrue],
   ['if-none-match', alwaysTrue]
