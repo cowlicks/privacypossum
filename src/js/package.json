@@ -13,7 +13,7 @@
     "nyc": "^11.2.1"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --recursive",
     "lint": "git ls-files | grep \".js$\" | xargs eslint",
     "loc": "git ls-files | grep -v 'psl.js' | xargs cat | wc -l",
     "cover": "nyc --reporter=html --reporter=text mocha",
