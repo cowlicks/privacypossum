@@ -60,6 +60,12 @@ const FINGERPRINTING = 'fingerprinting',
   BLOCK = 'block',
   HEADER_DEACTIVATE_ON_HOST = 'header_deactivate_on_host';
 
+const etag = {
+  ETAG_TRACKING: 'etag_tracking',
+  ETAG_UNKNOWN: 'etag_unknown',
+  ETAG_SAFE: 'etag_safe',
+}
+
 const TAB_DEACTIVATE = 'tab_deactivate',
   TAB_DEACTIVATE_HEADERS = 'tab_deactivate_headers';
 
@@ -88,6 +94,7 @@ Object.assign(exports, {
   USER_URL_DEACTIVATE,
   BLOCK,
   HEADER_DEACTIVATE_ON_HOST,
+  etag,
   TAB_DEACTIVATE,
   TAB_DEACTIVATE_HEADERS,
   POPUP,
