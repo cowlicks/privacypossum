@@ -5,7 +5,6 @@
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
-  {removeHeaders} = require('./reasons/headers'),
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, requestType) {
@@ -21,6 +20,7 @@ class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
     Object.assign(this, {tabs, store, handler});
     this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
+    this.removeHeaders = this.handler.removeHeaders.bind(this.handler);
   }
 
   startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
@@ -103,7 +103,7 @@ class WebRequest {
   headerHandler(details) {
     if (this.isThirdParty(details)) {
       let headers = details[details.headerPropName],
-        removed = removeHeaders(details, headers);
+        removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
       if (!details.shortCircuit && removed.length) {
         details.response = {[details.headerPropName]: headers};

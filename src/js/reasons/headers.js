@@ -5,37 +5,39 @@
 const {Action} = require('../schemes'),
   {URL} = require('../shim'),
   {hasAction} = require('../utils'),
+  {etagHeader} = require('./etag'),
   {http_methods: {POST}, HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
 const alwaysTrue = () => true;
 
-const badHeaders = new Map([
-  ['cookie', alwaysTrue],
-  ['set-cookie', alwaysTrue],
-  ['referer', alwaysTrue],
-  ['etag', alwaysTrue],
-  ['if-none-match', alwaysTrue]
-]);
-
-function shouldRemoveHeader(details, header) {
-  let name = header.name.toLowerCase();
-  if (badHeaders.has(name)) {
-    return badHeaders.get(name)(details, header);
+class HeaderHandler {
+  constructor(store) {
+    this.badHeaders = new Map([
+      ['cookie', alwaysTrue],
+      ['set-cookie', alwaysTrue],
+      ['referer', alwaysTrue],
+      ['etag', etagHeader.bind(undefined, {store})],
+      ['if-none-match', alwaysTrue]
+    ]);
   }
-  return false;
-}
 
-// return number of headers mutated
-// todo, attach response to details object?
-// todo rename to removeBadHeaders?
-function removeHeaders(details, headers) {
-  let removed = [];
-  for (let i = 0; i < headers.length; i++) {
-    while (i < headers.length && shouldRemoveHeader(details, headers[i])) {
-      removed.push(...headers.splice(i, 1));
+  removeHeaders(details, headers) {
+    let removed = [];
+    for (let i = 0; i < headers.length; i++) {
+      while (i < headers.length && this.shouldRemoveHeader(details, headers[i])) {
+        removed.push(...headers.splice(i, 1));
+      }
     }
+    return removed;
   }
-  return removed;
+
+  shouldRemoveHeader(details, header) {
+    let name = header.name.toLowerCase();
+    if (this.badHeaders.has(name)) {
+      return this.badHeaders.get(name)(details, header);
+    }
+    return false;
+  }
 }
 
 function isHeaderRequest(details) {
@@ -100,6 +102,6 @@ const tabReason = {
   }
 }
 
-Object.assign(exports, {removeHeaders, requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
+Object.assign(exports, {HeaderHandler, requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/headers', func) : func(exports));

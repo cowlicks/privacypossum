@@ -3,6 +3,7 @@
 [(function(exports) {
 
 const shim = require('../shim'),
+    {HeaderHandler} = require('./headers'),
     {Reasons, reasonsArray} = require('./reasons');
 
 /* 
@@ -129,6 +130,8 @@ class Handler {
     this.reasons = reasons;
     this.requestHandler = new RequestHandler(tabs, store, reasons);
     this.handleRequest = this.requestHandler.handleRequest.bind(this.requestHandler);
+    this.headerHandler = new HeaderHandler(store);
+    this.removeHeaders = this.headerHandler.removeHeaders.bind(this.headerHandler);
 
     this.tabHandler = new TabHandler(tabs, store, reasons);
     this.tabHandler.startListeners();

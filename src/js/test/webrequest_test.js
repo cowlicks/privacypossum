@@ -3,7 +3,6 @@
 const assert = require('chai').assert,
   {WebRequest} = require('../webrequest'),
   {http_methods: {POST}} = require('../constants'),
-  {removeHeaders} = require('../reasons/headers'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
@@ -104,7 +103,7 @@ describe('webrequest.js', function() {
         [[notCookie, cookie, cookie, notCookie, cookie], [cookie, cookie, cookie], [notCookie, notCookie]],
       ];
       for (let [headers, expectedRemoved, expectedHeaders] of data) {
-        let resRemoved = removeHeaders({}, headers);
+        let resRemoved = this.wr.removeHeaders({}, headers);
         assert.deepEqual(headers, expectedHeaders);
         assert.deepEqual(resRemoved, expectedRemoved);
       }
