@@ -16,24 +16,25 @@ function etagHeader({store}, details, header) {
     action = store.getUrl(href);
   if (action) {
     if (action.reason === ETAG_TRACKING) {
-      return [true];
-    }
-    else if (action.reason === ETAG_SAFE) {
+      return true;
+    } else if (action.reason === ETAG_SAFE) {
       // allow header
-      return [false];
-    }
-    else if (action.reason === ETAG_UNKNOWN) {
+      return false;
+    } else if (action.reason === ETAG_UNKNOWN) {
       if (etagValue === action.data.etagValue) {
         // mark ETAG_SAFE
-        return [false, setAction(store, href, ETAG_SAFE, {etagValue})];
+        setAction(store, href, ETAG_SAFE, {etagValue});
+        return false
       } else {
         // mark ETAG_TRACKING
-        return [true, setAction(store, href, ETAG_TRACKING, {etagValue})];
+        setAction(store, href, ETAG_TRACKING, {etagValue});
+        return true;
       }
     }
   } else {
     // mark ETAG_UNKNOWN
-    return [true, setAction(store, href, ETAG_UNKNOWN, {etagValue})];
+    setAction(store, href, ETAG_UNKNOWN, {etagValue});
+    return true;
   }
 }
 

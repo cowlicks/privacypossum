@@ -16,17 +16,16 @@ describe('etag.js', function() {
       header = {name: 'etag', value: etagValue};
 
     it('marks new etag headers as uknown', async function() {
-      let [remove, done] = await this.etagHeader(details, header);
+      let remove = this.etagHeader(details, header);
       let action = this.store.getUrl(details.urlObj.href);
       assert.isTrue(remove);
       assert.equal(action.reason, ETAG_UNKNOWN);
       assert.equal(action.data.etagValue, header.value);
     });
-
     it('allows and marks as safe on same etag', async function() {
       await setAction(this.store, href, ETAG_UNKNOWN, {etagValue});
-      let [removed] = await this.etagHeader(details, header);
-      assert.isFalse(removed);
+      let remove = this.etagHeader(details, header);
+      assert.isFalse(remove);
 
       let action = this.store.getUrl(details.urlObj.href);
       assert.equal(action.reason, ETAG_SAFE);
@@ -35,24 +34,22 @@ describe('etag.js', function() {
     it('blocks and marks as tracking on diff etag', async function() {
       let differentEtagValue = 'different';
       await setAction(this.store, href, ETAG_UNKNOWN, {etagValue});
-      let [removed] = await this.etagHeader(details, {value: differentEtagValue});
-      assert.isTrue(removed);
+      let remove = this.etagHeader(details, {value: differentEtagValue});
+      assert.isTrue(remove);
 
       let action = this.store.getUrl(details.urlObj.href);
       assert.equal(action.reason, ETAG_TRACKING);
       assert.equal(action.data.etagValue, differentEtagValue);
     })
-
     it('blocks etags from tracking urls', async function() {
       await setAction(this.store, href, ETAG_TRACKING);
-      let [removed] = this.etagHeader(details, header);
-      assert.isTrue(removed);
+      let remove = this.etagHeader(details, header);
+      assert.isTrue(remove);
     })
-
     it('allows etags from safe urls', async function() {
       await setAction(this.store, href, ETAG_SAFE);
-      let [removed] = this.etagHeader(details, header);
-      assert.isFalse(removed);
+      let remove = this.etagHeader(details, header);
+      assert.isFalse(remove);
     })
   });
 });
