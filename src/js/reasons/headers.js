@@ -6,7 +6,7 @@ const {Action} = require('../schemes'),
   {URL} = require('../shim'),
   {hasAction} = require('../utils'),
   {etagHeader} = require('./etag'),
-  {http_methods: {POST}, HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
+  {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
 const alwaysTrue = () => true;
 
