@@ -3,10 +3,16 @@
 [(function(exports) {
 
 const {etag: {ETAG_TRACKING, ETAG_SAFE, ETAG_UNKNOWN}} = require('../constants'),
-    {Action} = require('../schemes');
+  {log} = require('../utils'),
+  {sendUrlDeactivate} = require('./utils'),
+  {Action} = require('../schemes');
 
 // this should just be a method on store
-async function setAction(store, href, reason, data) {
+async function setAction(store, href, reason, data={etagValue: null}) {
+      log(`etag update with:
+        reason: ${reason}
+        url: ${href}
+        etag value: ${data.etagValue}`);
       return await store.setUrl(href, new Action(reason, data));
 }
 
@@ -16,8 +22,17 @@ function etagHeader({store}, details, header) {
     action = store.getUrl(href);
   if (action) {
     if (action.reason === ETAG_TRACKING) {
+      log(`known tracking etag:
+        reason: ${action.reason}
+        url: ${href}
+        etag value: ${etagValue}`);
+      Object.assign(details, {action})
       return true;
     } else if (action.reason === ETAG_SAFE) {
+      log(`known safe etag:
+        reason: ${action.reason}
+        url: ${href}
+        etag value: ${etagValue}`);
       // allow header
       return false;
     } else if (action.reason === ETAG_UNKNOWN) {
