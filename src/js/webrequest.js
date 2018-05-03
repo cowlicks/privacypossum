@@ -92,12 +92,16 @@ class WebRequest {
 
   onBeforeSendHeaders(details) {
     annotateDetails(details, request_methods.ON_BEFORE_SEND_HEADERS);
-    return this.headerHandler(details);
+    this.headerHandler(details);
+    this.markAction(details);
+    return details.response;
   }
 
   onHeadersReceived(details) {
     annotateDetails(details, request_methods.ON_HEADERS_RECEIVED);
-    return this.headerHandler(details);
+    this.headerHandler(details);
+    this.markAction(details);
+    return details.response;
   }
 
   headerHandler(details) {
