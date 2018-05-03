@@ -53,6 +53,18 @@ function etagHeader({store}, details, header) {
   }
 }
 
-Object.assign(exports, {etagHeader, setAction});
+const reason = {
+  name: ETAG_TRACKING,
+  props: {
+    popupHandler: sendUrlDeactivate,
+    popup_info: {
+      icon: '/media/etag-icon.png',
+      message: 'blocked tracking etag',
+      attribution: "CCBY Privacy Possum, US",
+    }
+  }
+}
+
+Object.assign(exports, {reason, etagHeader, setAction});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/etag', func) : func(exports));
