@@ -3,11 +3,13 @@
 const {assert} = require('chai'),
   {DomainStore} = require('../../store'),
   {etagHeader, setAction} = require('../../reasons/etag'),
+  {LruMap} = require('../../utils'),
   {etag: {ETAG_TRACKING, ETAG_SAFE, ETAG_UNKNOWN}} = require('../../constants');
 
 describe('etag.js', function() {
   beforeEach(function() {
     this.store = new DomainStore('name');
+    this.cache = new LruMap();
     this.etagHeader = etagHeader.bind(this, this);
   });
   describe('etagHeader', function() {
@@ -19,11 +21,10 @@ describe('etag.js', function() {
       let remove = this.etagHeader(details, header);
       let action = this.store.getUrl(details.urlObj.href);
       assert.isTrue(remove);
-      assert.equal(action.reason, ETAG_UNKNOWN);
-      assert.equal(action.data.etagValue, header.value);
+      assert.isUndefined(action);
     });
     it('allows and marks as safe on same etag', async function() {
-      await setAction(this.store, href, ETAG_UNKNOWN, {etagValue});
+      this.etagHeader(details, header);
       let remove = this.etagHeader(details, header);
       assert.isFalse(remove);
 
@@ -33,7 +34,7 @@ describe('etag.js', function() {
     })
     it('blocks and marks as tracking on diff etag', async function() {
       let differentEtagValue = 'different';
-      await setAction(this.store, href, ETAG_UNKNOWN, {etagValue});
+      this.etagHeader(details, header);
       let remove = this.etagHeader(details, {value: differentEtagValue});
       assert.isTrue(remove);
 

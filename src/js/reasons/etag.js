@@ -2,12 +2,12 @@
 
 [(function(exports) {
 
-const {etag: {ETAG_TRACKING, ETAG_SAFE, ETAG_UNKNOWN}} = require('../constants'),
+const {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../constants'),
   {log} = require('../utils'),
   {sendUrlDeactivate} = require('./utils'),
   {Action} = require('../schemes');
 
-// this should just be a method on store
+// this should just be a method on store?
 async function setAction(store, href, reason, data={etagValue: null}) {
       log(`etag update with:
         reason: ${reason}
@@ -16,7 +16,7 @@ async function setAction(store, href, reason, data={etagValue: null}) {
       return await store.setUrl(href, new Action(reason, data));
 }
 
-function etagHeader({store}, details, header) {
+function etagHeader({store, cache}, details, header) {
   const {href} = details.urlObj,
     etagValue = header.value,
     action = store.getUrl(href);
@@ -35,21 +35,23 @@ function etagHeader({store}, details, header) {
         etag value: ${etagValue}`);
       // allow header
       return false;
-    } else if (action.reason === ETAG_UNKNOWN) {
-      if (etagValue === action.data.etagValue) {
-        // mark ETAG_SAFE
-        setAction(store, href, ETAG_SAFE, {etagValue});
-        return false
-      } else {
-        // mark ETAG_TRACKING
-        setAction(store, href, ETAG_TRACKING, {etagValue});
-        Object.assign(details, new Action(ETAG_TRACKING, {etagValue}));
-        return true;
-      }
+    }
+  }
+  if (cache.has(href)) {
+    if (etagValue === cache.get(href).etagValue) {
+      // mark ETAG_SAFE
+      setAction(store, href, ETAG_SAFE, {etagValue});
+      cache.delete(href)
+      return false
+    } else {
+      // mark ETAG_TRACKING
+      setAction(store, href, ETAG_TRACKING, {etagValue});
+      Object.assign(details, new Action(ETAG_TRACKING, {etagValue}));
+      cache.delete(href)
+      return true;
     }
   } else {
-    // mark ETAG_UNKNOWN
-    setAction(store, href, ETAG_UNKNOWN, {etagValue});
+    cache.set(href, {etagValue});
     return true;
   }
 }

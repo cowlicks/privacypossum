@@ -62,7 +62,6 @@ const FINGERPRINTING = 'fingerprinting',
 
 const etag = {
   ETAG_TRACKING: 'etag_tracking',
-  ETAG_UNKNOWN: 'etag_unknown',
   ETAG_SAFE: 'etag_safe',
 }
 
