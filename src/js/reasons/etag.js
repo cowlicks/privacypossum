@@ -22,32 +22,22 @@ function etagHeader({store, cache}, details, header) {
     action = store.getUrl(href);
   if (action) {
     if (action.reason === ETAG_TRACKING) {
-      log(`known tracking etag:
-        reason: ${action.reason}
-        url: ${href}
-        etag value: ${etagValue}`);
       Object.assign(details, {action})
       return true;
     } else if (action.reason === ETAG_SAFE) {
-      log(`known safe etag:
-        reason: ${action.reason}
-        url: ${href}
-        etag value: ${etagValue}`);
-      // allow header
       return false;
     }
   }
   if (cache.has(href)) {
+    cache.delete(href)
     if (etagValue === cache.get(href).etagValue) {
       // mark ETAG_SAFE
       setEtagAction(store, href, ETAG_SAFE, {etagValue});
-      cache.delete(href)
       return false
     } else {
       // mark ETAG_TRACKING
       setEtagAction(store, href, ETAG_TRACKING, {etagValue});
       Object.assign(details, new Action(ETAG_TRACKING, {etagValue}));
-      cache.delete(href)
       return true;
     }
   } else {
