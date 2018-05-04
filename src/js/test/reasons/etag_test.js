@@ -4,7 +4,7 @@ const {assert} = require('chai'),
   {DomainStore} = require('../../store'),
   {etagHeader, setEtagAction} = require('../../reasons/etag'),
   {LruMap} = require('../../utils'),
-  {etag: {ETAG_TRACKING, ETAG_SAFE, ETAG_UNKNOWN}} = require('../../constants');
+  {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../../constants');
 
 describe('etag.js', function() {
   beforeEach(function() {

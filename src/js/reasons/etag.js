@@ -29,11 +29,12 @@ function etagHeader({store, cache}, details, header) {
     }
   }
   if (cache.has(href)) {
+    let oldEtagValue = cache.get(href).etagValue;
     cache.delete(href)
-    if (etagValue === cache.get(href).etagValue) {
+    if (etagValue === oldEtagValue) {
       // mark ETAG_SAFE
       setEtagAction(store, href, ETAG_SAFE, {etagValue});
-      return false
+      return false;
     } else {
       // mark ETAG_TRACKING
       setEtagAction(store, href, ETAG_TRACKING, {etagValue});

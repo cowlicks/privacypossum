@@ -4,7 +4,7 @@
 
 const {Action} = require('../schemes'),
   {URL} = require('../shim'),
-  {LruMap, log, hasAction} = require('../utils'),
+  {LruMap, hasAction} = require('../utils'),
   {etagHeader} = require('./etag'),
   {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 

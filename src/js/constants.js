@@ -47,11 +47,6 @@ const header_methods = new Map([
   [request_methods.ON_BEFORE_SEND_HEADERS, http_headers.REQUEST],
 ]);
 
-const http_methods = {
-  GET: 'GET',
-  POST: 'POST',
-}
-
 // reasons
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
@@ -87,7 +82,6 @@ Object.assign(exports, {
   reasons,
   request_methods,
   header_methods,
-  http_methods,
   FINGERPRINTING,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,

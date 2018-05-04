@@ -2,7 +2,6 @@
 
 const assert = require('chai').assert,
   {WebRequest} = require('../webrequest'),
-  {http_methods: {POST}} = require('../constants'),
   {Tabs} = require('../tabs'),
   {DomainStore} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
