@@ -7,7 +7,7 @@ const {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../constants'),
   {sendUrlDeactivate} = require('./utils'),
   {Action} = require('../schemes');
 
-async function setAction(store, href, reason, data={etagValue: null}) {
+async function setEtagAction(store, href, reason, data={etagValue: null}) {
     log(`etag update with:
       reason: ${reason}
       url: ${href}
@@ -40,12 +40,12 @@ function etagHeader({store, cache}, details, header) {
   if (cache.has(href)) {
     if (etagValue === cache.get(href).etagValue) {
       // mark ETAG_SAFE
-      setAction(store, href, ETAG_SAFE, {etagValue});
+      setEtagAction(store, href, ETAG_SAFE, {etagValue});
       cache.delete(href)
       return false
     } else {
       // mark ETAG_TRACKING
-      setAction(store, href, ETAG_TRACKING, {etagValue});
+      setEtagAction(store, href, ETAG_TRACKING, {etagValue});
       Object.assign(details, new Action(ETAG_TRACKING, {etagValue}));
       cache.delete(href)
       return true;
@@ -68,6 +68,6 @@ const reason = {
   }
 }
 
-Object.assign(exports, {reason, etagHeader, setAction});
+Object.assign(exports, {reason, etagHeader, setEtagAction});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/etag', func) : func(exports));

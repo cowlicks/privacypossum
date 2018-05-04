@@ -2,7 +2,7 @@
 
 const {assert} = require('chai'),
   {DomainStore} = require('../../store'),
-  {etagHeader, setAction} = require('../../reasons/etag'),
+  {etagHeader, setEtagAction} = require('../../reasons/etag'),
   {LruMap} = require('../../utils'),
   {etag: {ETAG_TRACKING, ETAG_SAFE, ETAG_UNKNOWN}} = require('../../constants');
 
@@ -43,12 +43,12 @@ describe('etag.js', function() {
       assert.equal(action.data.etagValue, differentEtagValue);
     })
     it('blocks etags from tracking urls', async function() {
-      await setAction(this.store, href, ETAG_TRACKING);
+      await setEtagAction(this.store, href, ETAG_TRACKING);
       let remove = this.etagHeader(details, header);
       assert.isTrue(remove);
     })
     it('allows etags from safe urls', async function() {
-      await setAction(this.store, href, ETAG_SAFE);
+      await setEtagAction(this.store, href, ETAG_SAFE);
       let remove = this.etagHeader(details, header);
       assert.isFalse(remove);
     })
