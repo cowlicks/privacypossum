@@ -114,6 +114,40 @@ class Counter extends Map {
   }
 }
 
+class LruMap extends Map {
+  constructor(maxSize = 2000) {
+    super();
+    Object.assign(this, {maxSize});
+  }
+
+  get(key) {
+    if (super.has(key)) {
+      let value = super.get(key);
+      this.delete(key)
+      super.set(key, value);
+      return value;
+    }
+  }
+
+  set(key, value) {
+    if ((this.size >= this.maxSize) && !super.has(key)) {
+      this.delete(this.keys().next().value);
+    }
+    super.delete(key);
+    return super.set(key, value);
+  }
+
+  has(key) {
+    if (super.has(key)) {
+      let value = super.get(key);
+      this.delete(key)
+      super.set(key, value);
+      return true;
+    }
+    return false;
+  }
+}
+
 class FifoMap extends Map {
   constructor(maxSize) {
     super();
@@ -292,6 +326,7 @@ Object.assign(exports, {
   safeSetBadgeText,
   View,
   Model,
+  LruMap,
   Counter,
   memoize,
   LogBook,

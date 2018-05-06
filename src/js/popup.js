@@ -203,6 +203,7 @@ class Popup {
       checked = action.reason != USER_URL_DEACTIVATE,
       checkbox = makeCheckbox(checked, handler);
 
+    label.title = this.handler.getInfo(action.reason).message;
     label.dataset.reason = action.reason;
     label.appendChild(checkbox);
     label.appendChild(this.icon(action));

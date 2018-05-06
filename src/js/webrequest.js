@@ -20,6 +20,7 @@ class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
     Object.assign(this, {tabs, store, handler});
     this.checkRequestAction = this.handler.handleRequest.bind(this.handler);
+    this.removeHeaders = this.handler.removeHeaders.bind(this.handler);
   }
 
   startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
@@ -91,18 +92,22 @@ class WebRequest {
 
   onBeforeSendHeaders(details) {
     annotateDetails(details, request_methods.ON_BEFORE_SEND_HEADERS);
-    return this.headerHandler(details);
+    this.headerHandler(details);
+    this.markAction(details);
+    return details.response;
   }
 
   onHeadersReceived(details) {
     annotateDetails(details, request_methods.ON_HEADERS_RECEIVED);
-    return this.headerHandler(details);
+    this.headerHandler(details);
+    this.markAction(details);
+    return details.response;
   }
 
   headerHandler(details) {
     if (this.isThirdParty(details)) {
       let headers = details[details.headerPropName],
-        removed = removeHeaders(headers);
+        removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
       if (!details.shortCircuit && removed.length) {
         details.response = {[details.headerPropName]: headers};
@@ -113,21 +118,6 @@ class WebRequest {
   }
 }
 
-const badHeaders = new Set(['cookie', 'referer', 'set-cookie', 'etag', 'if-none-match']);
-
-// return number of headers mutated
-// todo, attach response to details object?
-// todo rename to removeBadHeaders?
-function removeHeaders(headers) {
-  let removed = [];
-  for (let i = 0; i < headers.length; i++) {
-    while (i < headers.length && badHeaders.has(headers[i].name.toLowerCase())) {
-      removed.push(...headers.splice(i, 1));
-    }
-  }
-  return removed;
-}
-
-Object.assign(exports, {WebRequest, removeHeaders, annotateDetails});
+Object.assign(exports, {WebRequest, annotateDetails});
 
 })].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));

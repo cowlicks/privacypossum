@@ -2,10 +2,34 @@
 
 const assert = require('chai').assert,
   {fakePort} = require('../fakes'),
-  {View, Model, Listener, Counter} = require('../utils'),
+  {View, Model, Listener, Counter, LruMap} = require('../utils'),
   {LogBook, wrap, zip} = require('../utils');
 
 describe('utils.js', function() {
+  describe('LruMap', function() {
+    let maxSize = 3;
+    beforeEach(function() {
+      this.lrumap = new LruMap(maxSize);
+      this.lrumap.set(1, 11).set(2, 22);
+    });
+    it('does not get bigger than max size', function() {
+      this.lrumap.set(3, 33).set(4, 44);
+      assert.equal(this.lrumap.size, maxSize);
+      assert.isFalse(this.lrumap.has(1));
+    });
+    it('.has reorders cache', function() {
+      assert.isTrue(this.lrumap.has(1)); // move 1 ahead of 2
+      this.lrumap.set(3, 33).set(4, 44);
+      assert.equal(this.lrumap.size, maxSize);
+      assert.isFalse(this.lrumap.has(2));  // 2 was purged
+    });
+    it('.get reorders cache', function() {
+      assert.equal(this.lrumap.get(1), 11); // move 1 ahead of 2
+      this.lrumap.set(3, 33).set(4, 44);
+      assert.equal(this.lrumap.size, maxSize);
+      assert.isUndefined(this.lrumap.get(2), 22);  // 2 was purged
+    });
+  });
   describe('Counter', function() {
     beforeEach(function() {
       this.counter = new Counter();

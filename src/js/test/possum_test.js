@@ -188,6 +188,40 @@ describe('possum.js', function() {
     });
   });
 
+  describe('etag', function() {
+    let header = {name: 'etag', value: 'value'},
+      header2 = {name: 'etag', value: 'new value'},
+      etag = new Details(Object.assign(script.copy(), {responseHeaders: [header]})),
+      etag2 = new Details(Object.assign(script.copy(), {responseHeaders: [header2]}));
+    function loadPage(possum) {
+      possum.webRequest.onBeforeRequest(main_frame.copy());
+    }
+    beforeEach(function() {
+      loadPage(this.possum);
+    });
+    it('blocks unknown etags', function() {
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+    });
+    it('blocks etag if it changes the 2nd time', function() {
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag2.copy()), {'responseHeaders': []});
+    });
+    it('all etags are blocked once resource is known to track', function() {
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag2.copy()), {'responseHeaders': []});
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+    });
+    it('allows the same etag the 2nd time', function() {
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), NO_ACTION);
+    });
+    it('all etags are allowed once resource is known to be safe', function() {
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), {'responseHeaders': []});
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag.copy()), NO_ACTION);
+      assert.deepEqual(this.possum.webRequest.onHeadersReceived(etag2.copy()), NO_ACTION);
+    });
+  });
+
   describe('fingerprinting', function() {
     function loadPage(possum) {
       // load a page, with a script

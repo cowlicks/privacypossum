@@ -4,8 +4,42 @@
 
 const {Action} = require('../schemes'),
   {URL} = require('../shim'),
-  {hasAction} = require('../utils'),
+  {LruMap, hasAction} = require('../utils'),
+  {etagHeader} = require('./etag'),
   {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
+
+const alwaysTrue = () => true;
+
+class HeaderHandler {
+  constructor(store) {
+    let cache = new LruMap(2000);
+    this.badHeaders = new Map([
+      ['cookie', alwaysTrue],
+      ['set-cookie', alwaysTrue],
+      ['referer', alwaysTrue],
+      ['etag', etagHeader.bind(undefined, {store, cache})],
+      ['if-none-match', alwaysTrue]
+    ]);
+  }
+
+  removeHeaders(details, headers) {
+    let removed = [];
+    for (let i = 0; i < headers.length; i++) {
+      while (i < headers.length && this.shouldRemoveHeader(details, headers[i])) {
+        removed.push(...headers.splice(i, 1));
+      }
+    }
+    return removed;
+  }
+
+  shouldRemoveHeader(details, header) {
+    let name = header.name.toLowerCase();
+    if (this.badHeaders.has(name)) {
+      return this.badHeaders.get(name)(details, header);
+    }
+    return false;
+  }
+}
 
 function isHeaderRequest(details) {
   return header_methods.has(details.requestType);
@@ -69,6 +103,6 @@ const tabReason = {
   }
 }
 
-Object.assign(exports, {requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
+Object.assign(exports, {HeaderHandler, requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/headers', func) : func(exports));
