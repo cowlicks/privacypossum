@@ -38,7 +38,7 @@ Comparisons with other anti-tracking projects can be found [here](docs/).
 
 ## browser fingerprinting
 
-Sites can inspect aspects of your browser itself to determine its uniqueness, and therefore track you. This tracking technique widely used.
+Sites can inspect aspects of your browser itself to determine its uniqueness, and therefore track you. This tracking technique is widely used.
 
 Privacy Badger's fingerprinting blocking has a large deficiency, when fingerprinting is detected, the *origin* is marked as tracking (not the URL). So everything from that origin is blocked in a 3rd party context. This is a problem because it can lead you to block everything from a cdn. To get around this, Privacy Badger adds CDN's to the "cookieblock list". This prevents cookies from being sent to origin's on the list. However, it then *prevents* fingerprinting scripts from being blocked, thus allowing fingerprinting.
 
@@ -74,7 +74,7 @@ If you visit a site, it might load a resource that has a 301 redirect. The resou
 
 This is a well known technique, but its pervasiveness is unknown to me.
 
-One solution to this would be to used cached 301 redirects from 3rd party sources.
+One solution to this would be to use cached 301 redirects from 3rd party sources.
 
 However we have not found a way to disable the cache like this in chrome's extension api. It is possible to intercept the redirect, but if you redirect back to the original url, you fetch from the cache again.
 One hack to disable the cache is to append a dummy query parameter, like `?` or `&`. With this you can re-try the url redirect to determine if it is unique per request.
