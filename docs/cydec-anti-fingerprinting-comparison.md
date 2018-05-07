@@ -1,6 +1,6 @@
 Comparison with CyDec Platform Anti-Fingerprinting
 
-A breif review of the codebase showed spoofing of:
+A brief review of the codebase showed spoofing of:
 * `window.screen.*`
 * `Date().getTimezoneOffset`
 * `HTMLCanvasElement.prototype.getContext`
