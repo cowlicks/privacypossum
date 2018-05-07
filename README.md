@@ -44,7 +44,7 @@ Privacy Badger's fingerprinting blocking has a large deficiency, when fingerprin
 
 For example [many sites](https://publicwww.com/websites/cdn.jsdelivr.net%2Fnpm%2Ffingerprintjs2/) load fingerprintjs2 from the jsdelivr CDN, but this is on Privacy Badger's [cookie block list](https://github.com/EFForg/privacybadger/blob/08b61e85e5c361fe8b535ec9e33950431e28632a/src/data/yellowlist.txt#L314). So Privacy Badger will allow sites to load this script fingerprint you.
 
-Fingerprinting ususually aggregates information across many esoteric browser API's, so we watch for this behavior. When we detect it, we block it.
+Fingerprinting uusually aggregates information across many esoteric browser API's, so we watch for this behavior. When we detect it, we block it.
 
 However many sites load first party fingerprinting code alongside other neccessary code, like on reddit.com, so we can't simply block the script, or it will break the page. Instead when we see first party fingerprinting, we inject random data to spoil the fingerprint. Visit [valve.github.io/fingerprintjs2](https://valve.github.io/fingerprintjs2/) to see this. "get your fingerprint" multiple times, and see it change each time.
 
