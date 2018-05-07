@@ -58,18 +58,14 @@ Privacy Possum blocks all 3rd party cookies.
 
 Etags are a well known tracking vector, commonly used in lieu of cookies. 
 
-We disable incommning etags for 3rd party requests.
+We detect and block third party etags as follows:
+* The first time you see a request to a 3rd party url with an etag, strip the etag header and store its value.
+* The second time you see a 3rd party request to this url, compare the new etag you get with the old one.
+     - If they are the same, this is not a tracking etag, allow etags for this url now and in the future.
+     - If they are different, do not allow etags for this url now or in the future.
 
-Ideally we would be able to create a heuristic for testing etags. We can send a false Etag, if the
-server sends back an etag that was the same as the previously set Etag, we can
-verify that it is authentic since they are sending the same etag repeatedly for
-the same request.
-
-Unfortunately, chrome witholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests). So we can't prevent the browser from revealing some data via sending cache information. We can still prevent 3rd parties from setting it.
-
-We should report this as a privacy bug in chrome but also sometimes 'if-none-match' is visible to extension.
-
-This is slightly more invasive than cookie & referer header blocking, it should probably have a seperate UI element.
+Chrome withholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests).
+So we can't prevent the browser from revealing some data via sending cache information, we are only able to intercept incomming etags from sources that are not already cached.
 
 
 ## 301 moved permanent redirect tracking
