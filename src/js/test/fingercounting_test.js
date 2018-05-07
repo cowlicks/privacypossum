@@ -49,6 +49,10 @@ describe('fingercounting.js', function() {
         'userAgentKey@http://valve.github.io/fingerprintjs2/fingerprint2.js:104:46',
         'http://valve.github.io/fingerprintjs2/fingerprint2.js'
       ],
+      [
+        '@https://duckduckgo.com/d2395.js:1:144567',
+        'https://duckduckgo.com/d2395.js',
+      ],
     ];
     it('extracts urls correctly', function() {
       data.forEach(([line, expected]) => assert.equal(getUrlFromStackLine(line), expected));
