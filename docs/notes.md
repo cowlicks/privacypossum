@@ -1,6 +1,6 @@
 # Tracking Feature Roadmap
 
-* add blocker blocking?
+* ad blocker blocking?
 * surrogates
 * widgets
 * rules like:
