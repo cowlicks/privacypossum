@@ -26,7 +26,14 @@ function listen(func) {
 
 // gets the location of arguments.callee.caller
 function getScriptLocation() {  // todo: to do split('\n') we do a O(n) read of the stack, this could be reduced by a constant factor by only reading to the third '\n'. but this is micro optimisation
-  return getUrlFromStackLine(new Error().stack.split('\n')[3]);
+  let lines = new Error().stack.split('\n'),
+    res;
+  try {
+    res = getUrlFromStackLine(lines[3]);
+  } catch {
+    res = getUrlFromStackLine(lines[2]);
+  }
+  return res;
 }
 
 const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/,
