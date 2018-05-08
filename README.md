@@ -11,7 +11,7 @@ Privacy Possum monkey wrenches common commercial tracking methods by reducing an
 
 * blocks cookies that let trackers uniquely identify you across websites
 * blocks `refer` headers that reveal your browsing location
-* blocks `etag` tracking which leverages browser caching to uniquely identify you, even in incognito mode
+* blocks `etag` tracking which leverages browser caching to uniquely identify you
 * blocks browser fingerprinting which tracks the inherent uniqueness of your browser
 
 # Threat model
