@@ -11,8 +11,8 @@ Privacy Possum monkey wrenches common commercial tracking methods by reducing an
 
 * blocks cookies that let trackers uniquely identify you across websites
 * blocks `refer` headers that reveal your browsing location
-* blocks `etag` tracking which leverages browser caching to uniquely identify you, even in incognito mode
-* blocks browser fingerprinting which tracks the inherent uniqueness of you browser
+* blocks `etag` tracking which leverages browser caching to uniquely identify you
+* blocks browser fingerprinting which tracks the inherent uniqueness of your browser
 
 # Threat model
 
@@ -38,13 +38,13 @@ Comparisons with other anti-tracking projects can be found [here](docs/).
 
 ## browser fingerprinting
 
-Sites can inspect aspects of your browser itself to determine its uniqueness, and therefore track you. This tracking technique widely used.
+Sites can inspect aspects of your browser itself to determine its uniqueness, and therefore track you. This tracking technique is widely used.
 
 Privacy Badger's fingerprinting blocking has a large deficiency, when fingerprinting is detected, the *origin* is marked as tracking (not the URL). So everything from that origin is blocked in a 3rd party context. This is a problem because it can lead you to block everything from a cdn. To get around this, Privacy Badger adds CDN's to the "cookieblock list". This prevents cookies from being sent to origin's on the list. However, it then *prevents* fingerprinting scripts from being blocked, thus allowing fingerprinting.
 
 For example [many sites](https://publicwww.com/websites/cdn.jsdelivr.net%2Fnpm%2Ffingerprintjs2/) load fingerprintjs2 from the jsdelivr CDN, but this is on Privacy Badger's [cookie block list](https://github.com/EFForg/privacybadger/blob/08b61e85e5c361fe8b535ec9e33950431e28632a/src/data/yellowlist.txt#L314). So Privacy Badger will allow sites to load this script fingerprint you.
 
-Fingerprinting ususually aggregates information across many esoteric browser API's, so we watch for this behavior. When we detect it, we block it.
+Fingerprinting usually aggregates information across many esoteric browser API's, so we watch for this behavior. When we detect it, we block it.
 
 However many sites load first party fingerprinting code alongside other neccessary code, like on reddit.com, so we can't simply block the script, or it will break the page. Instead when we see first party fingerprinting, we inject random data to spoil the fingerprint. Visit [valve.github.io/fingerprintjs2](https://valve.github.io/fingerprintjs2/) to see this. "get your fingerprint" multiple times, and see it change each time.
 
@@ -74,7 +74,7 @@ If you visit a site, it might load a resource that has a 301 redirect. The resou
 
 This is a well known technique, but its pervasiveness is unknown to me.
 
-One solution to this would be to used cached 301 redirects from 3rd party sources.
+One solution to this would be to use cached 301 redirects from 3rd party sources.
 
 However we have not found a way to disable the cache like this in chrome's extension api. It is possible to intercept the redirect, but if you redirect back to the original url, you fetch from the cache again.
 One hack to disable the cache is to append a dummy query parameter, like `?` or `&`. With this you can re-try the url redirect to determine if it is unique per request.
