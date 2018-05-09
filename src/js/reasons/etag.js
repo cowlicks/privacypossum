@@ -38,7 +38,7 @@ function etagHeader({store, cache}, details, header) {
     } else {
       // mark ETAG_TRACKING
       setEtagAction(store, href, ETAG_TRACKING, {etagValue});
-      Object.assign(details, new Action(ETAG_TRACKING, {etagValue}));
+      Object.assign(details, {action: new Action(ETAG_TRACKING, {etagValue})});
       return true;
     }
   } else {
