@@ -55,6 +55,8 @@ const FINGERPRINTING = 'fingerprinting',
   BLOCK = 'block',
   HEADER_DEACTIVATE_ON_HOST = 'header_deactivate_on_host';
 
+const FINGERPRINTING_PATH = '/js/contentscripts/injector.js';
+
 const etag = {
   ETAG_TRACKING: 'etag_tracking',
   ETAG_SAFE: 'etag_safe',
@@ -83,6 +85,7 @@ Object.assign(exports, {
   request_methods,
   header_methods,
   FINGERPRINTING,
+  FINGERPRINTING_PATH,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
   BLOCK,

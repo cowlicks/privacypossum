@@ -17,6 +17,12 @@ let makeFakeMessages = () => {
   let {FakeMessages} = require('./fakes');
   return new FakeMessages();
 };
+let makeFakeSendMessage = () => {
+  let fm = makeFakeMessages(),
+    sendMessage = fm.sendMessage.bind(fm)
+  Object.assign(sendMessage, {clear: fm.clear.bind(fm), onMessage: fm});
+  return sendMessage;
+}
 
 function assign(name, definition) {
   return Object.defineProperty(exports, name, {
@@ -121,6 +127,8 @@ let shims = [
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
   ['tabsOnMessage', 'chrome.tabs.onMessage', passThru, tabsOnAndSendMessage],
   ['tabsSendMessage', 'chrome.tabs.sendMessage', passThru, tabsOnAndSendMessage],
+  ['tabsExecuteScript', 'chrome.tabs.executeScript', passThru, makeFakeSendMessage],
+  ['onNavigationCommitted', 'chrome.webNavigation.onCommitted', passThru, makeFakeMessages],
   ['onErrorOccurred', 'chrome.webNavigation.onErrorOccurred', passThru, makeFakeMessages],
   ['getAllFrames', 'chrome.webNavigation.getAllFrames', passThru,
     () => {
