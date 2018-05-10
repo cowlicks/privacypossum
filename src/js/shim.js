@@ -121,6 +121,7 @@ let shims = [
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
   ['tabsOnMessage', 'chrome.tabs.onMessage', passThru, tabsOnAndSendMessage],
   ['tabsSendMessage', 'chrome.tabs.sendMessage', passThru, tabsOnAndSendMessage],
+  ['onNavigationCommitted', 'chrome.webNavigation.onCommitted', passThru, makeFakeMessages],
   ['onErrorOccurred', 'chrome.webNavigation.onErrorOccurred', passThru, makeFakeMessages],
   ['getAllFrames', 'chrome.webNavigation.getAllFrames', passThru,
     () => {
