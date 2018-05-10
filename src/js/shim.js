@@ -18,8 +18,10 @@ let makeFakeMessages = () => {
   return new FakeMessages();
 };
 let makeFakeSendMessage = () => {
-  let fm = makeFakeMessages();
-  return fm.sendMessage.bind(fm);
+  let fm = makeFakeMessages(),
+    sendMessage = fm.sendMessage.bind(fm)
+  Object.assign(sendMessage, {clear: fm.clear.bind(fm), onMessage: fm});
+  return sendMessage;
 }
 
 function assign(name, definition) {
