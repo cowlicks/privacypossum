@@ -261,7 +261,7 @@ let multiDomainFirstPartiesArray = [
   ["tripadvisor.com", "tacdn.com", "tamgrt.com"],
   ["trsretire.com", "divinvest.com"],
   ["turbotax.com", "intuit.com"],
-  ["twitch.tv", "ttvnw.net", "jtvnw.net"],
+  ["twitch.tv", "ttvnw.net", "jtvnw.net", "twitchcdn.net"],
   ["twitter.com", "twimg.com", "t.co"],
   ["ua2go.com", "ual.com", "united.com", "unitedwifi.com"],
   ["verizon.com", "verizon.net"],
