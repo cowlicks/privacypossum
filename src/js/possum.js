@@ -8,7 +8,8 @@ const constants = require('./constants'),
   {Reasons, reasonsArray} = require('./reasons/reasons'),
   {Handler, MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
-  PopupServer = require('./popup_server').Server;
+  PopupServer = require('./popup_server').Server,
+  {log} = require('./utils');
 
 class Possum {
   constructor(store = new DomainStore(constants.DISK_NAME)) {
@@ -25,6 +26,7 @@ class Possum {
     popup.start();
 
     Object.assign(this, {store, tabs, reasons, handler, webRequest, messageListener, popup});
+    log('Woop woop possum party!!!');
   }
 
   static async load(disk) {
