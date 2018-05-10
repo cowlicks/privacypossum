@@ -2,7 +2,7 @@
 
 let assert = require('chai').assert,
   {BLOCK, REMOVE_ACTION} = require('../constants'),
-  {onRemoved, getBadgeText} = require('../shim'),
+  {onRemoved, getBadgeText, onNavigationCommitted, tabsExecuteScript} = require('../shim'),
   {Action} = require('../schemes'),
   {cookie} = require('./testing_utils'),
   {Tab, Tabs} = require('../tabs');
@@ -31,6 +31,23 @@ describe('tabs.js', function() {
 
     it('#removeTab', function() {
       assert.isTrue(this.tabs.removeTab(main_frame.tabId));
+    });
+
+    describe('#onNavigationCommitted', function() {
+      let {tabId, frameId, url} = main_frame;
+      beforeEach(async function() {
+        this.tabs.startListeners();
+      });
+
+      it('injects when onNavigationComitted fires', async function() {
+        await onNavigationCommitted.sendMessage({tabId, frameId, url});
+        assert.equal(tabsExecuteScript.onMessage.messages.length, 1);
+      });
+      it('does not inject when tab is deactivated', async function() {
+        this.tab.setActiveState(false)
+        await onNavigationCommitted.sendMessage({tabId, frameId, url});
+        assert.equal(tabsExecuteScript.onMessage.messages.length, 0);
+      });
     });
 
     describe('#startListeners', function() {
