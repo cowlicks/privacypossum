@@ -6,8 +6,8 @@
 
 [(function(exports) {
 
-const shim = require('./shim'), {URL, tabsGet, tabsQuery} = shim,
-  {REMOVE_ACTION} = require('./constants'),
+const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
+  {REMOVE_ACTION, FINGERPRINTING_PATH} = require('./constants'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -159,9 +159,10 @@ class Tabs {
     });
   }
 
-  async startListeners({onRemoved, onErrorOccurred} = shim) {
+  async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {
     onRemoved.addListener(this.removeTab.bind(this));
     onErrorOccurred.addListener(this.onErrorOccurred.bind(this));
+    onNavigationCommitted.addListener(this.onNavigationCommitted.bind(this));
 
     await this.getCurrentData();
   }
@@ -194,6 +195,13 @@ class Tabs {
           this.removeTab(tabId);
         }
       });
+    }
+  }
+
+  async onNavigationCommitted({tabId, frameId}) {
+    const tab = this.getTab(tabId);
+    if ((tabId >= 0) && tab && tab.active) {
+      await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', file: FINGERPRINTING_PATH});
     }
   }
 
