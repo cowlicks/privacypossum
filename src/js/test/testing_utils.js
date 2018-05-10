@@ -1,6 +1,6 @@
 "use strict"
 
-const {onConnect, tabsOnMessage, onMessage, tabsQuery} = require('../shim'),
+const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery} = require('../shim'),
   {Popup} = require('../popup');
 
 const {annotateDetails} = require('../webrequest');
@@ -9,6 +9,8 @@ const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
 
 function clearState() {
+  tabsExecuteScript.clear();
+  onNavigationCommitted.clear();
   tabsOnMessage.clear();
   onMessage.clear();
   onConnect.clear();
