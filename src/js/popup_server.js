@@ -4,7 +4,7 @@
 
 let {onConnect} = require('./shim'),
     {POPUP} = require('./constants'),
-    {Model, currentTab} = require('./utils');
+    {Model, currentTab, log} = require('./utils');
 
 class Server {
   constructor(tabs) {
@@ -16,9 +16,11 @@ class Server {
     onConnect.addListener(port => {
       if (port.name === POPUP) {
         currentTab().then(tab => {
+          log(`Opening popup for tab: ${tab.id}`);
           let model = new Model(port, this.tabs.getTab(tab.id));
           this.connections.set(tab.id, model);
           port.onDisconnect.addListener(() => {
+            log(`Removing popup connection for tab: ${tab.id}`);
             this.connections.delete(tab.id);
             model.delete();
           });
