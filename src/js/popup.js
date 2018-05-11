@@ -35,6 +35,7 @@ class Popup {
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
 
     $('on-off').onclick = this.onOff.bind(this);
+    $('debug-link').onclick = this.debug.bind(this);
   }
 
   connect() {
