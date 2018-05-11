@@ -5,10 +5,10 @@
 const {Action} = require('../schemes'),
   {setResponse, sendUrlDeactivate} = require('./utils'),
   {URL} = require('../shim'),
-  {Listener, setTabIconActive, hasAction} = require('../utils'),
+  {Listener, log, logger, setTabIconActive, hasAction} = require('../utils'),
   constants = require('../constants');
 
-const {NO_ACTION, CANCEL, BLOCK,
+const {NO_ACTION, CANCEL, BLOCK, GET_DEBUG_LOG,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
 
 /**
@@ -131,6 +131,15 @@ const reasonsArray = [
     name: REMOVE_ACTION,
     props: {
       messageHandler: onRemoveAction,
+    },
+  },
+  {
+    name: GET_DEBUG_LOG,
+    props: {
+      messageHandler: ({}, messenger, sender, sendResponse) => {
+        log('got GET_DEBUG_LOG msg');
+        return sendResponse(logger.dump());
+      },
     },
   },
 ];
