@@ -74,8 +74,8 @@ class MessageHandler extends Dispatcher {
     super('messageHandler', {tabs, store}, reasons);
   }
 
-  dispatcher(messenger, sender) {
-    return super.dispatcher(messenger.type, [messenger, sender]);
+  dispatcher(messenger, sender, sendResponse) {
+    return super.dispatcher(messenger.type, [messenger, sender, sendResponse]);
   }
 
   startListeners(onMessage = shim.onMessage) {
