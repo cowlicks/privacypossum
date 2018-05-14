@@ -138,7 +138,7 @@ const reasonsArray = [
     props: {
       messageHandler: ({}, messenger, sender, sendResponse) => {
         log('got GET_DEBUG_LOG msg');
-        return sendResponse(logger.dump());
+        return sendResponse(logger.prettyLog());
       },
     },
   },
