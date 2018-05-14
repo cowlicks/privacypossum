@@ -9,7 +9,7 @@ const constants = require('./constants'),
   {Handler, MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
   PopupServer = require('./popup_server').Server,
-  {log} = require('./utils');
+  {prettyLog, log} = require('./utils');
 
 class Possum {
   constructor(store = new DomainStore(constants.DISK_NAME)) {
@@ -31,6 +31,10 @@ class Possum {
 
   static async load(disk) {
     return new Possum(await DomainStore.load(constants.DISK_NAME, disk));
+  }
+
+  prettyLog() {
+    return prettyLog();
   }
 }
 
