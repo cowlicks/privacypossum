@@ -1,8 +1,5 @@
 language: node_js
 node_js:
   - "10"
-addons:
-  apt:
-    update: true
 install: make npm_install
 script: make test
