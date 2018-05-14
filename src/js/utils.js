@@ -173,6 +173,16 @@ class LogBook extends FifoMap {
     return Array.from(this).reverse();
   }
 
+  prettyLog() {
+    let out = '!!! This log may contain information about your browisng !!!';
+    for (let [i, entry] of this.dump()) {
+      out += `
+      ${i}:
+        ${entry}`
+    }
+    return out;
+  }
+
   log(entry) {
     if (this.print) {
       console.log(entry); // eslint-disable-line
@@ -318,7 +328,7 @@ function zip() {
 
 lazyDef(exports, 'log', () => {
   let logger = new LogBook(100);
-  return {logger, log: logger.log.bind(logger)};
+  return {logger, log: logger.log.bind(logger), prettyLog: logger.prettyLog.bind(logger)};
 });
 
 Object.assign(exports, {
