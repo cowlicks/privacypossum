@@ -84,7 +84,7 @@ class Popup {
       tabId: this.tabId,
     },
     debugString => {
-      return navigator.clipboard.writeText(debugString);
+      console.log(debugString);
     });
   }
 
