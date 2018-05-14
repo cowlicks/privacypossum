@@ -1,3 +1,6 @@
+test:
+	./scripts/test.sh
+
 npm_install:
 	./scripts/npm_install.sh
 
@@ -7,4 +10,4 @@ psl:
 release:
 	./scripts/release.sh
 
-.PHONY: psl release
+.PHONY: test npm_install psl release
