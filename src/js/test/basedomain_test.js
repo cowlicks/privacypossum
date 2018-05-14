@@ -20,9 +20,6 @@ const assert = require('chai').assert,
   {getBaseDomain} = require('../domains/basedomain');
 
 describe('basedomain.js', function() {
-  it("test travis-ci fails", function() {
-    assert.isTrue(false);
-  });
   it("Determining base domain", function () {
     var tests = [
       ["com", "com"],
