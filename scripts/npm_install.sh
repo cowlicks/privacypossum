@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-toplevel=$(git rev-parse --show-toplevel)
-js_dir=${toplevel}/src/js
+source $(git rev-parse --show-toplevel)/scripts/source_me.sh
 
-pushd ${toplevel}/src > /dev/null
-
+pushd ${js_dir} > /dev/null
 trap "popd > /dev/null" EXIT
 
 npm install
