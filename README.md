@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/cowlicks/privacypossum.svg?branch=master)](https://travis-ci.org/cowlicks/privacypossum)
+
 ![logo](/src/media/logo-med256.png)
 
 Install for [Chrome](https://chrome.google.com/webstore/detail/privacy-possum/ommfjecdpepadiafbnidoiggfpbnkfbj) and for [Firefox](https://addons.mozilla.org/en-US/firefox/addon/privacy-possum/).
