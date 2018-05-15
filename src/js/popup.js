@@ -13,7 +13,7 @@ let {connect, document, sendMessage, getURL} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
   {View, Counter} = require('./utils'),
   {Action} = require('./schemes'),
-  {POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
+  {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
 function makeCheckbox(checked, handler) {
   let checkbox = document.createElement('input');
@@ -35,6 +35,7 @@ class Popup {
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
 
     $('on-off').onclick = this.onOff.bind(this);
+    $('debug-link').onclick = this.debug.bind(this);
   }
 
   connect() {
@@ -74,6 +75,16 @@ class Popup {
       type: HEADER_DEACTIVATE_ON_HOST,
       tabId: this.tabId,
       checked: $('header-checkbox').checked
+    });
+  }
+
+  async debug() {
+    await sendMessage({
+      type: GET_DEBUG_LOG,
+      tabId: this.tabId,
+    },
+    debugString => {
+      console.log(debugString);
     });
   }
 

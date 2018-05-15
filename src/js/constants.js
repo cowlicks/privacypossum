@@ -72,6 +72,8 @@ const POPUP = 'popup';
 
 const REMOVE_ACTION = 'remove_action';
 
+const GET_DEBUG_LOG = 'get_debug_log';
+
 Object.assign(exports, {
   DISK_NAME,
   responses,
@@ -95,6 +97,7 @@ Object.assign(exports, {
   TAB_DEACTIVATE_HEADERS,
   POPUP,
   REMOVE_ACTION,
+  GET_DEBUG_LOG,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/constants', func) : func(exports));
