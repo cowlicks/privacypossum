@@ -121,7 +121,7 @@ Exported stuff is assigned to properties on `exports` just like in node.
 * test the zip file in a fresh instances of supported browsers.
     - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
     - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
-    - visit https://valve.github.io/fingerprintjs2/ https://reddit.com/
+    - Do some basic Q&A tests, visit https://valve.github.io/fingerprintjs2/ https://reddit.com/ https://twitch.tv/ https://duckduckgo.com/
 * upload the zip.
     - for chrome visit https://chrome.google.com/webstore/developer/edit/ommfjecdpepadiafbnidoiggfpbnkfbj record any other edits to the chrome store profile in this repo
     - for firefox visit https://addons.mozilla.org/en-US/developers/addon/privacy-possum/edit
