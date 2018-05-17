@@ -53,6 +53,10 @@ describe('fingercounting.js', function() {
         '@https://duckduckgo.com/d2395.js:1:144567',
         'https://duckduckgo.com/d2395.js',
       ],
+      [
+        "    at https://online.citi.com/CBOL/common/js/jfp.combined.min.js:68:4324",
+        "https://online.citi.com/CBOL/common/js/jfp.combined.min.js",
+      ],
     ];
     it('extracts urls correctly', function() {
       data.forEach(([line, expected]) => assert.equal(getUrlFromStackLine(line), expected));
