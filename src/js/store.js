@@ -17,7 +17,7 @@ class DomainTree extends Tree {
   }
 }
 
-class DomainStore {
+class Store {
   constructor(name, disk = Disk.newDisk(), splitter_ = splitter) {
     this.init(name, disk, splitter_);
   }
@@ -29,7 +29,7 @@ class DomainStore {
   }
 
   static async load(name, disk) {
-    let out = new DomainStore(name, disk);
+    let out = new Store(name, disk);
     await out.diskMap.loadKeys();
     for (let key of out.keys) {
       out.tree.set(key, new Domain(await out.diskMap.get(key)));
@@ -116,6 +116,6 @@ class DomainStore {
   }
 }
 
-Object.assign(exports, {DomainStore});
+Object.assign(exports, {Store});
 
 })].map(func => typeof exports == 'undefined' ? define('/store', func) : func(exports));
