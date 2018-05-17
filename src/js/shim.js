@@ -24,11 +24,10 @@ let makeFakeSendMessage = () => {
   return sendMessage;
 }
 let makeFakeDisk = () => {
-    let {FakeDisk} = require('./fakes');
-    let out = FakeDisk;
-    out.newDisk = () => new FakeDisk();
-    return out;
-  }
+  let {FakeDisk} = require('./fakes');
+  let out = FakeDisk;
+  out.newDisk = () => new FakeDisk();
+  return out;
 }
 
 function assign(name, definition) {
