@@ -1,7 +1,7 @@
 "use strict";
 
 const {assert} = require('chai'),
-  {DomainStore} = require('../../store'),
+  {Store} = require('../../store'),
   {etagHeader, setEtagAction} = require('../../reasons/etag'),
   {LruMap} = require('../../utils'),
   {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../../constants');
@@ -9,7 +9,7 @@ const {assert} = require('chai'),
 describe('etag.js', function() {
   let etagValue ='hi', href = 'https://foo.com/stuff.js';
   beforeEach(function() {
-    this.store = new DomainStore('name');
+    this.store = new Store('name');
     this.cache = new LruMap();
     this.etagHeader = etagHeader.bind(this, this);
     this.header = {name: 'etag', value: etagValue};

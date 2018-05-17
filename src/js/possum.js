@@ -4,7 +4,7 @@
 
 const constants = require('./constants'),
   {Tabs} = require('./tabs'),
-  {DomainStore} = require('./store'),
+  {Store} = require('./store'),
   {Reasons, reasonsArray} = require('./reasons/reasons'),
   {Handler, MessageHandler} = require('./reasons/handlers'),
   {WebRequest} = require('./webrequest'),
@@ -12,7 +12,7 @@ const constants = require('./constants'),
   {prettyLog, log} = require('./utils');
 
 class Possum {
-  constructor(store = new DomainStore(constants.DISK_NAME)) {
+  constructor(store = new Store(constants.DISK_NAME)) {
     const tabs = new Tabs(),
       reasons = Reasons.fromArray(reasonsArray),
       handler = new Handler(tabs, store, reasons),
@@ -30,7 +30,7 @@ class Possum {
   }
 
   static async load(disk) {
-    return new Possum(await DomainStore.load(constants.DISK_NAME, disk));
+    return new Possum(await Store.load(constants.DISK_NAME, disk));
   }
 
   prettyLog() {

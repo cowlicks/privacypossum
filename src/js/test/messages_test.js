@@ -5,7 +5,7 @@ const assert = require('chai').assert,
   constants = require('../constants'),
   {URL, onMessage, sendMessage} = require('../shim'),
   {Tabs} = require('../tabs'),
-  {DomainStore} = require('../store'),
+  {Store} = require('../store'),
   {Action} = require('../schemes'),
   {MessageHandler} = require('../reasons/handlers'),
   {Mock, Details, details} = require('./testing_utils');
@@ -14,7 +14,7 @@ describe('messages.js', function() {
   describe('MessageHandler', function() {
     beforeEach(function() {
       this.tabs = new Tabs();
-      this.store = new DomainStore('name');
+      this.store = new Store('name');
       this.ml = new MessageHandler(
         this.tabs,
         this.store,

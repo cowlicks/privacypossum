@@ -23,6 +23,12 @@ let makeFakeSendMessage = () => {
   Object.assign(sendMessage, {clear: fm.clear.bind(fm), onMessage: fm});
   return sendMessage;
 }
+let makeFakeDisk = () => {
+  let {FakeDisk} = require('./fakes');
+  let out = FakeDisk;
+  out.newDisk = () => new FakeDisk();
+  return out;
+}
 
 function assign(name, definition) {
   return Object.defineProperty(exports, name, {
@@ -101,19 +107,14 @@ let setAndGetBadgeText = (name) => {
 
 let shims = [
   ['URL', 'URL', () => URL, () => require('url').URL],
-  ['Disk', 'chrome.storage.sync',
+  ['Disk', 'chrome.storage.local',
     () => {
       let {BrowserDisk} = require('./utils');
-      let out = new BrowserDisk(chrome.storage.sync);
+      let out = new BrowserDisk(chrome.storage.local);
       out.newDisk = () => out;
       return out;
     },
-    () => {
-      let {FakeDisk} = require('./fakes');
-      let out = FakeDisk;
-      out.newDisk = () => new FakeDisk();
-      return out;
-    },
+    makeFakeDisk,
   ],
   ['onMessage', 'chrome.runtime.onMessage', passThru, onAndSendMessage],
   ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
