@@ -67,7 +67,9 @@ class DiskMap {
 
   get(key) {
     return new Promise(resolve => {
-      this.disk.get((this.name + key), keyValue => resolve(keyValue[1]));
+      this.disk.get((this.name + key), keyValue => {
+        return resolve(typeof keyValue !== 'undefined' ? keyValue[1]: undefined);
+      });
     });
   }
 
