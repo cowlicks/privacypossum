@@ -108,10 +108,10 @@ let setAndGetBadgeText = (name) => {
 
 let shims = [
   ['URL', 'URL', () => URL, () => require('url').URL],
-  ['Disk', 'chrome.storage.sync',
+  ['Disk', 'chrome.storage.local',
     () => {
       let {BrowserDisk} = require('./utils');
-      let out = new BrowserDisk(chrome.storage.sync);
+      let out = new BrowserDisk(chrome.storage.local);
       out.newDisk = () => out;
       return out;
     },
