@@ -38,7 +38,7 @@ const urlEndRegex = /^.*?.(?=(\?|#|:(?!\/\/)))/,
   startsWithHttpScheme = /^https?:\/\//;
 
 function getUrlFromStackLine(line) {
-  while (line.endsWith(')')) { // there are parenthese
+  while (line.slice(-1) === ')') { // there are parenthese
     line = line.slice(line.lastIndexOf('(') + 1);
     line = line.slice(0, line.indexOf(')'));
   }
