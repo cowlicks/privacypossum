@@ -23,30 +23,27 @@ function newEtagHeaderFunc(store) {
 }
 
 function etagHeader({store, unknownEtags, safeEtags}, details, header) {
-  const {protocol, host, pathname} = details.urlObj,
-    url  = `${protocol}//${host}${pathname}`,
+  const {href} = details.urlObj,
     etagValue = header.value,
-    action = store.getUrl(url);
-  if (action && (action.reason === ETAG_TRACKING)) {
+    action = store.getUrl(href);
+  if (action && (action.reason === ETAG_TRACKING)) { // known tracking etag
     Object.assign(details, {action})
     return true;
-  } else if (safeEtags.has(url)) {
+  } else if (safeEtags.has(href)) { // known safe etag
     return false;
-  } else if (unknownEtags.has(url)) {
-    let oldEtagValue = unknownEtags.get(url).etagValue;
-    unknownEtags.delete(url)
-    if (etagValue === oldEtagValue) {
-      // mark ETAG_SAFE
-      safeEtags.set(url, {etagValue});
+  } else if (unknownEtags.has(href)) { // 2nd time seeing this etag
+    let oldEtagValue = unknownEtags.get(href).etagValue;
+    unknownEtags.delete(href)
+    if (etagValue === oldEtagValue) { // mark ETAG_SAFE
+      safeEtags.set(href, {etagValue});
       return false;
-    } else {
-      // mark ETAG_TRACKING
-      setEtagAction(store, url, ETAG_TRACKING, {etagValue});
+    } else { // mark ETAG_TRACKING
+      setEtagAction(store, href, ETAG_TRACKING, {etagValue});
       Object.assign(details, {action: new Action(ETAG_TRACKING, {etagValue})});
       return true;
     }
-  } else {
-    unknownEtags.set(url, {etagValue});
+  } else { // unknown etag
+    unknownEtags.set(href, {etagValue});
     return true;
   }
 }
