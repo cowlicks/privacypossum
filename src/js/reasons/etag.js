@@ -17,29 +17,27 @@ async function setEtagAction(store, url, reason, data={etagValue: null}) {
 }
 
 function newEtagHeaderFunc(store) {
-  let unknownEtags = new LruMap(2000);
-  return etagHeader.bind(undefined, {store, unknownEtags});
+  let unknownEtags = new LruMap(2000),
+    safeEtags = new LruMap(5000);
+  return etagHeader.bind(undefined, {store, unknownEtags, safeEtags});
 }
 
-function etagHeader({store, unknownEtags}, details, header) {
+function etagHeader({store, unknownEtags, safeEtags}, details, header) {
   const {protocol, host, pathname} = details.urlObj,
     url  = `${protocol}//${host}${pathname}`,
     etagValue = header.value,
     action = store.getUrl(url);
-  if (action) {
-    if (action.reason === ETAG_TRACKING) {
-      Object.assign(details, {action})
-      return true;
-    } else if (action.reason === ETAG_SAFE) {
-      return false;
-    }
-  }
-  if (unknownEtags.has(url)) {
+  if (action && (action.reason === ETAG_TRACKING)) {
+    Object.assign(details, {action})
+    return true;
+  } else if (safeEtags.has(url)) {
+    return false;
+  } else if (unknownEtags.has(url)) {
     let oldEtagValue = unknownEtags.get(url).etagValue;
     unknownEtags.delete(url)
     if (etagValue === oldEtagValue) {
       // mark ETAG_SAFE
-      setEtagAction(store, url, ETAG_SAFE, {etagValue});
+      safeEtags.set(url, {etagValue});
       return false;
     } else {
       // mark ETAG_TRACKING
