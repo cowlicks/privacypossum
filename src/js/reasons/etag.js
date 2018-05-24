@@ -3,7 +3,7 @@
 [(function(exports) {
 
 const {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../constants'),
-  {log} = require('../utils'),
+  {log, LruMap} = require('../utils'),
   {sendUrlDeactivate} = require('./utils'),
   {Action} = require('../schemes');
 
@@ -14,6 +14,11 @@ async function setEtagAction(store, url, reason, data={etagValue: null}) {
       etag value: ${data.etagValue}`);
     data.time = Date.now();
     return await store.setUrl(url, new Action(reason, data));
+}
+
+function newEtagHeaderFunc(store) {
+  let unknownEtagCache = new LruMap(2000);
+  return etagHeader.bind(undefined, {store, unknownEtagCache});
 }
 
 function etagHeader({store, unknownEtagCache}, details, header) {
@@ -60,6 +65,6 @@ const reason = {
   }
 }
 
-Object.assign(exports, {reason, etagHeader, setEtagAction});
+Object.assign(exports, {reason, etagHeader, setEtagAction, newEtagHeaderFunc});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/etag', func) : func(exports));
