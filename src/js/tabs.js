@@ -204,7 +204,7 @@ class Tabs {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
       for (let file of contentScripts) {
-        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', file}, () => {
+        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', matchAboutBlank: true, file}, () => {
           if (errorOccurred()) {
             log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}`);
           }
