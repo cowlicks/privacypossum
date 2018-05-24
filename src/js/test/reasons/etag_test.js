@@ -2,7 +2,7 @@
 
 const {assert} = require('chai'),
   {Store} = require('../../store'),
-  {etagHeader, setEtagAction} = require('../../reasons/etag'),
+  {newEtagHeaderFunc, setEtagAction} = require('../../reasons/etag'),
   {LruMap} = require('../../utils'),
   {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../../constants');
 
@@ -10,8 +10,7 @@ describe('etag.js', function() {
   let etagValue ='hi', href = 'https://foo.com/stuff.js';
   beforeEach(function() {
     this.store = new Store('name');
-    this.cache = new LruMap();
-    this.etagHeader = etagHeader.bind(this, this);
+    this.etagHeader = newEtagHeaderFunc(this.store);
     this.header = {name: 'etag', value: etagValue};
     this.details = {urlObj: {href}};
 
@@ -28,12 +27,7 @@ describe('etag.js', function() {
       let {details, header} = this;
 
       this.etagHeader(details, header);
-      let remove = this.etagHeader(details, header);
-      assert.isFalse(remove);
-
-      let action = this.store.getUrl(details.urlObj.href);
-      assert.equal(action.reason, ETAG_SAFE);
-      assert.equal(action.data.etagValue, header.value);
+      assert.isFalse(this.etagHeader(details, header));
     })
     it('blocks and marks as tracking on diff etag', async function() {
       let {details, header} = this,
@@ -56,13 +50,6 @@ describe('etag.js', function() {
 
       assert.equal(details.action.reason, ETAG_TRACKING);
       assert.isTrue(remove);
-    })
-    it('allows etags from safe urls', async function() {
-      let {details, header} = this;
-
-      await setEtagAction(this.store, href, ETAG_SAFE);
-      let remove = this.etagHeader(details, header);
-      assert.isFalse(remove);
     })
   });
 });

@@ -3,46 +3,47 @@
 [(function(exports) {
 
 const {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../constants'),
-  {log} = require('../utils'),
+  {log, LruMap} = require('../utils'),
   {sendUrlDeactivate} = require('./utils'),
   {Action} = require('../schemes');
 
-async function setEtagAction(store, href, reason, data={etagValue: null}) {
+async function setEtagAction(store, url, reason, data={etagValue: null}) {
     log(`etag update with:
       reason: ${reason}
-      url: ${href}
+      url: ${url}
       etag value: ${data.etagValue}`);
     data.time = Date.now();
-    return await store.setUrl(href, new Action(reason, data));
+    return await store.setUrl(url, new Action(reason, data));
 }
 
-function etagHeader({store, cache}, details, header) {
+function newEtagHeaderFunc(store) {
+  let unknownEtags = new LruMap(2000),
+    safeEtags = new LruMap(5000);
+  return etagHeader.bind(undefined, {store, unknownEtags, safeEtags});
+}
+
+function etagHeader({store, unknownEtags, safeEtags}, details, header) {
   const {href} = details.urlObj,
     etagValue = header.value,
     action = store.getUrl(href);
-  if (action) {
-    if (action.reason === ETAG_TRACKING) {
-      Object.assign(details, {action})
-      return true;
-    } else if (action.reason === ETAG_SAFE) {
+  if (action && (action.reason === ETAG_TRACKING)) { // known tracking etag
+    Object.assign(details, {action})
+    return true;
+  } else if (safeEtags.has(href)) { // known safe etag
+    return false;
+  } else if (unknownEtags.has(href)) { // 2nd time seeing this etag
+    let oldEtagValue = unknownEtags.get(href).etagValue;
+    unknownEtags.delete(href)
+    if (etagValue === oldEtagValue) { // mark ETAG_SAFE
+      safeEtags.set(href, {etagValue});
       return false;
-    }
-  }
-  if (cache.has(href)) {
-    let oldEtagValue = cache.get(href).etagValue;
-    cache.delete(href)
-    if (etagValue === oldEtagValue) {
-      // mark ETAG_SAFE
-      setEtagAction(store, href, ETAG_SAFE, {etagValue});
-      return false;
-    } else {
-      // mark ETAG_TRACKING
+    } else { // mark ETAG_TRACKING
       setEtagAction(store, href, ETAG_TRACKING, {etagValue});
       Object.assign(details, {action: new Action(ETAG_TRACKING, {etagValue})});
       return true;
     }
-  } else {
-    cache.set(href, {etagValue});
+  } else { // unknown etag
+    unknownEtags.set(href, {etagValue});
     return true;
   }
 }
@@ -59,6 +60,6 @@ const reason = {
   }
 }
 
-Object.assign(exports, {reason, etagHeader, setEtagAction});
+Object.assign(exports, {reason, etagHeader, setEtagAction, newEtagHeaderFunc});
 
 })].map(func => typeof exports == 'undefined' ? define('/reasons/etag', func) : func(exports));

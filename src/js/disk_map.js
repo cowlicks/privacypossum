@@ -28,7 +28,7 @@ class DiskMap {
   }
 
   async loadKeys() {
-    this.keys = await this.getKeys();
+    return this.keys = await this.getKeys();
   }
 
   async getKeys() {
