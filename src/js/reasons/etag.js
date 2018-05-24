@@ -17,11 +17,11 @@ async function setEtagAction(store, url, reason, data={etagValue: null}) {
 }
 
 function newEtagHeaderFunc(store) {
-  let unknownEtagCache = new LruMap(2000);
-  return etagHeader.bind(undefined, {store, unknownEtagCache});
+  let unknownEtags = new LruMap(2000);
+  return etagHeader.bind(undefined, {store, unknownEtags});
 }
 
-function etagHeader({store, unknownEtagCache}, details, header) {
+function etagHeader({store, unknownEtags}, details, header) {
   const {protocol, host, pathname} = details.urlObj,
     url  = `${protocol}//${host}${pathname}`,
     etagValue = header.value,
@@ -34,9 +34,9 @@ function etagHeader({store, unknownEtagCache}, details, header) {
       return false;
     }
   }
-  if (unknownEtagCache.has(url)) {
-    let oldEtagValue = unknownEtagCache.get(url).etagValue;
-    unknownEtagCache.delete(url)
+  if (unknownEtags.has(url)) {
+    let oldEtagValue = unknownEtags.get(url).etagValue;
+    unknownEtags.delete(url)
     if (etagValue === oldEtagValue) {
       // mark ETAG_SAFE
       setEtagAction(store, url, ETAG_SAFE, {etagValue});
@@ -48,7 +48,7 @@ function etagHeader({store, unknownEtagCache}, details, header) {
       return true;
     }
   } else {
-    unknownEtagCache.set(url, {etagValue});
+    unknownEtags.set(url, {etagValue});
     return true;
   }
 }
