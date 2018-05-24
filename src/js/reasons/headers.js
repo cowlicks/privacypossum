@@ -12,12 +12,12 @@ const alwaysTrue = () => true;
 
 class HeaderHandler {
   constructor(store) {
-    let cache = new LruMap(2000);
+    let unknownEtagCache = new LruMap(2000);
     this.badHeaders = new Map([
       ['cookie', alwaysTrue],
       ['set-cookie', alwaysTrue],
       ['referer', alwaysTrue],
-      ['etag', etagHeader.bind(undefined, {store, cache})],
+      ['etag', etagHeader.bind(undefined, {store, unknownEtagCache})],
       ['if-none-match', alwaysTrue]
     ]);
   }

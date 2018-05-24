@@ -10,7 +10,7 @@ describe('etag.js', function() {
   let etagValue ='hi', href = 'https://foo.com/stuff.js';
   beforeEach(function() {
     this.store = new Store('name');
-    this.cache = new LruMap();
+    this.unknownEtagCache = new LruMap();
     this.etagHeader = etagHeader.bind(this, this);
     this.header = {name: 'etag', value: etagValue};
     this.details = {urlObj: {href}};

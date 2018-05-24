@@ -16,7 +16,7 @@ async function setEtagAction(store, url, reason, data={etagValue: null}) {
     return await store.setUrl(url, new Action(reason, data));
 }
 
-function etagHeader({store, cache}, details, header) {
+function etagHeader({store, unknownEtagCache}, details, header) {
   const {protocol, host, pathname} = details.urlObj,
     url  = `${protocol}//${host}${pathname}`,
     etagValue = header.value,
@@ -29,9 +29,9 @@ function etagHeader({store, cache}, details, header) {
       return false;
     }
   }
-  if (cache.has(url)) {
-    let oldEtagValue = cache.get(url).etagValue;
-    cache.delete(url)
+  if (unknownEtagCache.has(url)) {
+    let oldEtagValue = unknownEtagCache.get(url).etagValue;
+    unknownEtagCache.delete(url)
     if (etagValue === oldEtagValue) {
       // mark ETAG_SAFE
       setEtagAction(store, url, ETAG_SAFE, {etagValue});
@@ -43,7 +43,7 @@ function etagHeader({store, cache}, details, header) {
       return true;
     }
   } else {
-    cache.set(url, {etagValue});
+    unknownEtagCache.set(url, {etagValue});
     return true;
   }
 }
