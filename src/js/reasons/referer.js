@@ -21,30 +21,41 @@ function refererHeader({requestIdCache}, details, header) {
   return false;
 }
 
+function is4xx(statusCode) {
+  return (400 <= statusCode) && (statusCode < 500);
+}
+
 class Referer {
   constructor() {
     this.requestIdCache = new LruMap(1000);
-    this.badRedirects = new Set();
+    this.badRedirects = new LruMap(1000);
   }
 
-  removeRefererFailed({statusCode, requestId}) {
-    return ((400 <= statusCode) && (statusCode < 500)) && this.requestId.has(requestId) && !this.badRedirects.has(requestId);
+  removeRefererFailedOnce({statusCode, requestId}) {
+    return (is4xx(statusCode) && this.requestIdCache.has(requestId)) && !this.badRedirects.has(requestId);
   }
 
-  onBeforeSendHeaders(details, header) {
+  failedAlready({requestId}) {
+    return this.badRedirects.has(requestId);
+  }
+
+  shouldRemoveHeader(details, header) {
+    if (!this.requestIdCache.has(details.requestId)) {
+      this.requestIdCache.set(details.requestId, header.value);
+    }
+
     if (this.failedAlready(details)) {
       return false;
     }
+
     return true;
   }
 
   onHeadersReceived(details) {
     if (this.removeRefererFailedOnce(details)) {
-      this.badRedirects.add(details.requestId);
-      return {redirectUrl: details.url}
+      this.badRedirects.set(details.requestId);
+      return details.response = {redirectUrl: details.url};
     }
-  }
-  onBeforeRedirect(details) {
   }
 }
 
