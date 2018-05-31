@@ -109,7 +109,7 @@ class WebRequest {
       let headers = details[details.headerPropName],
         removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
-      if (!details.shortCircuit && removed.length) {
+      if (!details.shortCircuit && (removed.length || headers.mutated)) {
         details.response = {[details.headerPropName]: headers};
         this.markHeaders(removed, details);
       }
