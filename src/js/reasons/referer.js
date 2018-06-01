@@ -2,24 +2,7 @@
 
 [(function(exports) {
 
-const {LruMap} = require('../utils');
-
-function markHeadersMutated(details) {
-  details[details.headerPropName].mutated = true;
-}
-
-/* request thing:
- *
- *  remove referer, store requestId, & referer value
- *
- *  If this returns a 4xx, then redirect with the referer added back in.
- *  If this still fails, give up.
- */
-function refererHeader({requestIdCache}, details, header) {
-  header.value = details.url;
-  markHeadersMutated(details);
-  return false;
-}
+const {LruMap, log} = require('../utils');
 
 function is4xx(statusCode) {
   return (400 <= statusCode) && (statusCode < 500);
@@ -45,15 +28,16 @@ class Referer {
     }
 
     if (this.failedAlready(details)) {
+      log('failed referer already');
       return false;
     }
-
     return true;
   }
 
   onHeadersReceived(details) {
     if (this.removeRefererFailedOnce(details)) {
       this.badRedirects.set(details.requestId);
+      log(`failed referer removal, redirecting ${details.url}`);
       return details.response = {redirectUrl: details.url};
     }
   }
