@@ -4,18 +4,20 @@
 
 const {Action} = require('../schemes'),
   {URL} = require('../shim'),
-  {LruMap, hasAction} = require('../utils'),
+  {hasAction} = require('../utils'),
   {newEtagHeaderFunc} = require('./etag'),
+  {Referer} = require('./referer'),
   {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
 
 const alwaysTrue = () => true;
 
 class HeaderHandler {
   constructor(store) {
+    this.referer = new Referer();
     this.badHeaders = new Map([
       ['cookie', alwaysTrue],
       ['set-cookie', alwaysTrue],
-      ['referer', alwaysTrue],
+      ['referer', this.referer.shouldRemoveHeader.bind(this.referer)],
       ['etag', newEtagHeaderFunc(store)],
       ['if-none-match', alwaysTrue]
     ]);
