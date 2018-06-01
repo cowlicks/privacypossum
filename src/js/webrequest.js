@@ -104,11 +104,16 @@ class WebRequest {
     return details.response;
   }
 
+  checkOnHeadersReceived(details) {
+    return this.handler.headerHandler.referer.onHeadersReceived(details);
+  }
+
   headerHandler(details) {
     if (this.isThirdParty(details)) {
       let headers = details[details.headerPropName],
         removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
+      this.checkOnHeadersReceived(details);
       if (!details.shortCircuit && (removed.length || headers.mutated)) {
         details.response = {[details.headerPropName]: headers};
         this.markHeaders(removed, details);
