@@ -105,8 +105,12 @@ class WebRequest {
     return details.response;
   }
 
-  checkOnHeadersReceived(details) {
-    return this.handler.headerHandler.referer.onHeadersReceived(details);
+  requestOrResponseAction(details) {
+    if (!details.shortCircuit) {
+      if (details.requestType == ON_HEADERS_RECEIVED) {
+        return this.handler.headerHandler.referer.onHeadersReceived(details);
+      }
+    }
   }
 
   headerHandler(details) {
@@ -114,7 +118,7 @@ class WebRequest {
       let headers = details[details.headerPropName],
         removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
-      this.checkOnHeadersReceived(details);
+      this.requestOrResponseAction(details);
       if (!details.shortCircuit && (removed.length || headers.mutated)) {
         details.response = {[details.headerPropName]: headers};
         this.markHeaders(removed, details);
