@@ -38,6 +38,7 @@ class Referer {
     if (this.removeRefererFailedOnce(details)) {
       this.badRedirects.set(details.requestId);
       log(`failed referer removal, redirecting ${details.url}`);
+      details.shortCircuit = true;
       return details.response = {redirectUrl: details.url};
     }
   }
