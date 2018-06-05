@@ -55,6 +55,7 @@
       "js/reasons/reasons.js",
       "js/reasons/fingerprinting.js",
       "js/reasons/user_url_deactivate.js",
+      "js/reasons/referer.js",
       "js/reasons/headers.js",
       "js/reasons/etag.js",
       "js/reasons/utils.js",
