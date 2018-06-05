@@ -143,6 +143,8 @@ let multiDomainFirstPartiesArray = [
     "avatars2.githubusercontent.com",
     "avatars3.githubusercontent.com",
     "user-images.githubusercontent.com",
+    "camo.githubusercontent.com",
+    "raw.githubusercontent.com",
   ],
   ["gizmodo.com", "kinja-img.com", "kinja-static.com", "deadspin.com", "lifehacker.com",
     "technoratimedia.com", "kinja.com", "jalopnik.com", "jezebel.com"],
