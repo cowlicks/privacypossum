@@ -84,7 +84,7 @@ class Popup {
       tabId: this.tabId,
     },
     debugString => {
-      console.log(debugString);
+      console.log(debugString); // eslint-disable-line
     });
   }
 

@@ -6,7 +6,7 @@ const shim = require('../shim'),
     {HeaderHandler} = require('./headers'),
     {Reasons, reasonsArray} = require('./reasons');
 
-/* 
+/*
  * Handler superclass
  * holds functions and dispatches them
  *

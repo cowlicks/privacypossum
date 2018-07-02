@@ -3,8 +3,7 @@
 const {assert} = require('chai'),
   {Store} = require('../../store'),
   {newEtagHeaderFunc, setEtagAction} = require('../../reasons/etag'),
-  {LruMap} = require('../../utils'),
-  {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../../constants');
+  {etag: {ETAG_TRACKING}} = require('../../constants');
 
 describe('etag.js', function() {
   let etagValue ='hi', href = 'https://foo.com/stuff.js';
