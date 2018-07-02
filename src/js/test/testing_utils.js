@@ -1,6 +1,6 @@
 "use strict"
 
-const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery} = require('../shim'),
+const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = require('../shim'),
   {Popup} = require('../popup');
 
 const {annotateDetails} = require('../webrequest');
@@ -15,6 +15,7 @@ function clearState() {
   onMessage.clear();
   onConnect.clear();
   tabsQuery.clear();
+  getAllFrames.clear();
 }
 
 async function setDocument(path) {
