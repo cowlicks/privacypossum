@@ -29,9 +29,7 @@ We think tackling the problem from an economic angle is extremely important, and
 
 ## Why not Privacy Badger?
 
-[Privacy Badger](https://github.com/EFForg/privacybadger) is another privacy focused browser extension maintained by t to have our fully automated luxury space anarchism built on top of Amazon, but we can rebase to different suppliers in the future.
-￼
-he Electronic Frontier Foundation.
+[Privacy Badger](https://github.com/EFForg/privacybadger) is another privacy focused browser extension maintained by the Electronic Frontier Foundation.
 I worked for the EFF on the project full time for 6 months, and found that it's current privacy benefits to be limited.
 Adding new privacy protections was difficult, or impossible with the current architecture.
 And the project maintainers were not interested in fixing these issues.
