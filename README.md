@@ -69,6 +69,11 @@ We detect and block third party etags as follows:
 Chrome withholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests).
 So we can't prevent the browser from revealing some data via sending cache information, we are only able to intercept incomming etags from sources that are not already cached.
 
+## Referer headers
+
+Referer headers are not exactly used for tracking themselves. But they are used in conjunction with other methods to track you. So we block them, and use a simple algorithm to unblock them when this causes problems.
+* Block `referer` headers to 3rd party sources
+* If the source responds with bad status code, we retry with the header added back in
 
 ## 301 Moved Permanent Redirect Tracking
 
