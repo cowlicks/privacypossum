@@ -149,6 +149,7 @@ reasonsArray.push(require('./user_url_deactivate').urlDeactivateReason);
 reasonsArray.push(require('./headers').reason);
 reasonsArray.push(require('./headers').tabReason);
 reasonsArray.push(require('./etag').reason);
+reasonsArray.push(require('./interacted').reason);
 
 Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
 

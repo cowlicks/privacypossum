@@ -60,6 +60,7 @@
       "js/reasons/etag.js",
       "js/reasons/utils.js",
       "js/reasons/handlers.js",
+      "js/reasons/interacted.js",
       "js/tabs.js",
 
       "js/schemes.js",
