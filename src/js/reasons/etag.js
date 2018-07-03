@@ -2,7 +2,7 @@
 
 [(function(exports) {
 
-const {etag: {ETAG_TRACKING, ETAG_SAFE}} = require('../constants'),
+const {etag: {ETAG_TRACKING}} = require('../constants'),
   {log, LruMap} = require('../utils'),
   {sendUrlDeactivate} = require('./utils'),
   {Action} = require('../schemes');
@@ -34,7 +34,7 @@ function etagHeader({store, unknownEtags, safeEtags}, details, header) {
   } else if (unknownEtags.has(href)) { // 2nd time seeing this etag
     let oldEtagValue = unknownEtags.get(href).etagValue;
     unknownEtags.delete(href)
-    if (etagValue === oldEtagValue) { // mark ETAG_SAFE
+    if (etagValue === oldEtagValue) {
       safeEtags.set(href, {etagValue});
       return false;
     } else { // mark ETAG_TRACKING

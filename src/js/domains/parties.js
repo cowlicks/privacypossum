@@ -3,7 +3,6 @@
 [(function(exports) {
 
 const {memoize} = require('../utils'),
-  {URL} = require('../shim'),
   {getBaseDomain} = require('./basedomain'),
   {isMdfp} = require('./mdfp');
 
