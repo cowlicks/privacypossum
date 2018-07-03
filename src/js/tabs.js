@@ -151,14 +151,21 @@ class Tabs {
   }
 
   async getCurrentData() {
-    (await getAllTabIds()).forEach(async (tabId) => {
-      (await getAllFrames(tabId)).forEach(({frameId, parentFrameId, url}) => {
+    for (let tab of await asyncTabsQuery()) {
+      let tabId = tab.id;
+      if (!tab.discarded) {
+        for (let {frameId, parentFrameId, url} of await getAllFrames(tabId)) {
+          this.addResource({
+            tabId, frameId, parentFrameId, url,
+            type: (frameId === 0 ? 'main_frame' : 'sub_frame'),
+          });
+        }
+      } else {
         this.addResource({
-          tabId, frameId, parentFrameId, url,
-          type: (frameId === 0 ? 'main_frame' : 'sub_frame'),
+          tabId, frameId: 0, parentFrameId: -1, url: tab.url, type: 'main_frame'
         });
-      });
-    });
+      }
+    }
   }
 
   async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {
@@ -298,10 +305,8 @@ class Tabs {
   }
 };
 
-async function getAllTabIds() {
-  return new Promise(resolve => {
-    tabsQuery({}, tabs => resolve(tabs.map(t => t.id)));
-  });
+async function asyncTabsQuery(queryInfo = {}) {
+  return new Promise(resolve => tabsQuery(queryInfo, resolve));
 }
 
 async function getAllFrames(tabId) {

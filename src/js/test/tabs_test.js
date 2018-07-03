@@ -2,7 +2,7 @@
 
 let assert = require('chai').assert,
   {BLOCK, REMOVE_ACTION} = require('../constants'),
-  {onRemoved, getBadgeText, onNavigationCommitted, tabsExecuteScript} = require('../shim'),
+  {onRemoved, getBadgeText, onNavigationCommitted, getAllFrames, tabsQuery, tabsExecuteScript} = require('../shim'),
   {Action} = require('../schemes'),
   {cookie} = require('./testing_utils'),
   {Tab, Tabs} = require('../tabs');
@@ -18,6 +18,21 @@ describe('tabs.js', function() {
       this.tabs.addResource(main_frame);
       this.tabs.addResource(sub_frame);
       this.tab = this.tabs.getTab(main_frame.tabId);
+    });
+    describe('#getCurrentData', function() {
+      beforeEach(function() {
+      });
+      it('does not get frames from "discarded" tabs', async function() {
+        let discarded = true, id = 2, url = 'https://url.com/';
+        tabsQuery.tabs = [{id, discarded, url}];
+        getAllFrames.data = [
+          {frameId: 0, parentFrameId: -1, url},
+          {frameId: 1, parentFrameId: 0, url: url}
+        ];
+
+        await this.tabs.getCurrentData();
+        assert.isUndefined(this.tabs.getFrame(id, 1));
+      });
     });
 
     it('#getTabUrl', function() {
