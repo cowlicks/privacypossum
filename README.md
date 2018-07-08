@@ -122,7 +122,7 @@ Exported stuff is assigned to properties on `exports` just like in node.
 
 * edit the manifest.json version number to the form year.month.day with no leading zeros.
 * save and commit
-* run release.sh, this tags the repo with the manifest version and builds a zip file
+* run `make release`, this tags the repo with the manifest version and builds a zip file
 * test the zip file in a fresh instances of supported browsers.
     - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
     - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
