@@ -196,15 +196,19 @@ class Counter {
     let baseObj = arr.reduce((o, i) => o[i], this.globalObj);
     const before = baseObj[propName];
 
-    Object.defineProperty(baseObj, propName, {
-      get: function() {
-        let loc = self.addCall(dottedPropName, self.getScriptLocation());
-        if (loc.isFingerprinting) {
-          return lieFunc(before);
+    try {
+      Object.defineProperty(baseObj, propName, {
+        get: function() {
+          let loc = self.addCall(dottedPropName, self.getScriptLocation());
+          if (loc.isFingerprinting) {
+            return lieFunc(before);
+          }
+          return before;
         }
-        return before;
-      }
-    });
+      });
+    } catch (ignore) {
+      // property probably non-configurable from other userscript
+    }
   }
 
   addLocation() {
