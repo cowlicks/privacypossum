@@ -9,22 +9,139 @@
 
 [(function(exports) {
 
-let {connect, document, sendMessage, getURL} = require('./shim'),
+let {connect, document, sendMessage, getURL, React, ReactDOM} = require('./shim'),
   {PopupHandler} = require('./reasons/handlers'),
   {View, Counter} = require('./utils'),
   {Action} = require('./schemes'),
   {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
 
-function makeCheckbox(checked, handler) {
-  let checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.checked = checked;
-  checkbox.addEventListener('change', handler, false);
-  return checkbox;
-}
-
 const enabledText = `ENABLED`,
     disabledText = `DISABLED`;
+
+const e = React.createElement,
+  eFactory = (name) => (props, ...children) => e(name, props, ...children),
+  span = eFactory('span'),
+  div = eFactory('div'),
+  img = eFactory('img'),
+  code = eFactory('code'),
+  label = eFactory('label'),
+  ul = eFactory('ul'),
+  li = eFactory('li'),
+  input = eFactory('input'),
+  checkbox = (props, ...children) => input(Object.assign({type: 'checkbox'}, props, ...children));
+
+function actionIcon({iconPath, attribution}) {
+  const className = 'action-icon',
+    src = getURL(iconPath);
+  return img({className, src, attribution});
+}
+
+function actionHtml({action, handler, title, iconPath, attribution, url, key}) {
+  const {reason} = action,
+    checked = reason != USER_URL_DEACTIVATE,
+    onChange = handler;
+
+  return li({className: 'action', key},
+    label(
+      {title, ['data-reason']: reason},
+      checkbox({checked, onChange}),
+      actionIcon({action, iconPath, attribution}),
+      url
+    )
+  );
+}
+
+function allActions({actions}) {
+  let list = [];
+
+  Array.from(actions, ([url, actionInfo], index) => {
+    const props = {};
+    Object.assign(props, actionInfo, {url, key: index.toString()});
+    list.push(actionHtml(props));
+  });
+
+  return ul(null, list);
+}
+
+function headerHtml({name, count, key}) {
+  return li({key},
+    code(null, name),
+    ` headers blocked from ${count} sources`
+  );
+}
+
+function headerList({headerCounts}) {
+  let list = [];
+  Array.from(headerCounts, ([name, count], index) => {
+    list.push(headerHtml({name, count, key: index.toString()}));
+  });
+  return ul({id: 'headers-count-list'}, list);
+
+}
+
+function headersSection({headerCounts, onChange, active}) {
+  let children = [];
+  children.push(checkbox({id: 'header-checkbox', checked: active, onChange}));
+  if (active) {
+    children.push('Blocked tracking headers:');
+    children.push(headerList({headerCounts}));
+  } else {
+    children.push('Blocking tracking headers disabled');
+  }
+  return div(null, ...children);
+}
+
+function popupBody({active, urlActions, headerCounts, headerCountsActive, headerHandler}) {
+  let children = [];
+  if (!active) {
+    children.push('Disabled for this site');
+  } else if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
+    children.push('Nothing to do');
+  } else {
+    let headerProps = {
+      headerCounts,
+      active: headerCountsActive,
+      onChange: headerHandler,
+    };
+    children.push(div({id: 'headers'},
+      headersSection(headerProps)
+    ));
+    children.push(div({id: 'actions'},
+      allActions({actions: urlActions})
+    ));
+  }
+  return e(React.Fragment, null, ...children);
+}
+
+function popupHeader({onOff, active}) {
+  const onOffElement = e(onOffButton, {onClick: onOff, active});
+  return e(React.Fragment,
+    null,
+    e(branding),
+    onOffElement
+  );
+}
+
+function branding() {
+  return div(
+    {id: 'branding'},
+    img({id: 'logo', src: '/media/popup-icon.png', alt: "I'm a possum"}),
+    span({id: 'title'}, 'Privacy Possum')
+  );
+}
+
+function onOffButton({active, onClick}) {
+  const id = 'on-off',
+    title = `click to ${active ? 'disable' : 'enable'} for this site`;
+
+  return div(
+    {id, onClick, title},
+    span({id: 'on-off-text', className: 'grey'}, active ? enabledText : disabledText),
+    div({id: 'on-off-button'}, img({src: getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`)}))
+  );
+}
+
+/*** REACT STUFF ABOVE HERE **/
 
 class Popup {
   constructor(tabId) {
@@ -34,8 +151,21 @@ class Popup {
 
     this.getClickHandler = this.handler.getFunc.bind(this.handler);
 
-    $('on-off').onclick = this.onOff.bind(this);
     $('debug-link').onclick = this.debug.bind(this);
+
+    this.renderHeader(false);
+  }
+
+  renderHeader(active) {
+    let ph = popupHeader({onOff: this.onOff.bind(this), active});
+    return new Promise((resolve) => ReactDOM.render(ph, $('title-bar'), resolve));
+  }
+
+  renderBody() {
+    const {active, urlActions, headerCounts, headerCountsActive} = this,
+      headerHandler = this.headerHandler.bind(this),
+      pb = popupBody({active, urlActions, headerCounts, headerCountsActive, headerHandler});
+    return new Promise((resolve) => ReactDOM.render(pb, $('base'), resolve));
   }
 
   connect() {
@@ -58,11 +188,26 @@ class Popup {
     return this.view.ready;
   }
 
+  getActionInfo(action) {
+    let info = this.handler.getInfo(action.reason),
+      title = info.message,
+      iconPath = info.icon, {attribution} = info;
+
+    if (action.reason == USER_URL_DEACTIVATE) {
+      let {reason} = action.getData('deactivatedAction');
+      info = this.handler.getInfo(reason);
+      iconPath = info.icon, {attribution} = info;
+    }
+    return {iconPath, title, attribution};
+  }
+
   updateUrlActions(actions) {
     this.urlActions = new Map();
     actions.forEach(([url, action]) => {
       action = Action.coerce(action);
-      this.urlActions.set(url, {action, handler: this.getClickHandler(action.reason, [url, this.tabId])});
+      const handler = this.getClickHandler(action.reason, [url, this.tabId]),
+        {title, iconPath, attribution} = this.getActionInfo(action);
+      this.urlActions.set(url, {action, handler, title, iconPath, attribution});
     });
   }
 
@@ -89,54 +234,8 @@ class Popup {
   }
 
   show() {
-    this.showActive(this.active);
-    this.showActions();
-  }
-
-  // show the onOff button
-  showActive(active, doc = document) {
-    let onOff = $('on-off');
-
-    if (onOff.getAttribute('active') === `${active}`) {
-      return;
-    }
-
-    let button = $('on-off-button'),
-      text = $('on-off-text');
-
-    button.innerHTML = text.innerHTML = '';
-
-    onOff.setAttribute('active', `${active}`);
-    onOff.title = `click to ${active ? 'disable' : 'enable'} for this site`;
-
-
-    let img = doc.createElement('img');
-    img.src = getURL(`/media/logo-${active ? 'active' : 'inactive'}-100.png`);
-
-    button.appendChild(img);
-    text.appendChild(doc.createTextNode(active ? enabledText : disabledText));
-  }
-
-  showActions() {
-    let {active, urlActions, headerCounts, headerCountsActive} = this;
-    if (!active) {
-      show($('empty'));
-      hide($('base'));
-      html($('empty'), document.createTextNode(`Disabled for this site`));
-      return;
-    } else if (urlActions.size === 0 && headerCounts.size === 0 && headerCountsActive) {
-      show($('empty'));
-      hide($('base'));
-      html($('empty'), document.createTextNode(`Nothing to do`));
-      return;
-    } else {
-      show($('base'));
-      hide($('empty'));
-    }
-
-    this.allHeadersHtml(headerCounts, headerCountsActive);
-
-    this.allActionsHtml(urlActions);
+    this.renderHeader(this.active);
+    this.renderBody();
   }
 
   getHandlers(actionsUrls) {
@@ -146,102 +245,12 @@ class Popup {
     });
     return out;
   }
-
-  icon(action, doc = document) {
-    let reason = (action.reason != USER_URL_DEACTIVATE) ?
-      action.reason :
-      action.getData('deactivatedAction').reason;
-
-    let {icon, attribution} = this.handler.getInfo(reason);
-
-    let img = doc.createElement('img');
-    img.src = getURL(icon);
-    img.className = 'action-icon';
-    img.setAttribute('attribution', attribution);
-    return img;
-  }
-
-  allHeadersHtml(headerCounts, active = true) {
-    let div = document.createElement('div'),
-      checkbox = makeCheckbox(active, this.headerHandler.bind(this));
-
-    checkbox.id = 'header-checkbox';
-
-    div.appendChild(checkbox);
-
-    if (active) {
-      div.appendChild(document.createTextNode('Blocked tracking headers:'));
-      if (headerCounts.size !== 0) {
-        let ul = document.createElement('ul');
-        ul.id = 'headers-count-list';
-        headerCounts.forEach((count, name) => {
-          ul.appendChild(this.headerHtml(name, count));
-        });
-        div.appendChild(ul);
-      }
-    } else {
-      div.appendChild(document.createTextNode('Blocking tracking headers disabled'));
-    }
-    html($('headers'), div);
-  }
-
-  allActionsHtml(actions) {
-    let parent = $('actions'),
-      ul = document.createElement('ul');
-
-    actions.forEach(({action, handler}, url) => {
-      ul.appendChild(this.actionHtml(action, handler, url));
-    });
-
-    html(parent, ul);
-  }
-
-  headerHtml(name, count) {
-    let li = document.createElement('li'),
-      code = document.createElement('code'),
-      header = document.createTextNode(name),
-      msg = document.createTextNode(` headers blocked from ${count} sources`);
-
-    code.appendChild(header);
-    li.appendChild(code);
-    li.appendChild(msg);
-    return li;
-  }
-
-  actionHtml(action, handler, url) {
-    let li = document.createElement('li'),
-      label = document.createElement('label'),
-      checked = action.reason != USER_URL_DEACTIVATE,
-      checkbox = makeCheckbox(checked, handler);
-
-    label.title = this.handler.getInfo(action.reason).message;
-    label.dataset.reason = action.reason;
-    label.appendChild(checkbox);
-    label.appendChild(this.icon(action));
-    label.appendChild(document.createTextNode(`${url}`));
-
-    li.className = 'action',
-      li.appendChild(label);
-    return li;
-  }
 }
 
 
 function $(id) {
   return document.getElementById(id);
 }
-function show(element) {
-  element.className = 'show';
-}
-function hide(element) {
-  element.className = 'hide';
-}
-// clear an elements children and replace with `child`
-function html(element, child) {
-  element.innerHTML = '';
-  element.appendChild(child);
-}
-
 
 Object.assign(exports, {Popup, $});
 
