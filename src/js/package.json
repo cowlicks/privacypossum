@@ -5,6 +5,8 @@
   "main": "utils.js",
   "dependencies": {},
   "devDependencies": {
+    "react": "file:./external/react",
+    "react-dom": "file:./external/react-dom",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
