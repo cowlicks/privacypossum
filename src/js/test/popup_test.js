@@ -18,21 +18,24 @@ describe('popup.js', function() {
     beforeEach(function() {
       this.tabId = 1;
       this.popup = new Popup(this.tabId);
+      this.bodyProps = {active: true, urlActions: new Map(), headerCountsActive: true, headerCounts: new Map()};
+      Object.assign(this.popup, this.bodyProps);
     });
-    it('inactive', function() {
-      this.popup.allHeadersHtml(new Map(), false);
+    it('inactive', async function() {
+      this.popup.headerCountsActive = false;
+      await this.popup.renderBody();
       assert.isFalse($('header-checkbox').checked);
     });
     it('headerHandler', async function() {
-      this.popup.allHeadersHtml(new Map(), true);
+      this.popup.headerCounts = new Map([[1, 2]]);
+      await this.popup.renderBody();
       await this.popup.headerHandler();
       assert.isTrue(onMessage.messages.pop().pop().checked);
     });
-    it('headers active', function() {
-      let name = 'headerName',
-        count = 42,
-        headerCounts = new Map([[name, count]]);
-      this.popup.allHeadersHtml(headerCounts, true);
+    it('headers active', async function() {
+      let name = 'headerName', count = 42;
+      this.popup.headerCounts = new Map([[name, count]]);
+      await this.popup.renderBody();
       assert.isTrue($('header-checkbox').checked);
       assert.include($('headers-count-list').innerHTML, name);
       assert.include($('headers-count-list').innerHTML, count);
@@ -60,11 +63,11 @@ describe('popup.js', function() {
 
     describe('action click handlers', function() {
       it('active is set', async function() {
-        assert.deepEqual([this.popup.active, $('on-off').getAttribute('active')], [true, 'true']);
+        assert.isTrue(this.popup.active);
 
         this.popup.view.onChange({active: false});
 
-        assert.deepEqual([this.popup.active, $('on-off').getAttribute('active')], [false, 'false']);
+        assert.isFalse(this.popup.active, false);
       });
       it('sets click handlers', async function() {
         let popup = this.popup;
