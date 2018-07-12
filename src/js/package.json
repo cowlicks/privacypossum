@@ -5,6 +5,8 @@
   "main": "utils.js",
   "dependencies": {},
   "devDependencies": {
+    "react": "file:./external/react",
+    "react-dom": "file:./external/react-dom",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
@@ -14,7 +16,7 @@
   },
   "scripts": {
     "test": "mocha --recursive",
-    "lint": "git ls-files | grep \".js$\" | xargs eslint",
+    "lint": "git ls-files | grep \".js$\" | grep -v \"external\" | xargs eslint",
     "loc": "git ls-files | grep -v 'psl.js' | xargs cat | wc -l",
     "cover": "nyc --reporter=html --reporter=text mocha",
     "report": "nyc report --reporter=text-lcov | coveralls"
