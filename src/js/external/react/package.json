@@ -2,7 +2,7 @@
   "name": "react",
   "version": "1.0.0",
   "description": "",
-  "main": "react.development.js",
+  "main": "react.production.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

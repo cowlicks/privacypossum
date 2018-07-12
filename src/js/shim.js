@@ -155,8 +155,8 @@ let shims = [
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
-  ['React', 'React', passThru, () => require('./external/react/react.development.js')],
-  ['ReactDOM', 'ReactDOM', passThru, () => require('./external/react-dom/react-dom.development.js')],
+  ['React', 'React', passThru, () => require('./external/react/react.production.min.js')],
+  ['ReactDOM', 'ReactDOM', passThru, () => require('./external/react-dom/react-dom.production.min.js')],
 ];
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
