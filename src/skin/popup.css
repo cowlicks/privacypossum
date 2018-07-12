@@ -15,12 +15,6 @@ footer {
   border-top: 1px solid rgb(238, 238, 238);
   padding-top: 5px;
 }
-.hide {
-  display: none;
-}
-
-.show {
-}
 
 .grey {
   color: rgb(76, 76, 76);
