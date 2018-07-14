@@ -1,6 +1,7 @@
 "use strict";
 
-const INTERACTION = 'interaction';
+const INTERACTION = 'interaction',
+  clicked = new Set();
 
 function urlToHostname(url) {
   return (new URL(url)).hostname;
@@ -8,9 +9,13 @@ function urlToHostname(url) {
 
 document.addEventListener('mousedown', function(e) {
   if (e.isTrusted) {
-    chrome.runtime.sendMessage({
-      type: INTERACTION,
-      hostname: urlToHostname(e.target.baseURI)
-    });
+    const hostname = urlToHostname(e.target.baseURI);
+    if (!clicked.has(hostname)) {
+      clicked.add(hostname);
+      chrome.runtime.sendMessage({
+        type: INTERACTION,
+        hostname
+      });
+    }
   }
 });
