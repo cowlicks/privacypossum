@@ -194,8 +194,7 @@ class Counter {
       propName = arr.pop();
 
     let baseObj = arr.reduce((o, i) => o[i], this.globalObj);
-    const before = baseObj[propName];
-
+    let before = baseObj[propName];
     try {
       Object.defineProperty(baseObj, propName, {
         get: function() {
@@ -204,7 +203,11 @@ class Counter {
             return lieFunc(before);
           }
           return before;
-        }
+        },
+        set: function(value) {
+          return before = value;
+        },
+        configurable: true,
       });
     } catch (ignore) {
       // property probably non-configurable from other userscript
