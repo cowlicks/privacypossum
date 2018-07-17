@@ -5,7 +5,7 @@
 let {getURL, React} = require('./shim'),
     {USER_URL_DEACTIVATE} = require('./constants');
 
-const text = {enabled: 'ENABLED', disabled: 'disabled'};
+const text = {enabled: 'ENABLED', disabled: 'DISABLED'};
 
 const merge = (...objs) => Object.assign({}, ...objs);
 
