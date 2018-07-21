@@ -13,9 +13,7 @@
     "mocha": "^4.1.0",
     "nyc": "^11.7.3",
     "react": "file:./external/react",
-    "react-dom": "file:./external/react-dom",
-    "selenium-webdriver": "^4.0.0-alpha.1",
-    "vhost": "^3.0.2"
+    "react-dom": "file:./external/react-dom"
   },
   "scripts": {
     "test": "mocha --recursive",
