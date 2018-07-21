@@ -5,14 +5,15 @@
   "main": "utils.js",
   "dependencies": {},
   "devDependencies": {
-    "react": "file:./external/react",
-    "react-dom": "file:./external/react-dom",
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
     "jsdom": "^11.10.0",
     "mocha": "^4.1.0",
-    "nyc": "^11.7.3"
+    "nyc": "^11.7.3",
+    "react": "file:./external/react",
+    "react-dom": "file:./external/react-dom",
+    "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
     "test": "mocha --recursive",
