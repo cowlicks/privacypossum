@@ -272,4 +272,4 @@ function makeFingerCounting(event_id = 0, init = true) {
 
 Object.assign(exports, {makeFingerCounting});
 
-})].map(func => typeof exports == 'undefined' ? define('/web_accessible/fingercounting', func) : func(exports));
+})].map(func => typeof exports == 'undefined' ? define('/contentscripts/fingercounting', func) : func(exports));
