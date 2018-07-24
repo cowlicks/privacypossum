@@ -248,8 +248,7 @@ class Counter {
   }
 };
 
-// switch on browser vs. node context
-if (typeof exports === 'undefined') {
+function initialize() {
   // get this asap before the script tag is removed
   event_id = document.currentScript.getAttribute('data');
 
@@ -264,6 +263,12 @@ if (typeof exports === 'undefined') {
   };
 
   const counter = new Counter(config); // eslint-disable-line
+}
+
+
+// switch on browser vs. node context
+if (typeof exports === 'undefined') {
+  initialize();
 } else {
   Object.assign(exports, {Counter, getUrlFromStackLine});
 }
