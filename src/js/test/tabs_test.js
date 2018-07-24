@@ -56,7 +56,7 @@ describe('tabs.js', function() {
 
       it('injects when onNavigationComitted fires', async function() {
         await onNavigationCommitted.sendMessage({tabId, frameId, url});
-        assert.equal(tabsExecuteScript.onMessage.messages.length, 1);
+        assert.isTrue(tabsExecuteScript.onMessage.messages.length > 0);
       });
       it('does not inject when tab is deactivated', async function() {
         this.tab.setActiveState(false)
