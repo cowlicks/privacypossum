@@ -104,7 +104,7 @@ We use a lightweight implementation of nodes `require` function to implement mod
 
 For this to work, we wrap each module in code like this (from `src/js/reasons/utils.js`):
 
-```
+```js
 "use strict";
 
 [(function(exports) {
