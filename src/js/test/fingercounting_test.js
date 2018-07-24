@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {makeFingerCounting} = require('../web_accessible/fingercounting'),
+  {makeFingerCounting} = require('../contentscripts/fingercounting'),
   {Counter, getUrlFromStackLine} = makeFingerCounting(0, false),
   {makeTrap} = require('../utils'),
   {Mock} = require('./testing_utils');

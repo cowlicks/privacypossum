@@ -56,9 +56,9 @@ const FINGERPRINTING = 'fingerprinting',
   HEADER_DEACTIVATE_ON_HOST = 'header_deactivate_on_host';
 
 const CONTENTSCRIPTS = new Set([
-  '/js/bootstrap.js'
-  '/js/web_accessible/fingercounting.js',
-  '/js/contentscripts/injector.js',
+  '/js/bootstrap.js',
+  '/js/contentscripts/fingercounting.js',
+  '/js/initialize_contentscripts.js',
 ]);
 
 const etag = {
