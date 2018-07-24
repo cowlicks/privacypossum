@@ -1,5 +1,6 @@
 "use strict";
 
+let {makeFingerCounting} = require('./web_accessible/fingercounting');
 let event_id = Math.random();
 
 // listen for messages from the script we are about to insert
@@ -18,15 +19,15 @@ let ready = new Promise(resolve => {
   });
 
   // insert script now that ready listener is listening.
-  let s = document.createElement('script');
-  s.setAttribute('data', event_id);
-  s.src = chrome.extension.getURL('js/web_accessible/fingercounting.js');
+  let s = document.createElement('script'),
+    b = new Blob([`(${makeFingerCounting.toString()})(${event_id})`], {type: 'text/javascript'}),
+    u = URL.createObjectURL(b);
+  s.src = u;
   s.onload = function() {
     this.remove();
   };
   (document.head || document.documentElement).appendChild(s);
 });
-
 
 chrome.runtime.onMessage.addListener(message => {
   if (message.type === 'firstparty-fingerprinting') {
