@@ -67,7 +67,7 @@ We detect and block third party etags as follows:
      - If they are different, do not allow etags for this url now or in the future.
 
 Chrome withholds the `if-none-match` headers from `onBeforeSendHeaders` (https://developer.chrome.com/extensions/webRequest#Life_cycle_of_requests).
-So we can't prevent the browser from revealing some data via sending cache information, we are only able to intercept incomming etags from sources that are not already cached.
+So we can't prevent the browser from revealing some data via sending cache information, we are only able to intercept incoming etags from sources that are not already cached.
 
 ## Referer headers
 
