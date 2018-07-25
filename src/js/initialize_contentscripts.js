@@ -25,6 +25,7 @@ let ready = new Promise(resolve => {
   scriptTag.src = url;
   scriptTag.onload = function() {
     this.remove();
+    URL.revokeObjectURL(url);
   };
   (document.head || document.documentElement).appendChild(s);
 });
