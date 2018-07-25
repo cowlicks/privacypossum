@@ -19,11 +19,11 @@ let ready = new Promise(resolve => {
   });
 
   // insert script now that ready listener is listening.
-  let s = document.createElement('script'),
-    b = new Blob([`(${makeFingerCounting.toString()})(${event_id})`], {type: 'text/javascript'}),
-    u = URL.createObjectURL(b);
-  s.src = u;
-  s.onload = function() {
+  const scriptTag = document.createElement('script'),
+    blob = new Blob([`(${makeFingerCounting.toString()})(${event_id})`], {type: 'text/javascript'}),
+    url = URL.createObjectURL(blob);
+  scriptTag.src = url;
+  scriptTag.onload = function() {
     this.remove();
   };
   (document.head || document.documentElement).appendChild(s);
