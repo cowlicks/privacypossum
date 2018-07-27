@@ -247,11 +247,8 @@ function makeFingerCounting(event_id = 0, init = true) {
     }
   };
 
+  // initialize for browser
   function initialize() {
-    // get this asap before the script tag is removed
-    event_id = document.currentScript.getAttribute('data');
-
-    /* start 'em up */
     const config = {
       globalObj: window,
       methods,
