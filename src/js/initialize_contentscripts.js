@@ -1,6 +1,6 @@
 "use strict";
 
-let {makeFingerCounting} = require('./contentscript/fingercounting');
+let {makeFingerCounting} = require('./contentscripts/fingercounting');
 let event_id = Math.random();
 
 // listen for messages from the script we are about to insert
@@ -27,7 +27,7 @@ let ready = new Promise(resolve => {
     this.remove();
     URL.revokeObjectURL(url);
   };
-  (document.head || document.documentElement).appendChild(s);
+  (document.head || document.documentElement).appendChild(scriptTag);
 });
 
 chrome.runtime.onMessage.addListener(message => {
