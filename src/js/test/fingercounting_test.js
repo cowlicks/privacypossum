@@ -87,31 +87,34 @@ describe('fingercounting.js', function() {
       delete global['testProp'];
     });
     it('#constructor', function() {
-      const {counter} = this;
+      const {counter} = this,
+        {testProp} = global;
 
       assert.deepEqual(counter.send.calledWith, [{type: 'ready'}]);
       assert.isTrue(counter.listen.called);
 
-      testProp.stuff; // eslint-disable-line
+      testProp.stuff;
       assert.isFalse(counter.locations[scriptLocation].isFingerprinting);
 
-      testProp.bar; // eslint-disable-line
+      testProp.bar;
       assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
 
       assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: scriptLocation}]);
       assert.equal(counter.getScriptLocation.ncalls, 2);
-      assert.equal(testProp.stuff, 'lie func called'); // eslint-disable-line
+      assert.equal(testProp.stuff, 'lie func called');
     });
     it('watches funcs', function() {
-      const {counter} = this;
+      const {counter} = this,
+        {testProp} = global;
 
-      testProp.stuff; // eslint-disable-line
+      testProp.stuff;
       assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 1);
-      testProp.stuff; // eslint-disable-line
+      testProp.stuff;
       assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 2);
     });
     it('you can overwrite stuff and it is still watched', function() {
-      const {counter} = this;
+      const {counter} = this,
+        {testProp} = global;
 
       testProp['stuff'] = 'hi!';
       assert.equal(testProp.stuff, 'hi!');
