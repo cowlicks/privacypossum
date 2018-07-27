@@ -30,8 +30,17 @@ let ready = new Promise(resolve => {
   (document.head || document.documentElement).appendChild(scriptTag);
 });
 
+const clean = message => {
+  try {
+    return cloneInto(message, document.defaultView); // eslint-disable-line
+  } catch (unused) {
+    return message;
+  }
+}
+
 chrome.runtime.onMessage.addListener(message => {
   if (message.type === 'firstparty-fingerprinting') {
+    message = clean(message);
     ready.then(() => {
       document.dispatchEvent(new CustomEvent(event_id, {detail: message}));
     });
