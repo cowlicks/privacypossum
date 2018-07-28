@@ -7,11 +7,9 @@
 [(function(exports) {
 
 const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
-  {REMOVE_ACTION, FINGERPRINTING_PATH} = require('./constants'),
+  {REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
-
-const contentScripts = new Set([FINGERPRINTING_PATH]);
 
 class Resource {
   constructor({url, method, type}) {
@@ -210,7 +208,7 @@ class Tabs {
   async onNavigationCommitted({tabId, frameId, url}) {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
-      for (let file of contentScripts) {
+      for (let file of CONTENTSCRIPTS) {
         await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', matchAboutBlank: true, file}, () => {
           if (errorOccurred()) {
             log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}`);
