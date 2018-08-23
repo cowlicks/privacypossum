@@ -64,23 +64,9 @@ class Tab extends listenerMixin(Map) {
     this.actions = new Map();
     this.headerCounts = new Counter();
     this.headerCountsActive = true;
-    this.interactionWhiteList = new Set();
 
     this.onChange = this.onEvent;
     this.updateBadge();
-  }
-
-  updateInteractionWhitelist(hostname) {
-    log(`update interaction whitelist with ${hostname}`);
-    this.interactionWhiteList.add(hostname);
-  }
-
-  isThirdParty(hostname) {
-    if (!this.interactionWhiteList.has(hostname)) {
-      let tabhost = this.get(0).urlObj.hostname
-      return isThirdParty(tabhost, hostname);
-    }
-    return false;
   }
 
   // merge from anotherTab, don't overite own values
@@ -178,10 +164,6 @@ class Tabs {
         });
       }
     }
-  }
-
-  updateInteractionWhitelist(tabId, hostname) {
-    this.getTab(tabId).updateInteractionWhitelist(hostname);
   }
 
   async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {

@@ -61,11 +61,6 @@ describe('tabs.js', function() {
       it('true when 3rd party', function () {
         assert.isTrue(this.tabs.isThirdParty(tabId, 'thirdparty.com'));
       });
-      it('counts interacted with stuff as 1st party', function () {
-        let hostname = 'interacted.com';
-        this.tabs.updateInteractionWhitelist(tabId, hostname);
-        assert.isFalse(this.tabs.isThirdParty(tabId, hostname));
-      });
     }),
 
     it('#getTabUrl', function() {
