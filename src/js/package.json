@@ -8,12 +8,14 @@
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
     "eslint": "^4.19.1",
+    "express": "^4.16.3",
     "jsdom": "^11.10.0",
     "mocha": "^4.1.0",
     "nyc": "^11.7.3",
     "react": "file:./external/react",
     "react-dom": "file:./external/react-dom",
-    "selenium-webdriver": "^4.0.0-alpha.1"
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "vhost": "^3.0.2"
   },
   "scripts": {
     "test": "mocha --recursive",
