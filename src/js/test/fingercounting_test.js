@@ -7,6 +7,25 @@ const assert = require('chai').assert,
   {Mock} = require('./testing_utils');
 
 describe('fingercounting.js', function() {
+  /*
+   * Interactions:
+   * some props have data descriptors, some have accessor descriptors.
+   * some props are on the prototype, some are on the intance/this.
+   *
+   * So this gives 4 cases:
+   * prop on prototype with data desc
+   * prop on instance/this with data desc
+   * prop on prototype with accessor desc
+   * prop on instance/this with accessor desc
+   *
+   * each of these should have their get/set tested (2 * 4 = 8 cases). Each of these should
+   * have behavior described explicitly
+   *
+   * There is also the case where a prop does not exist, but we want to record if access to it is attempted
+   * like `cpuClass`
+   *
+   * I need to be able to extract the wrapMethod from the code before I can test it well.
+   */
   describe('getUrlFromStackLine', function() {
     let data = [
       // test with both http & https urls
