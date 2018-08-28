@@ -188,25 +188,44 @@ function makeFingerCounting(event_id = 0, init = true) {
 
     // wrap a dotted method name with a counter
     wrapMethod(dottedPropName, lieFunc) {
+      function getDescriptor(obj, prop) {
+        while (obj && !obj.hasOwnProperty(prop)) {
+          obj = Object.getPrototypeOf(obj);
+        }
+        return obj ? Object.getOwnPropertyDescriptor(obj, prop) :
+          {value: undefined, writable: false, configurable: false, enumerable: false};
+      }
+
+
       const self = this,
         arr = dottedPropName.split('.'),
         propName = arr.pop();
 
       let baseObj = arr.reduce((o, i) => o[i], this.globalObj);
-      let before = baseObj[propName];
+
+      let descriptor = getDescriptor(baseObj, propName),
+        {configurable, enumerable} = descriptor,
+        isAccessor = descriptor.hasOwnProperty('get'),
+        prop = isAccessor ? descriptor.get : descriptor.value;
+
       try {
         Object.defineProperty(baseObj, propName, {
           get: function() {
             let loc = self.addCall(dottedPropName, self.getScriptLocation());
             if (loc.isFingerprinting) {
-              return lieFunc(before);
+              return lieFunc(prop);
             }
-            return before;
+            if (this !== baseObj && this.hasOwnProperty(propName)) {
+              return this[propName];
+            }
+            return isAccessor ? prop.call(baseObj) : prop;
           },
-          set: function(value) {
-            return before = value;
+          set: function(newVal) {
+            Object.defineProperty(this, propName, descriptor);
+            return this[propName] = newVal;
           },
-          configurable: true,
+          configurable,
+          enumerable,
         });
       } catch (ignore) {
         // property probably non-configurable from other userscript
