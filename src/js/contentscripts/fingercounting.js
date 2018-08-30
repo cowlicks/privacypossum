@@ -196,7 +196,6 @@ function makeFingerCounting(event_id = 0, init = true) {
           {value: undefined, writable: false, configurable: false, enumerable: false};
       }
 
-
       const self = this,
         arr = dottedPropName.split('.'),
         propName = arr.pop();
@@ -207,7 +206,6 @@ function makeFingerCounting(event_id = 0, init = true) {
         {configurable, enumerable} = descriptor,
         isAccessor = descriptor.hasOwnProperty('get'),
         prop = isAccessor ? descriptor.get : descriptor.value;
-
       try {
         Object.defineProperty(baseObj, propName, {
           get: function() {
@@ -218,11 +216,26 @@ function makeFingerCounting(event_id = 0, init = true) {
             if (this !== baseObj && this.hasOwnProperty(propName)) {
               return this[propName];
             }
-            return isAccessor ? prop.call(baseObj) : prop;
+            return isAccessor ? prop.call(this) : prop;
           },
-          set: function(newVal) {
-            Object.defineProperty(this, propName, descriptor);
-            return this[propName] = newVal;
+          set: function(value) {
+            // settable
+            if (isAccessor) {
+              return descriptor.set ? descriptor.set.call(this, value) : value;
+            }
+            // not settable and not writeable
+            if (!descriptor.writable) {
+              // should throw TypeError if !== prop or this[propName] and in strict mode;
+              return value;
+            }
+            // writable value
+            if (baseObj === this) { // we wrapped the instance
+              return prop = value;
+            } else {
+               // wrapped something up the prototype chain
+              Object.defineProperty(this, propName, {value, configurable, enumerable, writable: descriptor.writable});
+              return value;
+            }
           },
           configurable,
           enumerable,
@@ -265,7 +278,6 @@ function makeFingerCounting(event_id = 0, init = true) {
       return loc;
     }
   };
-
   // initialize for browser
   function initialize() {
     const config = {
