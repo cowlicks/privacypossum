@@ -8,7 +8,11 @@
  */
 
 const {clearState} = require('./testing_utils'),
-  {logger} = require('../utils');
+  {logger} = require('../utils'),
+  {colors} = require('mocha/lib/reporters/base');
+
+colors['pass'] = '32';
+colors['error stack'] = '31';
 
 
 beforeEach(function() {
