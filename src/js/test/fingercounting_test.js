@@ -7,25 +7,6 @@ const assert = require('chai').assert,
   {Mock} = require('./testing_utils');
 
 describe('fingercounting.js', function() {
-  /*
-   * Interactions:
-   * some props have data descriptors, some have accessor descriptors.
-   * some props are on the prototype, some are on the intance/this.
-   *
-   * So this gives 4 cases:
-   * prop on prototype with data desc
-   * prop on instance/this with data desc
-   * prop on prototype with accessor desc
-   * prop on instance/this with accessor desc
-   *
-   * each of these should have their get/set tested (2 * 4 = 8 cases). Each of these should
-   * have behavior described explicitly
-   *
-   * There is also the case where a prop does not exist, but we want to record if access to it is attempted
-   * like `cpuClass`
-   *
-   * I need to be able to extract the wrapMethod from the code before I can test it well.
-   */
   describe('getUrlFromStackLine', function() {
     let data = [
       // test with both http & https urls
@@ -84,62 +65,173 @@ describe('fingercounting.js', function() {
   });
 
   describe('Counter', function() {
-    let scriptLocation = 'some_location.js';
+    const init = 'startsWith', changed = 'more data', location = 'some_location.js',
+      getCounts = (counter, prop) => counter.locations[location].counts[prop],
+      getName = (obj, name) => name.split('.').reduce((o, i) => o[i], obj),
+      setName = (obj, name, value) => {
+        let arr = name.split('.'),
+          last = arr.pop();
+        return getName(obj, arr.join('.'))[last] = value;
+      }
+
     beforeEach(function() {
-      Object.assign(global, {testProp: {stuff: [1, 2, 3]}});
       this.config = {
-          document: makeTrap(),
-          globalObj: global,
+        document: makeTrap(),
+        getScriptLocation: new Mock(location),
+        send: new Mock(),
+        listen: new Mock(),
+        threshold: null, // set me
+        globalObj: null, // set me
+        methods: [], // fill me
+      };
+    });
+    afterEach(function() {
+      delete this['testProp'];
+    });
+    describe('wrapCall', function() {
+      beforeEach(function() {
+        this.Foo = class {
+          get noSetter(){
+            return init;
+          }
+          get accessor() {
+              if (!this.value) {
+                this.value = init;
+              }
+              return this.value;
+            }
+          set accessor(x) {
+            return this.value = x;
+          }
+          data() {return init}
+        }
+        let {get, set} = Object.getOwnPropertyDescriptor(this.Foo.prototype, 'accessor')
+        this.testProp = {foo: new this.Foo(), otherFoo: new this.Foo(), data: init};
+        Object.defineProperties(this.testProp, {
+          accessor: {get, set, configurable: true},
+          noSetter: {get, set, configurable: true},
+        });
+        Object.assign(this.config, {threshold: 2, globalObj: this});
+      });
+
+      // test helpers
+      let setUp = (obj, name) => {
+        obj.config.methods.push([name, () =>{}]);
+        return [name, new Counter(obj.config)];
+      };
+      let assertGetsButNoSet = (obj, counter, name) => {
+        assert.equal(getName(obj, name), init);
+        assert.equal(getCounts(counter, name), 1);
+        setName(obj, name, false);
+        assert.equal(getName(obj, name), init);
+        assert.equal(getCounts(counter, name), 2);
+      };
+      let assertGetsAndSets = (obj, counter, name) => {
+        assert.equal(getName(obj, name), init);
+        assert.equal(getCounts(counter, name), 1);
+        assert.equal(setName(obj, name, changed), changed);
+        assert.equal(getName(obj, name), changed);
+        assert.equal(getCounts(counter, name), 2);
+      }
+
+      it('prop on proto, accessor, no setter', function() {
+        let [name, counter] = setUp(this, 'testProp.foo.noSetter');
+
+        assertGetsButNoSet(this, counter, name);
+
+        let foo2 = new this.Foo();
+        assert.equal(foo2.noSetter, init, 'other instances unchanged');
+        assert.equal(getCounts(counter, 'testProp.foo.noSetter'), 2);
+      });
+      it('prop on this, accessor, no setter', function() {
+        let [name, counter] = setUp(this, 'testProp.noSetter');
+
+        assertGetsButNoSet(this, counter, name);
+      })
+
+      it('prop on proto, accessor, with setter', function() {
+        let [name, counter] = setUp(this, 'testProp.foo.accessor');
+
+        assertGetsAndSets(this, counter, name);
+
+        let otherFoo = new this.Foo();
+        assert.equal(otherFoo.accessor, init, 'other instances unchanged');
+      });
+      it('prop on this, accessor, with setter', function() {
+        let [name, counter] = setUp(this, 'Foo.prototype.accessor');
+
+        assertGetsAndSets(this, counter, name);
+      });
+
+      it('wrap proto prop with accessor no setter', function() {
+        let [wrappedName, counter] = setUp(this, 'Foo.prototype.noSetter'),
+          name1 = 'testProp.foo.noSetter', name2 = 'testProp.otherFoo.noSetter';
+
+        assert.equal(getName(this, name1), init);
+        assert.equal(getName(this, name2), init);
+        assert.equal(getCounts(counter, wrappedName), 2);
+        assert.equal(setName(this, name1, changed), changed);
+        assert.equal(getName(this, name1), init);
+      });
+      it('wrap proto prop with accessor with setter', function() {
+        let [wrappedName, counter] = setUp(this, 'Foo.prototype.accessor'),
+          name1 = 'testProp.foo.accessor', name2 = 'testProp.otherFoo.accessor';
+
+        assert.equal(getName(this, name1), init);
+        assert.equal(getName(this, name2), init);
+        assert.equal(getCounts(counter, wrappedName), 2);
+        assert.isFalse(this.testProp.foo.hasOwnProperty('accessor'), 'accessor is on proto');
+        assert.equal(setName(this, name1, changed), changed);
+        assert.equal(getName(this, name1), changed);
+        assert.equal(getName(this, name2), init, 'other instances do not');
+      });
+      it('wrap data prop on proto', function() {
+        let [wrappedName, counter] = setUp(this, 'Foo.prototype.data'),
+          name1 = 'testProp.foo.data', name2 = 'testProp.otherFoo.data';
+
+        let expected = getName(this, wrappedName);
+        assert.equal(getName(this, name1), expected);
+        assert.equal(getName(this, name2), expected);
+        assert.equal(getCounts(counter, wrappedName), 3);
+        assert.isFalse(this.testProp.foo.hasOwnProperty('data'), 'data is on proto');
+
+        assert.equal(setName(this, name1, changed), changed);
+        assert.equal(getName(this, name1), changed, 'assigned instance changes');
+        assert.equal(getName(this, name2), expected, 'other instances do not');
+
+        let expected2 = 42;
+        assert.equal(setName(this, wrappedName, expected2), expected2); // change on the proto
+        assert.equal(getName(this, name2), expected2, 'changing the prototype changes the instances');
+        assert.equal(getName(this, name1), changed, 'but not not overwritten instances');
+      });
+      it('wrap data prop on this', function() {
+        let [name, counter] = setUp(this, 'testProp.data');
+        assertGetsAndSets(this, counter, name);
+      });
+    });
+    it('#constructor', function() {
+      this.testProp = {init};
+      Object.assign(this.config, {globalObj: this, threshold: 0.5,
           methods: [
-            ['testProp.stuff', () => 'lie func called'],
+            ['testProp.init', () => changed],
             ['testProp.bar', () => 44],
             ['testProp.whatever', () => 'yep'],
           ],
-          getScriptLocation: new Mock(scriptLocation),
-          threshold: 0.5,
-          send: new Mock(),
-          listen: new Mock(),
-        };
-      this.counter = new Counter(this.config);
-    });
-    afterEach(function() {
-      delete global['testProp'];
-    });
-    it('#constructor', function() {
-      const {counter} = this,
-        {testProp} = global;
+      });
+      const counter = new Counter(this.config);
 
       assert.deepEqual(counter.send.calledWith, [{type: 'ready'}]);
       assert.isTrue(counter.listen.called);
 
-      testProp.stuff;
-      assert.isFalse(counter.locations[scriptLocation].isFingerprinting);
+      this.testProp.init;
+      assert.isFalse(counter.locations[location].isFingerprinting);
 
-      testProp.bar;
-      assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
+      this.testProp.bar;
+      this.testProp.whatever;
 
-      assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: scriptLocation}]);
-      assert.equal(counter.getScriptLocation.ncalls, 2);
-      assert.equal(testProp.stuff, 'lie func called');
-    });
-    it('watches funcs', function() {
-      const {counter} = this,
-        {testProp} = global;
-
-      testProp.stuff;
-      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 1);
-      testProp.stuff;
-      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 2);
-    });
-    it('you can overwrite stuff and it is still watched', function() {
-      const {counter} = this,
-        {testProp} = global;
-
-      testProp['stuff'] = 'hi!';
-      assert.equal(testProp.stuff, 'hi!');
-      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 1);
-      testProp.stuff;
-      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 2);
+      assert.isTrue(counter.locations[location].isFingerprinting);
+      assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: location}]);
+      assert.equal(this.testProp.init, changed);
     });
   });
 });
