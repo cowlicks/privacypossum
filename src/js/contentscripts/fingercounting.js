@@ -188,25 +188,57 @@ function makeFingerCounting(event_id = 0, init = true) {
 
     // wrap a dotted method name with a counter
     wrapMethod(dottedPropName, lieFunc) {
+      function getDescriptor(obj, prop) {
+        while (obj && !obj.hasOwnProperty(prop)) {
+          obj = Object.getPrototypeOf(obj);
+        }
+        return obj ? Object.getOwnPropertyDescriptor(obj, prop) :
+          {value: undefined, writable: false, configurable: false, enumerable: false};
+      }
+
       const self = this,
         arr = dottedPropName.split('.'),
         propName = arr.pop();
 
       let baseObj = arr.reduce((o, i) => o[i], this.globalObj);
-      let before = baseObj[propName];
+
+      let descriptor = getDescriptor(baseObj, propName),
+        {configurable, enumerable} = descriptor,
+        isAccessor = descriptor.hasOwnProperty('get'),
+        prop = isAccessor ? descriptor.get : descriptor.value;
       try {
         Object.defineProperty(baseObj, propName, {
           get: function() {
             let loc = self.addCall(dottedPropName, self.getScriptLocation());
             if (loc.isFingerprinting) {
-              return lieFunc(before);
+              return lieFunc(prop);
             }
-            return before;
+            if (this !== baseObj && this.hasOwnProperty(propName)) {
+              return this[propName];
+            }
+            return isAccessor ? prop.call(this) : prop;
           },
           set: function(value) {
-            return before = value;
+            // settable
+            if (isAccessor) {
+              return descriptor.set ? descriptor.set.call(this, value) : value;
+            }
+            // not settable and not writeable
+            if (!descriptor.writable) {
+              // should throw TypeError if !== prop or this[propName] and in strict mode;
+              return value;
+            }
+            // writable value
+            if (baseObj === this) { // we wrapped the instance
+              return prop = value;
+            } else {
+               // wrapped something up the prototype chain
+              Object.defineProperty(this, propName, {value, configurable, enumerable, writable: descriptor.writable});
+              return value;
+            }
           },
-          configurable: true,
+          configurable,
+          enumerable,
         });
       } catch (ignore) {
         // property probably non-configurable from other userscript
@@ -246,7 +278,6 @@ function makeFingerCounting(event_id = 0, init = true) {
       return loc;
     }
   };
-
   // initialize for browser
   function initialize() {
     const config = {
