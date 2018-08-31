@@ -1,0 +1,17 @@
+Comments on validation results:
+
+Unsafe assignment to innerHTML Warning
+js/test/testing_utils.js
+
+The refers to code in a unittest, which is not exposed to functioning addon at all. We use the code to clear fake dom between unit tests.
+
+Known JS library detected warnings: 
+js/external/react/react.production.min.js
+js/external/react-dom/react-dom.production.min.js
+
+I use react for the popup. I don't use jsx so I can avoid transpiling.
+
+Violation of Mozilla conditions of use Warning: Words found that violate the Mozilla conditions of use
+js/domains/psl.js
+
+This is referring to some domain name in Mozilla's own Public Suffix list. I use this list to determine what is a 3rd party.
