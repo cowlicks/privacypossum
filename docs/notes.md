@@ -33,7 +33,6 @@
 * error when inspect popup creates it, make currentTab work with this
 * fix webrequest requestHandler loop
 * change badge text color to grey
-* add short name to manifest for chrome store
 * make icon not blurry in chrome store?
 * add screenshots for chrome store, resize current ones to 1280 pixels wide and 800 pixels high
 * add video of fingerprint blocking
