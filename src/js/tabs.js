@@ -218,6 +218,14 @@ class Tabs {
     }
   }
 
+  getTabHostname(tabId) {
+    try {
+      return this.getFrame(tabId, 0).urlObj.hostname
+    } catch(e) {
+      return undefined;
+    }
+  }
+
   getTabUrl(tabId) {
     try {
       return this.getFrameUrl(tabId, 0);
@@ -238,26 +246,23 @@ class Tabs {
     return this.getTab(tabId).get(frameId);
   }
 
-  isRequestThirdParty(details) {
-    let {tabId, initiator, urlObj: {hostname}} = details;
+  isRequestThirdParty({tabId, initiator, urlObj: {hostname} = {}}) {
+    if (typeof initiator !== 'undefined') {
+      return isThirdParty((new URL(initiator)).hostname, hostname);
+    }
     if (tabId === -1) {
-      if (typeof initiator !== 'undefined') {
-        let initiatorHostname = (new URL(initiator)).hostname;
-        return isThirdParty(initiatorHostname, hostname);
-      }
-      return false; // no associated tab, so 3rd party isn't applicable
+      return false; // no associated tab and no initiator info so we don't know
     }
     return this.isThirdParty(tabId, hostname);
   }
 
   isThirdParty(tabId, hostname) {
-    try {
-      let tabhost = this.getFrame(tabId, 0).urlObj.hostname
-      return isThirdParty(tabhost, hostname);
-    } catch (e) {
-      log(`error getting tab data for tabId ${tabId} with error ${e.stack}`);
+    let tabHost = this.getTabHostname(tabId);
+    if (!tabHost) {
+      log(`could not calculate tabhost for isThirdParty with hostname ${hostname} on tabId ${tabId}`);
       return false;
     }
+    return isThirdParty(tabHost, hostname);
   }
 
   hasResource({tabId, frameId, url, type}) {

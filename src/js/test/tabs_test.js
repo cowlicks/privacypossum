@@ -8,7 +8,8 @@ let assert = require('chai').assert,
   {Tab, Tabs} = require('../tabs');
 
 const tabId = 1,
-  main_frame = {frameId: 0, url: 'https://google.com/', tabId, parentFrameId: -1, type: 'main_frame'},
+  firstParty = 'https://google.com/', thirdParty = 'https://third.com/',
+  main_frame = {frameId: 0, url: firstParty, tabId, parentFrameId: -1, type: 'main_frame'},
   sub_frame = {frameId: 1, url: 'about:blank', tabId, parentFrameId: 0, type: 'sub_frame'};
 
 describe('tabs.js', function() {
@@ -20,8 +21,6 @@ describe('tabs.js', function() {
       this.tab = this.tabs.getTab(main_frame.tabId);
     });
     describe('#getCurrentData', function() {
-      beforeEach(function() {
-      });
       it('does not get frames from "discarded" tabs', async function() {
         let discarded = true, id = 2, url = 'https://url.com/';
         tabsQuery.tabs = [{id, discarded, url}];
@@ -32,6 +31,26 @@ describe('tabs.js', function() {
 
         await this.tabs.getCurrentData();
         assert.isUndefined(this.tabs.getFrame(id, 1));
+      });
+    });
+    describe('#isRequestThirdParty', function() {
+      it('no initiator', function() {
+        let details = {tabId: 1, urlObj: new URL(thirdParty)};
+        assert.isTrue(this.tabs.isRequestThirdParty(details));
+      });
+      it('has initiator', function() {
+        let isFirst = {initiator: firstParty, urlObj: new URL(firstParty)},
+          isThird = {initiator: firstParty, urlObj: new URL(thirdParty)};
+        assert.isFalse(this.tabs.isRequestThirdParty(isFirst));
+        assert.isTrue(this.tabs.isRequestThirdParty(isThird));
+      });
+      it('no initiator tabId = -1', function() {
+        assert.isFalse(this.tabs.isRequestThirdParty({tabId: -1}));
+      });
+      it('no initiator, no prexisting data about tab', function() {
+        this.tabs = new Tabs();
+        let details = {tabId: 1, urlObj: new URL(thirdParty)};
+        assert.isFalse(this.tabs.isRequestThirdParty(details));
       });
     });
 
