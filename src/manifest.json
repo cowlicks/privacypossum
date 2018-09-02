@@ -1,7 +1,6 @@
 {
   "version": "2018.7.28",
-  "name": "Privacy Possum - blocking commercial tracking",
-  "short_name": "Privacy Possum",
+  "name": "Privacy Possum",
   "author": "cowlicks@riseup.net",
   "manifest_version": 2,
   "applications": {
