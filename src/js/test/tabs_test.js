@@ -20,8 +20,6 @@ describe('tabs.js', function() {
       this.tab = this.tabs.getTab(main_frame.tabId);
     });
     describe('#getCurrentData', function() {
-      beforeEach(function() {
-      });
       it('does not get frames from "discarded" tabs', async function() {
         let discarded = true, id = 2, url = 'https://url.com/';
         tabsQuery.tabs = [{id, discarded, url}];
