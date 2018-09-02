@@ -246,7 +246,7 @@ class Tabs {
     return this.getTab(tabId).get(frameId);
   }
 
-  isRequestThirdParty({tabId, initiator, urlObj: {hostname}}) {
+  isRequestThirdParty({tabId, initiator, urlObj: {hostname} = {}}) {
     if (typeof initiator !== 'undefined') {
       return isThirdParty((new URL(initiator)).hostname, hostname);
     }
