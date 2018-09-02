@@ -26,12 +26,9 @@
 * add promotional titles to chrome Small tile - 440x280, Large tile - 920x680, Marquee - 1400x560
 * handlers should just be for dispatching stuff, not starting listeners
 
-* consider injecting contentscripts programatically
-* add html tooling
 * update psl script to reflect new location
 * error getting fingerprinting message from tabId=-1? from extension?
 * error when inspect popup creates it, make currentTab work with this
-* fix webrequest requestHandler loop
 * change badge text color to grey
 * make icon not blurry in chrome store?
 * add screenshots for chrome store, resize current ones to 1280 pixels wide and 800 pixels high
