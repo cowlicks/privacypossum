@@ -1,4 +1,7 @@
 <head>
+  <script type="text/javascript" src="/js/external/react/react.production.min.js"></script>
+  <script type="text/javascript" src="/js/external/react-dom/react-dom.production.min.js"></script>
+
   <script type="text/javascript" src="/js/bootstrap.js"></script>
   <script type="text/javascript" src="/js/constants.js"></script>
   <script type="text/javascript" src="/js/shim.js"></script>
@@ -14,35 +17,19 @@
   <script type="text/javascript" src="/js/reasons/user_url_deactivate.js"></script>
   <script type="text/javascript" src="/js/reasons/headers.js"></script>
   <script type="text/javascript" src="/js/reasons/etag.js"></script>
+  <script type="text/javascript" src="/js/reasons/referer.js"></script>
 
+  <script type="text/javascript" src="/js/popup_components.js"></script>
   <script type="text/javascript" src="/js/popup.js"></script>
   <script type="text/javascript" src="/js/initialize_popup.js"></script>
   <link href="/skin/popup.css" rel="stylesheet">
 </head>
 <body>
   <header id="title-bar">
-    <div id="branding">
-      <img id="logo" src="/media/popup-icon.png" alt="I'm a possum">
-      <span id="title">
-        Privacy Possum
-      </span>
-    </div>
-    <div id="on-off">
-      <span id="on-off-text" class="grey">
-      </span>
-      <div id="on-off-button">
-      </div>
-    </div>
   </header>
-  <div id="empty">
-  </div>
   <div id="base">
-    <div id="headers">
-    </div>
-    <div id="actions">
-    </div>
   </div>
   <footer>
-    <a href="https://github.com/cowlicks/privacypossum/issues" rel="noopener noreferrer" target="_blank">Report a bug</a>
+    <a id="debug-link" href="https://github.com/cowlicks/privacypossum/issues" rel="noopener noreferrer" target="_blank">Report a bug</a>
   </footer>
 </body>

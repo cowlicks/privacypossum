@@ -1,5 +1,5 @@
 {
-  "version": "2018.5.7",
+  "version": "2018.7.28",
   "name": "Privacy Possum",
   "author": "cowlicks@riseup.net",
   "manifest_version": 2,
@@ -55,6 +55,7 @@
       "js/reasons/reasons.js",
       "js/reasons/fingerprinting.js",
       "js/reasons/user_url_deactivate.js",
+      "js/reasons/referer.js",
       "js/reasons/headers.js",
       "js/reasons/etag.js",
       "js/reasons/utils.js",
@@ -83,8 +84,5 @@
       ],
       "run_at": "document_idle"
     }
-  ],
-  "web_accessible_resources": [
-    "js/web_accessible/fingercounting.js"
   ]
 }

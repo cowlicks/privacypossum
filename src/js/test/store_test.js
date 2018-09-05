@@ -1,21 +1,21 @@
 "use strict";
 
 const assert = require('chai').assert,
-  {DomainStore} = require('../store'),
+  {Store} = require('../store'),
   {Domain, Action} = require('../schemes');
 
 describe('store.js', function() {
-  describe('DomainStore', function() {
+  describe('Store', function() {
     let host = 'bar.foo.example.com',
       parts = host.split('.'),
       len = parts.length;
 
     async function loadNewFromTree({diskMap: {name, disk}}) {
-      return await DomainStore.load(name, disk);
+      return await Store.load(name, disk);
     }
 
     beforeEach(function() {
-      this.dtree = new DomainStore('name');
+      this.dtree = new Store('name');
     });
 
     it('deletes', async function() {

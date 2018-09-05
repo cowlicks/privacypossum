@@ -1,7 +1,8 @@
 'use strict';
 
 const assert = require('chai').assert,
-  {Counter, getUrlFromStackLine} = require('../web_accessible/fingercounting'),
+  {makeFingerCounting} = require('../contentscripts/fingercounting'),
+  {Counter, getUrlFromStackLine} = makeFingerCounting(0, false),
   {makeTrap} = require('../utils'),
   {Mock} = require('./testing_utils');
 
@@ -53,6 +54,10 @@ describe('fingercounting.js', function() {
         '@https://duckduckgo.com/d2395.js:1:144567',
         'https://duckduckgo.com/d2395.js',
       ],
+      [
+        "    at https://online.citi.com/CBOL/common/js/jfp.combined.min.js:68:4324",
+        "https://online.citi.com/CBOL/common/js/jfp.combined.min.js",
+      ],
     ];
     it('extracts urls correctly', function() {
       data.forEach(([line, expected]) => assert.equal(getUrlFromStackLine(line), expected));
@@ -60,34 +65,62 @@ describe('fingercounting.js', function() {
   });
 
   describe('Counter', function() {
+    let scriptLocation = 'some_location.js';
     beforeEach(function() {
       Object.assign(global, {testProp: {stuff: [1, 2, 3]}});
+      this.config = {
+          document: makeTrap(),
+          globalObj: global,
+          methods: [
+            ['testProp.stuff', () => 'lie func called'],
+            ['testProp.bar', () => 44],
+            ['testProp.whatever', () => 'yep'],
+          ],
+          getScriptLocation: new Mock(scriptLocation),
+          threshold: 0.5,
+          send: new Mock(),
+          listen: new Mock(),
+        };
+      this.counter = new Counter(this.config);
     });
     afterEach(function() {
       delete global['testProp'];
     });
     it('#constructor', function() {
-      let scriptLocation = 'some_location.js',
-        config = {
-          document: makeTrap(),
-          globalObj: global,
-          methods: [['testProp.stuff', () => 'lie func called']],
-          getScriptLocation: new Mock(scriptLocation),
-          threshold: 0.75,
-          send: new Mock(),
-          listen: new Mock(),
-        };
+      const {counter} = this,
+        {testProp} = global;
 
-      let counter = new Counter(config);
       assert.deepEqual(counter.send.calledWith, [{type: 'ready'}]);
       assert.isTrue(counter.listen.called);
 
-      testProp.stuff; // eslint-disable-line
+      testProp.stuff;
+      assert.isFalse(counter.locations[scriptLocation].isFingerprinting);
 
+      testProp.bar;
       assert.isTrue(counter.locations[scriptLocation].isFingerprinting);
+
       assert.deepEqual(counter.send.calledWith, [{type: 'fingerprinting', url: scriptLocation}]);
-      assert.equal(counter.getScriptLocation.ncalls, 1);
-      assert.equal(testProp.stuff, 'lie func called'); // eslint-disable-line
+      assert.equal(counter.getScriptLocation.ncalls, 2);
+      assert.equal(testProp.stuff, 'lie func called');
+    });
+    it('watches funcs', function() {
+      const {counter} = this,
+        {testProp} = global;
+
+      testProp.stuff;
+      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 1);
+      testProp.stuff;
+      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 2);
+    });
+    it('you can overwrite stuff and it is still watched', function() {
+      const {counter} = this,
+        {testProp} = global;
+
+      testProp['stuff'] = 'hi!';
+      assert.equal(testProp.stuff, 'hi!');
+      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 1);
+      testProp.stuff;
+      assert.equal(counter.locations[scriptLocation].counts['testProp.stuff'], 2);
     });
   });
 });

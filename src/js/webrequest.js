@@ -5,6 +5,7 @@
 const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
+  {ON_BEFORE_REQUEST, ON_BEFORE_SEND_HEADERS, ON_HEADERS_RECEIVED} = request_methods,
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, requestType) {
@@ -85,23 +86,31 @@ class WebRequest {
   }
 
   onBeforeRequest(details) {
-    annotateDetails(details, request_methods.ON_BEFORE_REQUEST);
+    annotateDetails(details, ON_BEFORE_REQUEST);
     this.recordRequest(details);
     return this.commitRequest(details);
   }
 
   onBeforeSendHeaders(details) {
-    annotateDetails(details, request_methods.ON_BEFORE_SEND_HEADERS);
+    annotateDetails(details, ON_BEFORE_SEND_HEADERS);
     this.headerHandler(details);
     this.markAction(details);
     return details.response;
   }
 
   onHeadersReceived(details) {
-    annotateDetails(details, request_methods.ON_HEADERS_RECEIVED);
+    annotateDetails(details, ON_HEADERS_RECEIVED);
     this.headerHandler(details);
     this.markAction(details);
     return details.response;
+  }
+
+  requestOrResponseAction(details) {
+    if (!details.shortCircuit) {
+      if (details.requestType == ON_HEADERS_RECEIVED) {
+        return this.handler.headerHandler.referer.onHeadersReceived(details);
+      }
+    }
   }
 
   headerHandler(details) {
@@ -109,7 +118,8 @@ class WebRequest {
       let headers = details[details.headerPropName],
         removed = this.removeHeaders(details, headers);
       this.checkAllRequestActions(details);
-      if (!details.shortCircuit && removed.length) {
+      this.requestOrResponseAction(details);
+      if (!details.shortCircuit && (removed.length || headers.mutated)) {
         details.response = {[details.headerPropName]: headers};
         this.markHeaders(removed, details);
       }

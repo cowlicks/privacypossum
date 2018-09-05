@@ -8,6 +8,7 @@ describe('mdfp.js', function() {
     assert.isTrue(isMdfp('reddit.com', 'redditstatic.com'));
     assert.isTrue(isMdfp('reddit.com', 'reddit.com'));
     assert.isTrue(isMdfp('notonlist.com', 'notonlist.com'));
+    assert.isTrue(isMdfp('avatars0.githubusercontent.com', 'github.com'));
   })
 
   it('false cases', function() {

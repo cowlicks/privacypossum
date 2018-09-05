@@ -2,7 +2,7 @@
 
 const {assert} = require('chai'),
   {Tabs, Tab} = require('../tabs'),
-  {DomainStore} = require('../store'),
+  {Store} = require('../store'),
   {URL, onMessage, onUpdated} = require('../shim'),
   {Action} = require('../schemes'),
   {cookie, notCookie} = require('./testing_utils'),
@@ -16,7 +16,7 @@ const {TAB_DEACTIVATE, TAB_DEACTIVATE_HEADERS, NO_ACTION, USER_HOST_DEACTIVATE, 
 describe('reasons.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs();
-    this.store = new DomainStore('name'),
+    this.store = new Store('name'),
     this.reasons = Reasons.fromArray(reasonsArray);
   });
 

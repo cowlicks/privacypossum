@@ -3,14 +3,14 @@
 const assert = require('chai').assert,
   {WebRequest} = require('../webrequest'),
   {Tabs} = require('../tabs'),
-  {DomainStore} = require('../store'),
+  {Store} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
 
 
 describe('webrequest.js', function() {
   beforeEach(function() {
     this.tabs = new Tabs(),
-    this.wr = new WebRequest(this.tabs, new DomainStore());
+    this.wr = new WebRequest(this.tabs, new Store());
   });
   describe('WebRequest', function() {
     describe('#isThirdParty', function() {

@@ -55,7 +55,11 @@ const FINGERPRINTING = 'fingerprinting',
   BLOCK = 'block',
   HEADER_DEACTIVATE_ON_HOST = 'header_deactivate_on_host';
 
-const FINGERPRINTING_PATH = '/js/contentscripts/injector.js';
+const CONTENTSCRIPTS = new Set([
+  '/js/bootstrap.js',
+  '/js/contentscripts/fingercounting.js',
+  '/js/initialize_contentscripts.js',
+]);
 
 const etag = {
   ETAG_TRACKING: 'etag_tracking',
@@ -72,6 +76,8 @@ const POPUP = 'popup';
 
 const REMOVE_ACTION = 'remove_action';
 
+const GET_DEBUG_LOG = 'get_debug_log';
+
 Object.assign(exports, {
   DISK_NAME,
   responses,
@@ -85,7 +91,7 @@ Object.assign(exports, {
   request_methods,
   header_methods,
   FINGERPRINTING,
-  FINGERPRINTING_PATH,
+  CONTENTSCRIPTS,
   USER_HOST_DEACTIVATE,
   USER_URL_DEACTIVATE,
   BLOCK,
@@ -95,6 +101,7 @@ Object.assign(exports, {
   TAB_DEACTIVATE_HEADERS,
   POPUP,
   REMOVE_ACTION,
+  GET_DEBUG_LOG,
 });
 
 })].map(func => typeof exports == 'undefined' ? define('/constants', func) : func(exports));

@@ -7,11 +7,9 @@
 [(function(exports) {
 
 const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
-  {REMOVE_ACTION, FINGERPRINTING_PATH} = require('./constants'),
+  {REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
-
-const contentScripts = new Set([FINGERPRINTING_PATH]);
 
 class Resource {
   constructor({url, method, type}) {
@@ -151,14 +149,21 @@ class Tabs {
   }
 
   async getCurrentData() {
-    (await getAllTabIds()).forEach(async (tabId) => {
-      (await getAllFrames(tabId)).forEach(({frameId, parentFrameId, url}) => {
+    for (let tab of await asyncTabsQuery()) {
+      let tabId = tab.id;
+      if (!tab.discarded) {
+        for (let {frameId, parentFrameId, url} of await getAllFrames(tabId)) {
+          this.addResource({
+            tabId, frameId, parentFrameId, url,
+            type: (frameId === 0 ? 'main_frame' : 'sub_frame'),
+          });
+        }
+      } else {
         this.addResource({
-          tabId, frameId, parentFrameId, url,
-          type: (frameId === 0 ? 'main_frame' : 'sub_frame'),
+          tabId, frameId: 0, parentFrameId: -1, url: tab.url, type: 'main_frame'
         });
-      });
-    });
+      }
+    }
   }
 
   async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {
@@ -203,8 +208,8 @@ class Tabs {
   async onNavigationCommitted({tabId, frameId, url}) {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
-      for (let file of contentScripts) {
-        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', file}, () => {
+      for (let file of CONTENTSCRIPTS) {
+        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', matchAboutBlank: true, file}, () => {
           if (errorOccurred()) {
             log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}`);
           }
@@ -298,10 +303,8 @@ class Tabs {
   }
 };
 
-async function getAllTabIds() {
-  return new Promise(resolve => {
-    tabsQuery({}, tabs => resolve(tabs.map(t => t.id)));
-  });
+async function asyncTabsQuery(queryInfo = {}) {
+  return new Promise(resolve => tabsQuery(queryInfo, resolve));
 }
 
 async function getAllFrames(tabId) {
