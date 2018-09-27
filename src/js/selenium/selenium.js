@@ -1,13 +1,21 @@
+'use strict';
+
 const sw = require('selenium-webdriver'),
   express = require('express'),
-  vhost = require('vhost'),
-  etagApp = require("./etagApp");
+  {App} = require("./cookies");
 
-const PORT = 8000;
+const PORT = 8000,
+  host = (hostname, port) => `${hostname}:${port}`,
+  firstPartyHostname = 'firstparty.local',
+  thirdPartyHostname = 'thirdparty.local',
+  firstPartyHost = host(firstPartyHostname, PORT),
+  thirdPartyHost = host(thirdPartyHostname, PORT);
 
 /*
  * in /etc/hosts this requires:
  * 127.0.0.1    etag.local
+ * 127.0.0.1    firstparty.local
+ * 127.0.0.1    thirdparty.local
  * 127.0.0.1    thirdpartywithetag.local
  */
 
@@ -20,20 +28,10 @@ function loadDriverWithExtension(extPath) {
       .build();
 }
 
-function startApps() {
-  let appWithVhost = module.exports = express();
-  appWithVhost.use(vhost('etag.local', etagApp(PORT))); // Serves first app
-  //appWithVhost.use(vhost('admin.mydomain.local', app2)); // Serves second app
-
-  /* istanbul ignore next */
-  if (!module.parent) {
-    appWithVhost.listen(PORT);
-    console.log(`Express started on port ${PORT}`);
-  }
-}
+let app = new App(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
 
 let path = '../.',
   driver = loadDriverWithExtension(path);
-startApps();
 
-driver.get('etag.local:8000');
+app.listen(PORT);
+driver.get(firstPartyHost);
