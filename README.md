@@ -134,4 +134,4 @@ Exported stuff is assigned to properties on `exports` just like in node.
 
 ## Testing
 
-From inside `src/js/` run `npm test`. To check coverage run `npm run cover`.
+From inside `src/js/` you can run node tests with `npm test`, check coverage with `npm run cover`, and run selenium tests with `npm run selenium`.
