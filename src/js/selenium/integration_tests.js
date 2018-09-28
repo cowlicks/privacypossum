@@ -1,22 +1,33 @@
 'use strict';
 
+const {assert} = require('chai');
+
 const sw = require('selenium-webdriver'),
   express = require('express'),
-  {App} = require("./cookies");
+  {createServer} = require('http'),
+  {cookieApp, fpcookie, tpcookie} = require("./cookies");
 
-const PORT = 8000,
+const path = '../.',
+  PORT = 8000,
   host = (hostname, port) => `${hostname}:${port}`,
   firstPartyHostname = 'firstparty.local',
   thirdPartyHostname = 'thirdparty.local',
   firstPartyHost = host(firstPartyHostname, PORT),
   thirdPartyHost = host(thirdPartyHostname, PORT);
 
+function startApp(app, port=PORT) {
+  app.server = createServer(app);
+  app.server.listen(port);
+}
+
+function stopApp(app) {
+  app.server.close();
+}
+
 /*
  * in /etc/hosts this requires:
- * 127.0.0.1    etag.local
  * 127.0.0.1    firstparty.local
  * 127.0.0.1    thirdparty.local
- * 127.0.0.1    thirdpartywithetag.local
  */
 
 function loadDriverWithExtension(extPath) {
@@ -28,10 +39,32 @@ function loadDriverWithExtension(extPath) {
       .build();
 }
 
-let app = new App(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
+describe('selenium test', function() {
+  beforeEach(function() {
+    this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
+    this.driver = loadDriverWithExtension(path);
+    startApp(this.app);
+  });
+  afterEach(function() {
+    stopApp(this.app);
+    this.driver.quit();
+  });
 
-let path = '../.',
-  driver = loadDriverWithExtension(path);
+  it('blocks cookies', async function() {
+    let {app, driver} = this;
+    driver.get(firstPartyHost);
+    let request = await app.firstParty.requests.next();
+    // no cookies initially
+    assert.deepEqual(request.cookies, {});
+    request = await app.thirdParty.requests.next();
+    assert.deepEqual(request.cookies, {});
 
-app.listen(PORT);
-driver.get(firstPartyHost);
+    driver.get(firstPartyHost);
+    request = await app.firstParty.requests.next();
+    // now we have first party cookies set
+    assert.deepEqual(request.cookies, {[fpcookie.name]: fpcookie.value});
+    request = await app.thirdParty.requests.next();
+    // but not third party cookies
+    assert.deepEqual(request.cookies, {});
+  });
+});
