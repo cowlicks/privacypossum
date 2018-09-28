@@ -1,55 +1,74 @@
 'use strict';
 
 const express = require('express'),
+  cookieParser = require('cookie-parser'),
   {createServer} = require('http'),
   vhost = require('vhost');
 
-let fp = {cookie: {name: '1pname', value: '1pvalue'}},
-  tp = {cookie: {name: '3pname', value: '3pvalue'}};
+let fpcookie = {name: '1pname', value: '1pvalue'},
+  tpcookie = {name: '3pname', value: '3pvalue'};
 
-class App {
-  constructor(app, hostname1, hostname2, port) {
-    let app1 = firstParty(hostname2, port),
-      app2 = thirdParty(port);
-    app.use(vhost(hostname1, app1));
-    app.use(vhost(hostname2, app2));
-    Object.assign(this, {app, hostname1, hostname2, port});
+class Channel {
+  constructor() {
+    this.items = [];
+    this.waiting = [];
   }
-
-  async runWith(func) {
-    this.listen();
-    await func()
-    this.close();
+  async popQueue() {
+    if (this.items.length > 0) {
+      return this.items.pop();
+    } else {
+      return new Promise((resolve) => {
+        this.waiting.push(resolve);
+      });
+    }
   }
-  listen(port=this.port) {
-    this.server = createServer(this.app);
-    this.server.listen(port);
+  async next() {
+    return await this.popQueue();
   }
-  close() {
-    this.server.close();
+  push(item) {
+    if (this.waiting.length > 0) {
+      this.waiting.shift()(item);
+    } else {
+      this.items.push(item);
+    }
   }
 }
 
-function firstParty(hostname, port) {
+function firstPartyApp(thirdPartyHostname, port) {
   const app = express();
+  app.use(cookieParser());
+  app.requests = new Channel();
+
   app.get('/', (req, res) => {
-    console.log('got request');
-    res.cookie(fp.cookie.name, fp.cookie.value);
+    app.requests.push(req);
+    res.cookie(fpcookie.name, fpcookie.value);
     return res.send(
-      `<script type="text/javascript" src="http://${hostname}:${port}/tracker.js"></script>`
+      `<script type="text/javascript" src="http://${thirdPartyHostname}:${port}/tracker.js"></script>`
     );
   });
   return app;
 }
 
-function thirdParty(port) {
+function thirdPartyApp() {
   const app = express();
+  app.use(cookieParser());
+  app.requests = new Channel();
+
   app.get('/tracker.js', (req, res) => {
-    res.cookie(tp.cookie.name, tp.cookie.value);
-    console.log('third party hit');
+    app.requests.push(req);
+    res.cookie(tpcookie.name, tpcookie.value);
     return res.send('console.log("third party script")');
   });
   return app;
 }
 
-Object.assign(module.exports, {App});
+function cookieApp(app, firstPartyHostname, thirdPartyHostname, port) {
+  let firstParty = firstPartyApp(thirdPartyHostname, port),
+    thirdParty = thirdPartyApp();
+  app.use(vhost(firstPartyHostname, firstParty));
+  app.use(vhost(thirdPartyHostname, thirdParty));
+  Object.assign(app, {firstParty, thirdParty, firstPartyHostname, thirdPartyHostname, port});
+  return app;
+}
+
+Object.assign(module.exports, {cookieApp, fpcookie, tpcookie});
