@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "mocha --recursive",
-    "selenium": "node ./selenium/selenium.js",
+    "selenium": "mocha ./selenium/integration_tests.js",
     "lint": "git ls-files | grep \".js$\" | grep -v \"external\" | xargs eslint",
     "loc": "git ls-files | grep -v 'psl.js' | xargs cat | wc -l",
     "cover": "nyc --reporter=html --reporter=text mocha",
