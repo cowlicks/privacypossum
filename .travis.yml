@@ -2,4 +2,8 @@ language: node_js
 node_js:
   - "10"
 install: make npm_install
-script: make test
+matrix:
+  include:
+    - name: "Node Unit Tests"
+      env: TEST_ARG=test
+script: make $TEST_ARG
