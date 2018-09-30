@@ -5,3 +5,11 @@
 toplevel=$(git rev-parse --show-toplevel)
 src_dir=${toplevel}/src
 js_dir=${src_dir}/js
+selenium_dir=${toplevel}/selenium
+
+run_in_dir() {
+pushd $1 > /dev/null
+trap "popd > /dev/null" EXIT
+
+$2
+}
