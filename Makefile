@@ -4,8 +4,11 @@ test:
 selenium_test:
 	./scripts/selenium_test.sh
 
-npm_install:
-	./scripts/npm_install.sh
+npm_install_node:
+	./scripts/npm_install.sh src/js/.
+
+npm_install_selenium:
+	./scripts/npm_install.sh selenium/.
 
 psl: 
 	./scripts/getpsl.py > src/js/domains/psl.js
@@ -13,4 +16,4 @@ psl:
 release:
 	./scripts/release.sh
 
-.PHONY: test npm_install psl release
+.PHONY: test selenium_test npm_install_node npm_install_selenium psl release
