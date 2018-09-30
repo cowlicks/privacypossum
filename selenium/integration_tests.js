@@ -4,6 +4,7 @@ const {assert} = require('chai');
 
 const sw = require('selenium-webdriver'),
   express = require('express'),
+  Xvfb = require('xvfb'),
   {createServer} = require('http'),
   {cookieApp, fpcookie, tpcookie} = require("./cookies");
 
@@ -41,6 +42,8 @@ function loadDriverWithExtension(extPath) {
 
 describe('selenium test', function() {
   beforeEach(function() {
+    this.xvfb = new Xvfb();
+    this.xvfb.startSync();
     this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
     this.driver = loadDriverWithExtension(path);
     startApp(this.app);
@@ -48,6 +51,7 @@ describe('selenium test', function() {
   afterEach(function() {
     stopApp(this.app);
     this.driver.quit();
+    this.xvfb.stopSync();
   });
 
   it('blocks cookies', async function() {
