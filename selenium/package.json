@@ -14,6 +14,7 @@
     "express": "^4.16.3",
     "mocha": "^5.2.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "vhost": "^3.0.2"
+    "vhost": "^3.0.2",
+    "xvfb": "^0.2.3"
   }
 }
