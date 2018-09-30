@@ -7,7 +7,7 @@ const sw = require('selenium-webdriver'),
   {createServer} = require('http'),
   {cookieApp, fpcookie, tpcookie} = require("./cookies");
 
-const path = '../.',
+const path = '../src/.',
   PORT = 8000,
   host = (hostname, port) => `${hostname}:${port}`,
   firstPartyHostname = 'firstparty.local',
