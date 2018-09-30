@@ -5,5 +5,5 @@ install: make npm_install
 matrix:
   include:
     - name: "Node Unit Tests"
-      env: TEST_ARG=test
-script: make $TEST_ARG
+      install: make npm_install_node
+      script: make test
