@@ -7,3 +7,6 @@ matrix:
     - name: "Node Unit Tests"
       install: make npm_install_node
       script: make test
+    - name: "Selenium Unit Tests"
+      install: make npm_install_selenium
+      script: make selenium_test
