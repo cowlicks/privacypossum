@@ -10,3 +10,5 @@ matrix:
     - name: "Selenium Unit Tests"
       install: make npm_install_selenium
       script: make selenium_test
+      addons:
+        chrome: stable
