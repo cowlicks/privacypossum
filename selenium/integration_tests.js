@@ -44,18 +44,19 @@ function loadDriverWithExtension(extPath) {
 
 describe('selenium test', function() {
   beforeEach(function() {
-    let i = 0;
-    console.log(`at number: ${i}`);
-    i += 1;
+    // we need to only use xvfb when asked
+    this.i = 0;
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
-    console.log(`at number: ${i}`);
-    i += 1;
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     this.driver = loadDriverWithExtension(path);
-    console.log(`at number: ${i}`);
-    i += 1;
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     startApp(this.app);
-    console.log(`at number: ${i}`);
-    i += 1;
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
   });
   afterEach(function() {
     stopApp(this.app);
@@ -64,19 +65,41 @@ describe('selenium test', function() {
 
   it('blocks cookies', async function() {
     let {app, driver} = this;
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     driver.get(firstPartyHost);
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     let request = await app.firstParty.requests.next();
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     // no cookies initially
     assert.deepEqual(request.cookies, {});
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     request = await app.thirdParty.requests.next();
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     assert.deepEqual(request.cookies, {});
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
 
     driver.get(firstPartyHost);
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     request = await app.firstParty.requests.next();
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     // now we have first party cookies set
     assert.deepEqual(request.cookies, {[fpcookie.name]: fpcookie.value});
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     request = await app.thirdParty.requests.next();
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
     // but not third party cookies
     assert.deepEqual(request.cookies, {});
+    console.log(`at number: ${this.i}`);
+    this.i += 1;
   });
 });
