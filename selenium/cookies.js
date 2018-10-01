@@ -2,7 +2,6 @@
 
 const express = require('express'),
   cookieParser = require('cookie-parser'),
-  {createServer} = require('http'),
   vhost = require('vhost');
 
 let fpcookie = {name: '1pname', value: '1pvalue'},

@@ -2,51 +2,15 @@
 
 const {assert} = require('chai');
 
-const sw = require('selenium-webdriver'),
-  express = require('express'),
-  {createServer} = require('http'),
-  {cookieApp, fpcookie, tpcookie} = require("./cookies");
+const express = require('express'),
+  {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost} = require('./utils'),
+  {cookieApp, fpcookie} = require("./cookies");
 
-const path = '../src/.',
-  PORT = 8000,
-  host = (hostname, port) => `${hostname}:${port}`,
-  firstPartyHostname = 'firstparty.local',
-  thirdPartyHostname = 'thirdparty.local',
-  firstPartyHost = host(firstPartyHostname, PORT),
-  thirdPartyHost = host(thirdPartyHostname, PORT);
-
-function startApp(app, port=PORT) {
-  app.server = createServer(app);
-  app.server.listen(port);
-}
-
-function stopApp(app) {
-  app.server.close();
-}
-
-/*
- * in /etc/hosts this requires:
- * 127.0.0.1    firstparty.local
- * 127.0.0.1    thirdparty.local
- */
-
-function loadDriverWithExtension(extPath) {
-  let chromeOptions = sw.Capabilities.chrome();
-  chromeOptions.set("chromeOptions",  {"args": [
-    `--load-extension=${extPath}`,
-    '--no-sandbox',
-  ]});
-  return new sw.Builder()
-      .forBrowser('chrome')
-      .withCapabilities(chromeOptions)
-      .build();
-}
-
-describe('selenium test', function() {
+describe('cookie tests', function() {
   beforeEach(function() {
     // we need to only use xvfb when asked
     this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
-    this.driver = loadDriverWithExtension(path);
+    this.driver = newDriver();
     startApp(this.app);
   });
   afterEach(function() {
