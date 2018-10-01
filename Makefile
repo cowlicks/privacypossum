@@ -1,7 +1,7 @@
-test:
+test_node:
 	./scripts/test.sh
 
-selenium_test:
+test_selenium:
 	./scripts/selenium_test.sh
 
 npm_install_node:
@@ -16,4 +16,4 @@ psl:
 release:
 	./scripts/release.sh
 
-.PHONY: test selenium_test npm_install_node npm_install_selenium psl release
+.PHONY: test_node test_selenium npm_install_node npm_install_selenium psl release
