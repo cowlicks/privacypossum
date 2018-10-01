@@ -1,5 +1,22 @@
+dist: trusty
+sudo: required
 language: node_js
 node_js:
   - "10"
 install: make npm_install
-script: make test
+matrix:
+  include:
+    - name: "Node Unit Tests"
+      install: make npm_install_node
+      script: make test_node
+    - name: "Selenium Unit Tests"
+      addons:
+        chrome: stable
+        hosts:
+          - firstparty.local
+          - thirdparty.local
+      before_install:
+        - export DISPLAY=:99.0
+        - sh -e /etc/init.d/xvfb start
+      install: make npm_install_selenium
+      script: make test_selenium
