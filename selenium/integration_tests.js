@@ -44,9 +44,18 @@ function loadDriverWithExtension(extPath) {
 
 describe('selenium test', function() {
   beforeEach(function() {
+    let i = 0;
+    console.log(`at number: ${i}`);
+    i += 1;
     this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
+    console.log(`at number: ${i}`);
+    i += 1;
     this.driver = loadDriverWithExtension(path);
+    console.log(`at number: ${i}`);
+    i += 1;
     startApp(this.app);
+    console.log(`at number: ${i}`);
+    i += 1;
   });
   afterEach(function() {
     stopApp(this.app);
