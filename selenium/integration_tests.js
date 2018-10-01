@@ -33,7 +33,10 @@ function stopApp(app) {
 
 function loadDriverWithExtension(extPath) {
   let chromeOptions = sw.Capabilities.chrome();
-  chromeOptions.set("chromeOptions",  {"args": ['--load-extension='+extPath]});
+  chromeOptions.set("chromeOptions",  {"args": [
+    '--load-extension='+extPath,
+    '--no-sandbox',
+  ]});
   return new sw.Builder()
       .forBrowser('chrome')
       .withCapabilities(chromeOptions)
