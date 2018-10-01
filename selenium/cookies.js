@@ -2,6 +2,7 @@
 
 const express = require('express'),
   cookieParser = require('cookie-parser'),
+  {firstPartyHostname, thirdPartyHostname, thirdPartyHost} = require('./utils'),
   vhost = require('vhost');
 
 let fpcookie = {name: '1pname', value: '1pvalue'},
@@ -33,8 +34,7 @@ class Channel {
   }
 }
 
-function firstPartyApp(thirdPartyHostname, port) {
-  const app = express();
+function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
   app.use(cookieParser());
   app.requests = new Channel();
 
@@ -42,14 +42,13 @@ function firstPartyApp(thirdPartyHostname, port) {
     app.requests.push(req);
     res.cookie(fpcookie.name, fpcookie.value);
     return res.send(
-      `<script type="text/javascript" src="http://${thirdPartyHostname}:${port}/tracker.js"></script>`
+      `<script type="text/javascript" src="http://${tpHost}/tracker.js"></script>`
     );
   });
   return app;
 }
 
-function thirdPartyApp() {
-  const app = express();
+function thirdPartyApp(app = express()) {
   app.use(cookieParser());
   app.requests = new Channel();
 
@@ -61,12 +60,12 @@ function thirdPartyApp() {
   return app;
 }
 
-function cookieApp(app, firstPartyHostname, thirdPartyHostname, port) {
-  let firstParty = firstPartyApp(thirdPartyHostname, port),
+function cookieApp(app = express(), fpHostname = firstPartyHostname, tpHostname = thirdPartyHostname) {
+  let firstParty = firstPartyApp(),
     thirdParty = thirdPartyApp();
-  app.use(vhost(firstPartyHostname, firstParty));
-  app.use(vhost(thirdPartyHostname, thirdParty));
-  Object.assign(app, {firstParty, thirdParty, firstPartyHostname, thirdPartyHostname, port});
+  app.use(vhost(fpHostname, firstParty));
+  app.use(vhost(tpHostname, thirdParty));
+  Object.assign(app, {firstParty, thirdParty});
   return app;
 }
 

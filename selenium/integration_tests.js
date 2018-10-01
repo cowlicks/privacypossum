@@ -2,14 +2,12 @@
 
 const {assert} = require('chai');
 
-const express = require('express'),
-  {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost} = require('./utils'),
+const {newDriver, startApp, stopApp, firstPartyHost} = require('./utils'),
   {cookieApp, fpcookie} = require("./cookies");
 
 describe('cookie tests', function() {
   beforeEach(function() {
-    // we need to only use xvfb when asked
-    this.app = cookieApp(module.exports = express(), firstPartyHostname, thirdPartyHostname, PORT);
+    this.app = cookieApp();
     this.driver = newDriver();
     startApp(this.app);
   });
