@@ -47,5 +47,31 @@ function newDriver() {
   return loadDriverWithExtension(path);
 }
 
+class Channel {
+  constructor() {
+    this.items = [];
+    this.waiting = [];
+  }
+  async popQueue() {
+    if (this.items.length > 0) {
+      return this.items.pop();
+    } else {
+      return new Promise((resolve) => {
+        this.waiting.push(resolve);
+      });
+    }
+  }
+  async next() {
+    return await this.popQueue();
+  }
+  push(item) {
+    if (this.waiting.length > 0) {
+      this.waiting.shift()(item);
+    } else {
+      this.items.push(item);
+    }
+  }
+}
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost});
+
+Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel});

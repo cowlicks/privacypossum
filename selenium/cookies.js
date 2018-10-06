@@ -2,37 +2,11 @@
 
 const express = require('express'),
   cookieParser = require('cookie-parser'),
-  {firstPartyHostname, thirdPartyHostname, thirdPartyHost} = require('./utils'),
+  {firstPartyHostname, thirdPartyHostname, thirdPartyHost, Channel} = require('./utils'),
   vhost = require('vhost');
 
 let fpcookie = {name: '1pname', value: '1pvalue'},
   tpcookie = {name: '3pname', value: '3pvalue'};
-
-class Channel {
-  constructor() {
-    this.items = [];
-    this.waiting = [];
-  }
-  async popQueue() {
-    if (this.items.length > 0) {
-      return this.items.pop();
-    } else {
-      return new Promise((resolve) => {
-        this.waiting.push(resolve);
-      });
-    }
-  }
-  async next() {
-    return await this.popQueue();
-  }
-  push(item) {
-    if (this.waiting.length > 0) {
-      this.waiting.shift()(item);
-    } else {
-      this.items.push(item);
-    }
-  }
-}
 
 function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
   app.use(cookieParser());
