@@ -73,5 +73,14 @@ class Channel {
   }
 }
 
+function requestRecorderApp(app = express()) {
+  app.requests = new Channel();
+  app.use((req, res, next) => {
+    app.requests.push(req);
+    next();
+  });
+  return app;
+}
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel});
+
+Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderApp});
