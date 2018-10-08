@@ -2,6 +2,7 @@
 
 const sw = require('selenium-webdriver'),
   {createServer} = require('http'),
+  vhost = require('vhost'),
   express = require('express');
 
 function startApp(app, port=PORT) {
@@ -85,5 +86,30 @@ function requestRecorderMiddleware(app = express()) {
   return app;
 }
 
+function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
+  app.get('/', (req, res) => {
+    return res.send(
+      `<script type="text/javascript" src="http://${tpHost}/tracker.js"></script>`
+    );
+  });
+  return app;
+}
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderMiddleware});
+function thirdPartyApp(app = express()) {
+  app.get('/tracker.js', (req, res) => {
+    return res.send('console.log("third party script")');
+  });
+  return app;
+}
+
+
+function baseTestApp(fpApp, tpApp, app = express(), fpHostname = firstPartyHostname, tpHostname = thirdPartyHostname) {
+  let firstParty = firstPartyApp(fpApp),
+    thirdParty = thirdPartyApp(tpApp);
+  app.use(vhost(fpHostname, firstParty));
+  app.use(vhost(tpHostname, thirdParty));
+  Object.assign(app, {firstParty, thirdParty});
+  return app;
+}
+
+Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderMiddleware, firstPartyApp, thirdPartyApp, baseTestApp});

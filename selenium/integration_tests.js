@@ -21,8 +21,8 @@ describe('etag tests', function() {
     await driver.get('about:blank');
     await driver.get(firstPartyHost);
     await driver.get(firstPartyHost);
-    let req1 = await app.firstParty.requests.next(),
-      req3 = await app.thirdParty.requests.next();
+    let req1 = await app.firstParty.requests.next();
+    //let req3 = await app.thirdParty.requests.next();
     assert.isTrue(req1.headers.hasOwnProperty('if-none-match'), 'allows 1st party etags on first visit');
     // known failure on chrome due to lack of access to caching headers in chrome webrquest api
     //assert.isFalse(req3.headers.hasOwnProperty('if-none-match'), 'blocks 3rd party etags headers on first visit');
