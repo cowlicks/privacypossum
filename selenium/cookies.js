@@ -2,13 +2,13 @@
 
 const express = require('express'),
   cookieParser = require('cookie-parser'),
-  {firstPartyHostname, thirdPartyHostname, thirdPartyHost, Channel, requestRecorderApp} = require('./utils'),
+  {firstPartyHostname, thirdPartyHostname, thirdPartyHost, Channel, requestRecorderMiddleware} = require('./utils'),
   vhost = require('vhost');
 
 let fpcookie = {name: '1pname', value: '1pvalue'},
   tpcookie = {name: '3pname', value: '3pvalue'};
 
-function firstPartyApp(app = requestRecorderApp(), tpHost = thirdPartyHost) {
+function firstPartyApp(app = requestRecorderMiddleware(), tpHost = thirdPartyHost) {
   app.use(cookieParser());
   app.get('/', (req, res) => {
     res.cookie(fpcookie.name, fpcookie.value);
@@ -19,7 +19,7 @@ function firstPartyApp(app = requestRecorderApp(), tpHost = thirdPartyHost) {
   return app;
 }
 
-function thirdPartyApp(app = requestRecorderApp()) {
+function thirdPartyApp(app = requestRecorderMiddleware()) {
   app.use(cookieParser());
   app.get('/tracker.js', (req, res) => {
     res.cookie(tpcookie.name, tpcookie.value);

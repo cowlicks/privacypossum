@@ -1,7 +1,8 @@
 'use strict';
 
 const sw = require('selenium-webdriver'),
-  {createServer} = require('http');
+  {createServer} = require('http'),
+  express = require('express');
 
 function startApp(app, port=PORT) {
   app.server = createServer(app);
@@ -73,7 +74,7 @@ class Channel {
   }
 }
 
-function requestRecorderApp(app = express()) {
+function requestRecorderMiddleware(app = express()) {
   app.requests = new Channel();
   app.responses = new Channel();
   app.use((req, res, next) => {
@@ -85,4 +86,4 @@ function requestRecorderApp(app = express()) {
 }
 
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderApp});
+Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderMiddleware});
