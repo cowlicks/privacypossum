@@ -75,8 +75,10 @@ class Channel {
 
 function requestRecorderApp(app = express()) {
   app.requests = new Channel();
+  app.responses = new Channel();
   app.use((req, res, next) => {
     app.requests.push(req);
+    app.responses.push(res);
     next();
   });
   return app;
