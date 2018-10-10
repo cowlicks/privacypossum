@@ -4,7 +4,8 @@
   "description": "",
   "main": "integration_tests.js",
   "scripts": {
-    "test": "mocha ./integration_tests.js"
+    "test": "mocha ./integration_tests.js",
+    "debug": "mocha debug ./integration_tests.js"
   },
   "author": "",
   "license": "ISC",
