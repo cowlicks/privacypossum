@@ -69,8 +69,8 @@ adresses is the tracking industry. So not all measures in this project are
 intended to protect you from all tracking, but they are intended to protect you
 from common commercial tracking.
 
-We want to threaten trarcking on a large scale, we want to be the threat model
-of the tra1280 pixels wide and 800 pixels highcking industry.
+We want to threaten tracking on a large scale, we want to be the threat model
+of the tracking industry.
 
 ## architecture
 
