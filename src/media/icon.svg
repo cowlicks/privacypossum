@@ -14,9 +14,9 @@
    viewBox="0 0 256 256"
    sodipodi:docname="icon.svg"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   inkscape:export-filename="/home/blake/github/possum/src/media/icon64.png"
-   inkscape:export-xdpi="24"
-   inkscape:export-ydpi="24">
+   inkscape:export-filename="/home/blake/git/privacypossum/src/media/icon16.png"
+   inkscape:export-xdpi="6"
+   inkscape:export-ydpi="6">
   <sodipodi:namedview
      pagecolor="#5affff"
      bordercolor="#666666"
@@ -35,8 +35,8 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="3.4766083"
-     inkscape:cx="122.06417"
-     inkscape:cy="128.36126"
+     inkscape:cx="64.536838"
+     inkscape:cy="104.19978"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -56,7 +56,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -74,27 +74,26 @@
          inkscape:connector-curvature="0" />
     </clipPath>
   </defs>
-  <g
-     id="g4561"
-     transform="matrix(0.9593548,0,0,0.9593548,5.7561361,5.753268)">
-    <circle
-       r="133.423"
-       cy="127.42599"
-       cx="127.423"
-       id="path4533-3"
-       style="fill:#fff5ff;fill-opacity:1;stroke:none;stroke-width:0.63687807;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
-    <circle
-       clip-path="url(#clipPath4548)"
-       r="127.42304"
-       cy="127.42641"
-       cx="127.42304"
-       id="path4533"
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.60823798;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
-    <circle
-       r="127.42303"
-       cy="128.85114"
-       cx="129.42303"
-       id="path814"
-       style="fill:none;fill-opacity:1;stroke:none;stroke-width:0.59730339;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke" />
-  </g>
+  <circle
+     style="fill:#fff5ff;fill-opacity:1;stroke:none;stroke-width:0.61099201;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+     id="path4533-3"
+     cx="128"
+     cy="128"
+     r="128" />
+  <circle
+     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.60823798;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+     id="path4533"
+     cx="127.42304"
+     cy="127.42641"
+     r="127.42304"
+     clip-path="url(#clipPath4548)"
+     transform="matrix(1.0045282,0,0,1.0045279,-8.9638218e-5,-0.00338198)"
+     inkscape:export-xdpi="12"
+     inkscape:export-ydpi="12" />
+  <circle
+     style="fill:none;fill-opacity:1;stroke:none;stroke-width:0.57302588;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
+     id="path814"
+     cx="129.91875"
+     cy="129.36722"
+     r="122.24389" />
 </svg>
