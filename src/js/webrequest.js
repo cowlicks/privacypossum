@@ -28,19 +28,19 @@ class WebRequest {
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking"]
+      ["blocking"],
     );
 
     onBeforeSendHeaders.addListener(
       this.onBeforeSendHeaders.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking", "requestHeaders"]
+      ["blocking", "requestHeaders", "extraHeaders"],
     );
 
     onHeadersReceived.addListener(
       this.onHeadersReceived.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking", "responseHeaders"]
+      ["blocking", "responseHeaders", "extraHeaders"],
     );
   }
 
