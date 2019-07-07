@@ -52,6 +52,7 @@ async function newDriver() {
 }
 
 class Channel {
+  // async stack datastructure
   constructor() {
     this.items = [];
     this.waiting = [];
@@ -65,10 +66,13 @@ class Channel {
       });
     }
   }
+
+  // Get the item from the top of the stack, or wait for an item if there are none.
   async next() {
     return await this.popQueue();
   }
 
+  // Push an item onto the stack.
   push(item) {
     if (this.waiting.length > 0) {
       this.waiting.pop()(item);
