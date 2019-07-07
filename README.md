@@ -94,7 +94,7 @@ The next best solution would be to just block the request. This is yet to be imp
 
 ## Dependencies
 
-The packaged extension contains *no* external dependencies. However we have several local dependencies we manually update for development purposes. First, wemaintain our own copy of Mozilla's Public Suffix List, and Privacy Badger's Multi-domain First Parties list. These are used to determine if a given domain is "first party" or "third party". We also have a copy of React and ReactDOM.
+The packaged extension contains *no* external dependencies. However we have several local dependencies we manually update for development purposes. First, we maintain our own copy of Mozilla's Public Suffix List, and Privacy Badger's Multi-domain First Parties list. These are used to determine if a given domain is "first party" or "third party". We also have a copy of React and ReactDOM.
 
 There are dependencies for development. These are all installed by running `npm install` inside `src/js`.
 
