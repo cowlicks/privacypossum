@@ -2,6 +2,7 @@
 
 const sw = require('selenium-webdriver'),
   {createServer} = require('http'),
+  path = require('path'),
   vhost = require('vhost'),
   express = require('express');
 
@@ -10,7 +11,7 @@ function startApp(app, port=PORT) {
   app.server.listen(port);
 }
 
-const path = '../src/.',
+const srcDir = '../src/.',
   PORT = 8000,
   host = (hostname, port) => `${hostname}:${port}`,
   firstPartyHostname = 'firstparty.local',
@@ -33,7 +34,7 @@ function stopApp(app) {
  * 127.0.0.1    thirdparty.local
  */
 
-function loadDriverWithExtension(extPath) {
+async function loadDriverWithExtension(extPath) {
   let chromeOptions = sw.Capabilities.chrome();
   chromeOptions.set("chromeOptions",  {"args": [
     `--load-extension=${extPath}`,
@@ -45,8 +46,9 @@ function loadDriverWithExtension(extPath) {
       .build();
 }
 
-function newDriver() {
-  return loadDriverWithExtension(path);
+async function newDriver() {
+  const srcPath = path.resolve(__dirname, srcDir);
+  return await loadDriverWithExtension(srcPath);
 }
 
 class Channel {
@@ -66,9 +68,10 @@ class Channel {
   async next() {
     return await this.popQueue();
   }
+
   push(item) {
     if (this.waiting.length > 0) {
-      this.waiting.shift()(item);
+      this.waiting.pop()(item);
     } else {
       this.items.push(item);
     }
@@ -87,7 +90,7 @@ function requestRecorderMiddleware(app = express()) {
 }
 
 function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
-  app.get('/', (req, res) => {
+  app.get('*', (req, res) => {
     return res.send(
       `<script type="text/javascript" src="http://${tpHost}/tracker.js"></script>`
     );
@@ -96,7 +99,7 @@ function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
 }
 
 function thirdPartyApp(app = express()) {
-  app.get('/tracker.js', (req, res) => {
+  app.get('*', (req, res) => {
     return res.send('console.log("third party script")');
   });
   return app;
@@ -106,8 +109,8 @@ function thirdPartyApp(app = express()) {
 function baseTestApp(fpApp, tpApp, app = express(), fpHostname = firstPartyHostname, tpHostname = thirdPartyHostname) {
   let firstParty = firstPartyApp(fpApp),
     thirdParty = thirdPartyApp(tpApp);
-  app.use(vhost(fpHostname, firstParty));
-  app.use(vhost(tpHostname, thirdParty));
+  app.all('/', vhost(fpHostname, firstParty));
+  app.all('/tracker.js', vhost(tpHostname, thirdParty));
   Object.assign(app, {firstParty, thirdParty});
   return app;
 }
