@@ -7,9 +7,9 @@ const {newDriver, startApp, stopApp, firstPartyHost} = require('./utils'),
   {etagApp} = require('./etags');
 
 describe('etag tests', function() {
-  beforeEach(function() {
+  beforeEach(async function() {
     this.app = etagApp();
-    this.driver = newDriver();
+    this.driver = await newDriver();
     startApp(this.app);
   });
   afterEach(function() {
@@ -18,21 +18,20 @@ describe('etag tests', function() {
   });
   it('blocks etags', async function() {
     let {app, driver} = this;
-    await driver.get('about:blank');
-    await driver.get(firstPartyHost);
-    await driver.get(firstPartyHost);
-    let req1 = await app.firstParty.requests.next();
+    await driver.get(firstPartyHost);  // etag gets set
+    await driver.get(firstPartyHost);  // browser sends if-none-match to check if etag still valid
+    let req = await app.firstParty.requests.next();
     //let req3 = await app.thirdParty.requests.next();
-    assert.isTrue(req1.headers.hasOwnProperty('if-none-match'), 'allows 1st party etags on first visit');
+    assert.isTrue(req.headers.hasOwnProperty('if-none-match'), 'allows 1st party etags on first visit');
     // known failure on chrome due to lack of access to caching headers in chrome webrquest api
     //assert.isFalse(req3.headers.hasOwnProperty('if-none-match'), 'blocks 3rd party etags headers on first visit');
   });
 });
 
 describe('cookie tests', function() {
-  beforeEach(function() {
+  beforeEach(async function() {
     this.app = cookieApp();
-    this.driver = newDriver();
+    this.driver = await newDriver();
     startApp(this.app);
   });
   afterEach(function() {
@@ -42,6 +41,7 @@ describe('cookie tests', function() {
 
   it('blocks cookies', async function() {
     let {app, driver} = this;
+
     await driver.get(firstPartyHost);
     let request = await app.firstParty.requests.next();
     // no cookies initially
