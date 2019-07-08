@@ -64,6 +64,7 @@
 
       "js/schemes.js",
 
+      "js/browser_compat.js",
       "js/webrequest.js",
       "js/store.js",
       "js/popup.js",
