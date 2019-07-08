@@ -6,6 +6,7 @@ const shim = require('./shim'), {URL} = shim,
   constants = require('./constants'),
   {header_methods, request_methods} = constants,
   {ON_BEFORE_REQUEST, ON_BEFORE_SEND_HEADERS, ON_HEADERS_RECEIVED} = request_methods,
+  {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions} = require('./browser_compat'),
   {Handler} = require('./reasons/handlers');
 
 function annotateDetails(details, requestType) {
@@ -17,6 +18,7 @@ function annotateDetails(details, requestType) {
   });
 }
 
+
 class WebRequest {
   constructor(tabs, store, handler = new Handler(tabs, store)) {
     Object.assign(this, {tabs, store, handler});
@@ -25,22 +27,23 @@ class WebRequest {
   }
 
   startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
+
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking"],
+      getOnBeforeRequestOptions(),
     );
 
     onBeforeSendHeaders.addListener(
       this.onBeforeSendHeaders.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking", "requestHeaders", "extraHeaders"],
+      getOnBeforeSendHeadersOptions(),
     );
 
     onHeadersReceived.addListener(
       this.onHeadersReceived.bind(this),
       {urls: ["<all_urls>"]},
-      ["blocking", "responseHeaders", "extraHeaders"],
+      getOnHeadersReceivedOptions(),
     );
   }
 
