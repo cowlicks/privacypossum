@@ -10,6 +10,12 @@
  * we load these lazily.
  */
 
+class Enum {
+  constructor(entries) {
+    entries.forEach(x => Object.assign(this, {[x]: x}));
+  }
+}
+
 let globalObj = (typeof window === 'object') ? window : global; // eslint-disable-line
 let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
 let passThru = (x) => x;
@@ -123,6 +129,9 @@ let shims = [
   ['onBeforeSendHeaders', 'chrome.webRequest.onBeforeSendHeaders', passThru, makeFakeMessages],
   ['onHeadersReceived', 'chrome.webRequest.onHeadersReceived', passThru, makeFakeMessages],
   ['onCompleted', 'chrome.webRequest.onCompleted', passThru, makeFakeMessages],
+  ['onBeforeRequestOptions', 'chrome.webRequest.onBeforeRequestOptions', passThru, () => new Enum(['blocking'])],
+  ['onBeforeSendHeadersOptions', 'chrome.webRequest.onBeforeSendHeadersOptions', passThru, () => new Enum(["blocking", "requestHeaders"])],
+  ['onHeadersReceivedOptions', 'chrome.webRequest.onHeadersReceivedOptions', passThru, ()=> new Enum(["blocking", "responseHeaders"])],
   ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
   ['onActivated', 'chrome.tabs.onActivated', passThru, makeFakeMessages],
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],
