@@ -7,16 +7,16 @@ const shim = require('./shim');
 /*
  * Firefox & Chrome now take different values in opt_extraInfoSpec
  */
-function getOnBeforeRequestOptions({onBeforeRequestOptions} = shim) {
-  return["blocking"].filter(x => onBeforeRequestOptions[x]);
+function getOnBeforeRequestOptions({OnBeforeRequestOptions} = shim) {
+  return ["BLOCKING"].map(x => OnBeforeRequestOptions[x]).filter(x => x);
 }
 
-function getOnBeforeSendHeadersOptions({onBeforeSendHeadersOptions} = shim) {
-  return ["blocking", "requestHeaders", "extraHeaders"].filter(x => onBeforeSendHeadersOptions[x]);
+function getOnBeforeSendHeadersOptions({OnBeforeSendHeadersOptions} = shim) {
+  return ["BLOCKING", "REQUEST_HEADERS", "EXTRA_HEADERS"].map(x => OnBeforeSendHeadersOptions[x]).filter(x => x);
 }
 
-function getOnHeadersReceivedOptions({onHeadersReceivedOptions} = shim) {
-  return ["blocking", "responseHeaders", "extraHeaders"].filter(x => onHeadersReceivedOptions[x]);
+function getOnHeadersReceivedOptions({OnHeadersReceivedOptions} = shim) {
+  return ["BLOCKING", "RESPONSE_HEADERS", "EXTRA_HEADERS"].map(x => OnHeadersReceivedOptions[x]).filter(x => x);
 }
 
 Object.assign(exports, {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions});
