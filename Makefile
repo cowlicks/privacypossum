@@ -11,10 +11,10 @@ clean:
 	rm -f possum.zip
 	rm -f possum.crx
 
-test_node:
+test_node: src/js/node_modules
 	./scripts/test.sh
 
-test_selenium:
+test_selenium: selenium/node_modules
 	./scripts/selenium_test.sh
 
 npm_install_node:
@@ -31,9 +31,12 @@ scripts/release.sh: scripts/source_me.sh
 possum.zip: $(shell git ls-files src)
 	cd src/ && git ls-files | zip -q -9 -X $(possum_zip) -@
 
-dev: src/js/node_modules
+dev: src/js/node_modules selenium/node_modules
 src/js/node_modules: src/js/package.json
 	cd src/js && npm install
+
+selenium/node_modules: selenium/package.json
+	cd selenium && npm install
 
 possum.crx: possum.zip src/js/node_modules $(shell git ls-files src)
 	src/js/node_modules/.bin/crx3-new $(possum_pem) < $(possum_zip) > $(possum_crx)
