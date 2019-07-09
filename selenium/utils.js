@@ -16,6 +16,7 @@ const srcDir = '../src/.',
   host = (hostname, port) => `${hostname}:${port}`,
   firstPartyHostname = 'firstparty.local',
   thirdPartyHostname = 'thirdparty.local',
+  thirdPartyText = 'Third party loaded.',
   firstPartyHost = host(firstPartyHostname, PORT),
   thirdPartyHost = host(thirdPartyHostname, PORT);
 
@@ -45,6 +46,7 @@ async function loadDriverWithExtension(extPath) {
       .withCapabilities(chromeOptions)
       .build();
 }
+
 
 async function newDriver() {
   const srcPath = path.resolve(__dirname, srcDir);
@@ -95,16 +97,27 @@ function requestRecorderMiddleware(app = express()) {
 
 function firstPartyApp(app = express(), tpHost = thirdPartyHost) {
   app.get('*', (req, res) => {
-    return res.send(
-      `<script type="text/javascript" src="http://${tpHost}/tracker.js"></script>`
-    );
+    return res.send(`
+<head>
+  <script type="text/javascript" src="http://${tpHost}/tracker.js"></script>
+</head>
+<body>
+</body>
+`);
   });
   return app;
 }
 
 function thirdPartyApp(app = express()) {
   app.get('*', (req, res) => {
-    return res.send('console.log("third party script")');
+    return res.send(`
+window.onload = () => {
+  console.log("third party script");
+  const div = document.createElement('div');
+  div.innerText = '${thirdPartyText}';
+  document.body.appendChild(div);
+};
+`);
   });
   return app;
 }
@@ -119,4 +132,4 @@ function baseTestApp(fpApp, tpApp, app = express(), fpHostname = firstPartyHostn
   return app;
 }
 
-Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, Channel, requestRecorderMiddleware, firstPartyApp, thirdPartyApp, baseTestApp});
+Object.assign(module.exports, {newDriver, startApp, stopApp, PORT, firstPartyHostname, thirdPartyHostname, firstPartyHost, thirdPartyHost, thirdPartyText, Channel, requestRecorderMiddleware, firstPartyApp, thirdPartyApp, baseTestApp});
