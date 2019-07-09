@@ -2,8 +2,10 @@
 
 const {assert} = require('chai');
 
-const {newDriver, startApp, stopApp, firstPartyHost} = require('./utils'),
+const {newDriver, startApp, stopApp, firstPartyHost, thirdPartyText} = require('./utils'),
+  {By} = require('selenium-webdriver'),
   {cookieApp, fpcookie} = require("./cookies"),
+  {refererApp} = require('./referer'),
   {etagApp} = require('./etags');
 
 describe('etag tests', function() {
@@ -56,5 +58,23 @@ describe('cookie tests', function() {
     request = await app.thirdParty.requests.next();
     // but not third party cookies
     assert.deepEqual(request.cookies, {});
+  });
+});
+
+describe('referer tests', function() {
+  beforeEach(async function() {
+    this.app = refererApp();
+    this.driver = await newDriver();
+    startApp(this.app);
+  });
+  afterEach(function() {
+    stopApp(this.app);
+    this.driver.quit();
+  });
+  it('sends header when required', async function() {
+    let {app, driver} = this;
+    await driver.get(firstPartyHost);
+    let el = await driver.findElement(By.xpath('/html/body/div'));
+    assert.deepEqual(await el.getText(), thirdPartyText);
   });
 });
