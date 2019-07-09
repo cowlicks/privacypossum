@@ -12,11 +12,11 @@ function getOnBeforeRequestOptions({OnBeforeRequestOptions} = shim) {
 }
 
 function getOnBeforeSendHeadersOptions({OnBeforeSendHeadersOptions} = shim) {
-  return ["BLOCKING", "REQUEST_HEADERS", "EXTRA_HEADERS"].map(x => OnBeforeSendHeadersOptions[x]).filter(x => x);
+  return ["BLOCKING", "REQUEST_HEADERS", "REQUESTHEADERS", "EXTRA_HEADERS"].map(x => OnBeforeSendHeadersOptions[x]).filter(x => x);
 }
 
 function getOnHeadersReceivedOptions({OnHeadersReceivedOptions} = shim) {
-  return ["BLOCKING", "RESPONSE_HEADERS", "EXTRA_HEADERS"].map(x => OnHeadersReceivedOptions[x]).filter(x => x);
+  return ["BLOCKING", "RESPONSE_HEADERS", "RESPONSEHEADERS", "EXTRA_HEADERS"].map(x => OnHeadersReceivedOptions[x]).filter(x => x);
 }
 
 Object.assign(exports, {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions});
