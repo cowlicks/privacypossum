@@ -1,5 +1,5 @@
 {
-  "version": "2018.8.31",
+  "version": "2019.7.8",
   "name": "Privacy Possum",
   "author": "cowlicks@riseup.net",
   "manifest_version": 2,
@@ -64,6 +64,7 @@
 
       "js/schemes.js",
 
+      "js/browser_compat.js",
       "js/webrequest.js",
       "js/store.js",
       "js/popup.js",

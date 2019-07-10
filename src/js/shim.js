@@ -123,6 +123,15 @@ let shims = [
   ['onBeforeSendHeaders', 'chrome.webRequest.onBeforeSendHeaders', passThru, makeFakeMessages],
   ['onHeadersReceived', 'chrome.webRequest.onHeadersReceived', passThru, makeFakeMessages],
   ['onCompleted', 'chrome.webRequest.onCompleted', passThru, makeFakeMessages],
+  ['OnBeforeRequestOptions', 'chrome.webRequest.OnBeforeRequestOptions', passThru, () => {
+    return {'BLOCKING': 'blocking'};
+  }],
+  ['OnBeforeSendHeadersOptions', 'chrome.webRequest.OnBeforeSendHeadersOptions', passThru, () => {
+    return {'BLOCKING': 'blocking', 'REQUEST_HEADERS': "requestHeaders"};
+  }],
+  ['OnHeadersReceivedOptions', 'chrome.webRequest.OnHeadersReceivedOptions', passThru, ()=> {
+    return {'BLOCKING': 'blocking', 'RESPONSE_HEADERS': "responseHeaders"};
+  }],
   ['onRemoved', 'chrome.tabs.onRemoved', passThru, makeFakeMessages],
   ['onActivated', 'chrome.tabs.onActivated', passThru, makeFakeMessages],
   ['onUpdated', 'chrome.tabs.onUpdated', passThru, makeFakeMessages],

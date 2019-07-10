@@ -17,4 +17,4 @@ pushd ${src_dir} > /dev/null
 trap "popd > /dev/null" EXIT
 
 echo "packaging extension to: ${out_file}"
-git ls-files | zip -q ${out_file} -@
+git ls-files | zip -q -9 -X ${out_file} -@
