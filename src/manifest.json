@@ -18,8 +18,7 @@
     "webRequestBlocking",
     "webNavigation",
     "storage",
-    "cookies",
-    "privacy"
+    "cookies"
   ],
   "icons": {
     "48": "media/icon48.png",

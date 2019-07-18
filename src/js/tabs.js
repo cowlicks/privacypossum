@@ -7,7 +7,7 @@
 [(function(exports) {
 
 const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
-  {REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
+  {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
   {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
   {isThirdParty} = require('./domains/parties');
 
@@ -246,7 +246,10 @@ class Tabs {
     return this.getTab(tabId).get(frameId);
   }
 
-  isRequestThirdParty({tabId, initiator, urlObj: {hostname} = {}}) {
+  isRequestThirdParty({tabId, initiator, type, urlObj: {hostname} = {}}) {
+    if (type === TYPES.main_frame) {
+      return false;
+    }
     if (typeof initiator !== 'undefined') {
       return isThirdParty((new URL(initiator)).hostname, hostname);
     }

@@ -2,6 +2,7 @@
 
 const assert = require('chai').assert,
   {WebRequest} = require('../webrequest'),
+  {NO_ACTION} = require('../constants'),
   {Tabs} = require('../tabs'),
   {Store} = require('../store'),
   {details, clone, cookie, notCookie} = require('./testing_utils');
@@ -54,7 +55,8 @@ describe('webrequest.js', function() {
   describe('#onBeforeSendHeaders', function() {
     beforeEach(function() {
       this.wr.onBeforeRequest(details.main_frame);
-      this.third_party = clone(details.main_frame);
+      this.main_frame = clone(details.main_frame);
+      this.third_party = clone(details.third_party);
       this.third_party.url = 'https://third-party.com/';
     })
     it('removes cookies from thirdparty requests', function() {
@@ -64,7 +66,7 @@ describe('webrequest.js', function() {
     it('does not effect first party cookies', function() {
       let first_party = clone(details.main_frame);
       first_party.requestHeaders = [cookie, notCookie];
-      assert.deepEqual(this.wr.onBeforeSendHeaders(first_party), {});
+      assert.deepEqual(this.wr.onBeforeSendHeaders(first_party), NO_ACTION);
     })
     it('does not effect thirdparty requests with no cookies', function() {
       this.third_party.requestHeaders = [notCookie, notCookie];
@@ -76,9 +78,14 @@ describe('webrequest.js', function() {
   describe('#onHeadersReceived', function() {
     beforeEach(function() {
       this.wr.onBeforeRequest(details.main_frame);
-      this.third_party = clone(details.main_frame);
+      this.first_party = clone(details.main_frame);
+      this.third_party = clone(details.third_party);
       this.third_party.url = 'https://third-party.com/';
     })
+    it('does not effect cookies on main_frame requests', function() {
+      this.first_party.responseHeaders = [cookie, notCookie];
+      assert.deepEqual(this.wr.onHeadersReceived(this.first_party), NO_ACTION);
+    });
     it('removes cookies from thirdparty requests', function() {
       this.third_party.responseHeaders = [cookie, notCookie];
       assert.deepEqual(this.wr.onHeadersReceived(this.third_party), {responseHeaders: [notCookie]});
