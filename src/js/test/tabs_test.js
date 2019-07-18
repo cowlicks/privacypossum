@@ -34,6 +34,10 @@ describe('tabs.js', function() {
       });
     });
     describe('#isRequestThirdParty', function() {
+      it('is first party if main_frame', function() {
+        let details = {type: 'main_frame'};
+        assert.isFalse(this.tabs.isRequestThirdParty(details));
+      });
       it('no initiator', function() {
         let details = {tabId: 1, urlObj: new URL(thirdParty)};
         assert.isTrue(this.tabs.isRequestThirdParty(details));
