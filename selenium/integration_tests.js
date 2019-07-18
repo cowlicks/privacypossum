@@ -6,15 +6,20 @@ const {newDriver, startApp, stopApp, firstPartyHost} = require('./utils'),
   {cookieApp, fpcookie} = require("./cookies"),
   {etagApp} = require('./etags');
 
+beforeEach(async function() {
+  this.driver = await newDriver();
+});
+afterEach(async function() {
+  await this.driver.quit();
+});
+
 describe('etag tests', function() {
   beforeEach(async function() {
     this.app = etagApp();
-    this.driver = await newDriver();
     startApp(this.app);
   });
   afterEach(function() {
     stopApp(this.app);
-    this.driver.quit();
   });
   it('blocks etags', async function() {
     let {app, driver} = this;
@@ -31,12 +36,10 @@ describe('etag tests', function() {
 describe('cookie tests', function() {
   beforeEach(async function() {
     this.app = cookieApp();
-    this.driver = await newDriver();
     startApp(this.app);
   });
   afterEach(function() {
     stopApp(this.app);
-    this.driver.quit();
   });
 
   it('blocks cookies', async function() {
