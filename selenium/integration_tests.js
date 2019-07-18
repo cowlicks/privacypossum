@@ -6,9 +6,15 @@ const {newDriver, startApp, stopApp, firstPartyHost} = require('./utils'),
   {cookieApp, fpcookie} = require("./cookies"),
   {etagApp} = require('./etags');
 
+async function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 beforeEach(async function() {
   this.driver = await newDriver();
+  await sleep(250);
 });
+
 afterEach(async function() {
   await this.driver.quit();
 });
