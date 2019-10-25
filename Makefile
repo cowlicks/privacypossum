@@ -4,12 +4,7 @@ possum_zip := $(toplevel)/possum.zip
 possum_crx := $(toplevel)/possum.crx
 
 clean:
-	rm -rf src/js/node_modules
-	rm -f src/js/package-lock.json
-	rm -rf selenium/node_modules
-	rm -f selenium/package-lock.json
-	rm -f possum.zip
-	rm -f possum.crx
+	git clean -xdf
 
 test_node: src/js/node_modules
 	./scripts/test.sh
