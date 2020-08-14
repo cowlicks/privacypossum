@@ -1,8 +1,6 @@
 /* eslint-disable */
 "use strict";
 
-[(function(exports) {
-
 const publicSuffixes = new Map(
 [["0.bg", 1],
 ["001www.com", 1],
@@ -7464,6 +7462,4 @@ const publicSuffixes = new Map(
 ["zushi.kanagawa.jp", 1]]
 );
 
-Object.assign(exports, {publicSuffixes});
-
-})].map(func => typeof exports == 'undefined' ? define('/domains/psl', func) : func(exports));
+export {publicSuffixes};
