@@ -1,10 +1,8 @@
 "use strict";
 
-[(function(exports) {
-
-const {memoize} = require('../utils'),
-  {getBaseDomain} = require('./basedomain'),
-  {isMdfp} = require('./mdfp');
+import {memoize} from '../utils.js';
+import {getBaseDomain} from './basedomain.js';
+import {isMdfp} from './mdfp.js';
 
 function isThirdParty(d1, d2) {
   let b1 = getBaseDomain(d1),
@@ -17,6 +15,4 @@ function isThirdParty(d1, d2) {
 }
 isThirdParty = memoize(isThirdParty, ([a, b]) => a + ' ' + b, 1000);
 
-Object.assign(exports, {isThirdParty});
-
-})].map(func => typeof exports == 'undefined' ? define('/domains/parties', func) : func(exports));
+export {isThirdParty};

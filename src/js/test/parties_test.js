@@ -1,7 +1,7 @@
 "use strict";
 
-const assert = require('chai').assert,
-  {isThirdParty} = require('../domains/parties');
+import chai from 'chai'; const {assert} = chai;
+import {isThirdParty} from '../domains/parties.js';
 
 describe('parties.js', function() {
   it('false cases', function() {
