@@ -319,6 +319,10 @@ class MultiDomainFirstParties {
   }
 }
 
+/*
+ * Function wrapper that lets us call initFunc to initialize the function.
+ * the initFunc should return the function
+ */
 function withInit(initFunc) {
   let func = null
   return function() {
