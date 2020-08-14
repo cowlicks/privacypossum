@@ -16,15 +16,11 @@ psl_url = 'https://publicsuffix.org/list/public_suffix_list.dat'
 file_text = '''/* eslint-disable */
 "use strict";
 
-[(function(exports) {
-
 const publicSuffixes = new Map(
 %s
 );
 
-Object.assign(exports, {publicSuffixes});
-
-})].map(func => typeof exports == 'undefined' ? define('/domains/psl', func) : func(exports));'''
+export {publicSuffixes};'''
 
 
 def get_psl_text():
