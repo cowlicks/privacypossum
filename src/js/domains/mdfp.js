@@ -1,8 +1,6 @@
 "use strict";
 
-[(function(exports) {
-
-const {memoize, lazyDef} = require('../utils');
+import {memoize} from '../utils.js';
 
 
 let multiDomainFirstPartiesArray = [
@@ -321,11 +319,16 @@ class MultiDomainFirstParties {
   }
 }
 
-lazyDef(exports, 'isMdfp', () => {
+function withInit(initFunc) {
+  let func = null
+  return function() {
+    return (func ? func : func = initFunc()).apply(null, arguments);
+  }
+}
+
+const isMdfp = withInit(() => {
   let mdfp = new MultiDomainFirstParties();
-  return {isMdfp: mdfp.isMdfp.bind(mdfp)};
+  return mdfp.isMdfp.bind(mdfp);
 });
 
-Object.assign(exports, {MultiDomainFirstParties});
-
-})].map(func => typeof exports == 'undefined' ? define('/domains/mdfp', func) : func(exports));
+export {MultiDomainFirstParties, isMdfp};
