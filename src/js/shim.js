@@ -9,11 +9,12 @@ const exports = {};
  * we load these lazily.
  */
 
+import {FakeMessages, FakeDisk, Connects} from './fakes.js';
+
 let globalObj = (typeof window === 'object') ? window : global; // eslint-disable-line
 let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
 let passThru = (x) => x;
 let makeFakeMessages = () => {
-  let {FakeMessages} = require('./fakes');
   return new FakeMessages();
 };
 let makeFakeSendMessage = () => {
@@ -23,7 +24,6 @@ let makeFakeSendMessage = () => {
   return sendMessage;
 }
 let makeFakeDisk = () => {
-  let {FakeDisk} = require('./fakes');
   let out = FakeDisk;
   out.newDisk = () => new FakeDisk();
   return out;
@@ -83,7 +83,7 @@ let tabsOnAndSendMessage = (name) => {
 };
 
 let connectAndOnConnect = (name) => {
-  let [con, onCon] = require('./fakes').Connects.create();
+  let [con, onCon] = Connects.create();
   assign('onConnect', onCon);
   assign('connect', con);
   return getter(name, exports);

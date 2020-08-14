@@ -4,8 +4,9 @@
  */
 "use strict";
 
-const assert = require('chai').assert,
-  {connect, onConnect} = require('../shim');
+import chai from 'chai'; const {assert} = chai;
+import {shims} from '../shim.js';
+const {connect, onConnect} = shims;
 
 describe('shim.js', function() {
   describe('connect and onConnect', function() {
