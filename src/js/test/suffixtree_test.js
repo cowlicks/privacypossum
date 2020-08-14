@@ -1,7 +1,9 @@
 'use strict';
 
-const assert = require('chai').assert,
-  {Tree, splitter} = require('../suffixtree');
+import chai from 'chai';
+import {Tree, splitter} from '../suffixtree.js';
+
+const {assert} = chai;
 
 describe('suffixtree.js', function() {
   let host = 'bar.foo.example.com',
