@@ -1,7 +1,5 @@
 "use strict";
 
-[(function(exports) {
-
 const SENTINEL = '.',
   LABEL = 'label',
   root_label = 'root';
@@ -116,6 +114,4 @@ function splitter(splitme) {
   return splitme.split('.').reverse();
 }
 
-Object.assign(exports, {Tree, splitter});
-
-})].map(func => typeof exports == 'undefined' ? define('/suffixtree', func) : func(exports));
+export {Tree, splitter};
