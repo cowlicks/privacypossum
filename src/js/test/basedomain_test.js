@@ -16,8 +16,8 @@
  */
 "use strict";
 
-const assert = require('chai').assert,
-  {getBaseDomain} = require('../domains/basedomain');
+import chai from 'chai'; const {assert} = chai;
+import {getBaseDomain} from '../domains/basedomain.js';
 
 describe('basedomain.js', function() {
   it("Determining base domain", function () {
