@@ -1,61 +1,6 @@
 "use strict";
 
 import {activeIcons, inactiveIcons} from './constants.js';
-import {shims} from './shim.js';
-const {setIcon, setBadgeText, tabsQuery, tabsGet} = shims;
-
-function errorOccurred() {
-  if (typeof chrome !== 'undefined' && chrome.runtime.lastError) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-async function currentTab() {
-  const active = true, lastFocusedWindow = true;
-  return new Promise(resolve => {
-    tabsQuery({active, lastFocusedWindow}, tabsFirstTry => {
-      if (tabsFirstTry.length > 0) {
-        resolve(tabsFirstTry[0]);
-      } else { // tab not focused
-        tabsQuery({active}, tabsSecondTry => {
-          resolve(tabsSecondTry[0]);
-        });
-      }
-    });
-  });
-}
-
-async function tabExists(tabId) {
-  if (tabId >= 0) {
-    return await new Promise(resolve => {
-      tabsGet(tabId, () => {
-        if (!errorOccurred()) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  } else {
-    return true;
-  }
-}
-
-// todo after setIcon return's a promise, make this return a promise
-async function setTabIconActive(tabId, active) {
-  if (await tabExists(tabId)) {
-    let icons = active ? activeIcons : inactiveIcons;
-    setIcon({tabId: tabId, path: icons});
-  }
-}
-
-async function safeSetBadgeText(tabId, text) {
-  if (await tabExists(tabId)) {
-    setBadgeText({text, tabId});
-  }
-}
 
 /*
  * View of some remote data represented by a `Model`.
@@ -330,8 +275,6 @@ const logger = new LogBook(100),
   prettyLog = logger.prettyLog.bind(logger);
 
 export {
-  currentTab,
-  safeSetBadgeText,
   View,
   Model,
   LruMap,
@@ -342,13 +285,11 @@ export {
   makeTrap,
   listenerMixin,
   Listener,
-  setTabIconActive,
   hasAction,
   isBaseOfHostname,
   lazyDef,
   wrap,
   zip,
-  errorOccurred,
   logger,
   log,
   prettyLog,
