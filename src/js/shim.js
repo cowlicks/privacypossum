@@ -4,8 +4,7 @@
  */
 "use strict";
 
-[(function(exports) {
-
+const exports = {};
 /**
  * we load these lazily.
  */
@@ -170,4 +169,4 @@ let shims = [
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
 
-})].map(func => typeof exports == 'undefined' ? define('/shim', func) : func(exports));
+export {exports as shims};

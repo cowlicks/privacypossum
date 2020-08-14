@@ -1,9 +1,8 @@
 'use strict';
 
-const assert = require('chai').assert,
-  {fakePort} = require('../fakes'),
-  {View, Model, Listener, Counter, LruMap} = require('../utils'),
-  {LogBook, wrap, zip} = require('../utils');
+import chai from 'chai'; const {assert} = chai;
+import {fakePort} from '../fakes.js';
+import {View, Model, Listener, Counter, LruMap, LogBook, wrap, zip} from '../utils.js';
 
 describe('utils.js', function() {
   describe('LruMap', function() {

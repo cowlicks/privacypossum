@@ -1,9 +1,8 @@
 "use strict";
 
-[(function(exports) {
-
-const {activeIcons, inactiveIcons} = require('./constants'),
-    {setIcon, setBadgeText, tabsQuery, tabsGet} = require('./shim');
+import {activeIcons, inactiveIcons} from './constants.js';
+import {shims} from './shim.js';
+const {setIcon, setBadgeText, tabsQuery, tabsGet} = shims;
 
 function errorOccurred() {
   if (typeof chrome !== 'undefined' && chrome.runtime.lastError) {
@@ -326,12 +325,11 @@ function zip() {
   return out;
 }
 
-lazyDef(exports, 'log', () => {
-  let logger = new LogBook(100);
-  return {logger, log: logger.log.bind(logger), prettyLog: logger.prettyLog.bind(logger)};
-});
+const logger = new LogBook(100),
+  log = logger.log.bind(logger),
+  prettyLog = logger.prettyLog.bind(logger);
 
-Object.assign(exports, {
+export {
   currentTab,
   safeSetBadgeText,
   View,
@@ -351,6 +349,7 @@ Object.assign(exports, {
   wrap,
   zip,
   errorOccurred,
-});
-
-})].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));
+  logger,
+  log,
+  prettyLog,
+};
