@@ -1,10 +1,11 @@
 'use strict';
 
-const assert = require('chai').assert,
-  {makeFingerCounting} = require('../contentscripts/fingercounting'),
-  {Counter, getUrlFromStackLine} = makeFingerCounting(0, false),
-  {makeTrap} = require('../utils'),
-  {Mock} = require('./testing_utils');
+import chai from 'chai'; const {assert} = chai;
+import {makeFingerCounting} from '../contentscripts/fingercounting.js';
+import {makeTrap} from '../utils.js';
+import {Mock} from './testing_utils.js';
+
+const {Counter, getUrlFromStackLine} = makeFingerCounting(0, false);
 
 describe('fingercounting.js', function() {
   describe('getUrlFromStackLine', function() {

@@ -1,6 +1,5 @@
 "use strict";
 
-[(function(exports) {
 /**
  * This watches methods that are commonly used for fingerprinting, and reports
  * when a suspicious number of them are used by one script.
@@ -298,6 +297,4 @@ function makeFingerCounting(event_id = 0, init = true) {
   }
 }
 
-Object.assign(exports, {makeFingerCounting});
-
-})].map(func => typeof exports == 'undefined' ? define('/contentscripts/fingercounting', func) : func(exports));
+export {makeFingerCounting};
