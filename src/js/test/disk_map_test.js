@@ -1,8 +1,9 @@
 'use strict';
 
-const assert = require('chai').assert,
-  {DiskMap} = require('../disk_map'),
-  {Disk} = require('../shim');
+import chai from 'chai'; const {assert} = chai;
+import {DiskMap} from '../disk_map.js';
+import {shims} from '../shim.js';
+const {Disk} = shims;
 
 describe('disk_map.js', function() {
   describe('DiskMap', function() {

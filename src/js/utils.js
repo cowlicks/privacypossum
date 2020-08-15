@@ -1,7 +1,5 @@
 "use strict";
 
-import {activeIcons, inactiveIcons} from './constants.js';
-
 /*
  * View of some remote data represented by a `Model`.
  */
