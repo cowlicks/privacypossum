@@ -154,7 +154,6 @@ let shims = [
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
   ['document', 'document', passThru, () => {
     return import('jsdom').then(({default: {JSDOM}}) => {
-      console.log(JSDOM);
       return (new JSDOM()).window.document;
     })
   }],

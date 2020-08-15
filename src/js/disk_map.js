@@ -11,7 +11,6 @@
  * resource intensive. So instead we do this.
  */
 
-[(function(exports) {
 
 class DiskMap {
   constructor(name, disk) {
@@ -89,6 +88,4 @@ class DiskMap {
   }
 }
 
-Object.assign(exports, {DiskMap});
-
-})].map(func => typeof exports == 'undefined' ? define('/disk_map', func) : func(exports));
+export {DiskMap};

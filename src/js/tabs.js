@@ -4,12 +4,14 @@
  */
 "use strict";
 
-[(function(exports) {
 
-const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
-  {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
-  {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
-  {isThirdParty} = require('./domains/parties');
+import {shims} from './shim.js';
+const {URL, tabsGet, tabsQuery, tabsExecuteScript} = shims;
+
+import {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} from './constants.js';
+import {Counter, listenerMixin, log} from './utils.js';
+import {errorOccurred, setTabIconActive, safeSetBadgeText} from './browser_utils.js';
+import {isThirdParty} from './domains/parties.js';
 
 class Resource {
   constructor({url, method, type}) {
@@ -319,6 +321,4 @@ async function getAllFrames(tabId) {
   return new Promise(resolve => shim.getAllFrames({tabId}, resolve));
 }
 
-Object.assign(exports, {Frame, Tabs, Tab});
-
-})].map(func => typeof exports == 'undefined' ? define('/tabs', func) : func(exports));
+export {Frame, Tabs, Tab};
