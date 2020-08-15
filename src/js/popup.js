@@ -7,14 +7,13 @@
  */
 "use strict";
 
-[(function(exports) {
-
-let {connect, document, sendMessage, ReactDOM} = require('./shim'),
-  {PopupHandler} = require('./reasons/handlers'),
-  {View, Counter} = require('./utils'),
-  {Action} = require('./schemes'),
-  {popupTitleBar, popupBody} = require('./popup_components'),
-  {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} = require('./constants');
+import {shims} from './shim.js';
+const  {connect, document, sendMessage, ReactDOM} = shims;
+import  {PopupHandler} from './reasons/handlers.js';
+import  {View, Counter} from './utils.js';
+import  {Action} from './schemes.js';
+import  {popupTitleBar, popupBody} from './popup_components.js';
+import  {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} from './constants.js';
 
 const $ = (id) => document.getElementById(id),
     asyncRender = (component, anchor) => new Promise(resolve => ReactDOM.render(component, anchor, resolve));
@@ -113,6 +112,4 @@ class Popup {
   }
 }
 
-Object.assign(exports, {Popup, $});
-
-})].map(func => typeof exports == 'undefined' ? define('/popup', func) : func(exports));
+export {Popup, $};

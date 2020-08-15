@@ -1,9 +1,8 @@
 "use strict";
 
-[(function(exports) {
-
-let {getURL, React} = require('./shim'),
-    {USER_URL_DEACTIVATE} = require('./constants');
+import {shims} from './shim.js';
+const {getURL, React} = shims;
+import {USER_URL_DEACTIVATE} from './constants.js';
 
 const text = {enabled: 'ENABLED', disabled: 'DISABLED'};
 
@@ -113,6 +112,4 @@ function popupBody({active, urlActions, headerCounts, headerCountsActive, header
   return e(React.Fragment, null, ...children);
 }
 
-Object.assign(exports, {popupTitleBar, popupBody});
-
-})].map(func => typeof exports == 'undefined' ? define('/popup_components', func) : func(exports));
+export {popupTitleBar, popupBody};

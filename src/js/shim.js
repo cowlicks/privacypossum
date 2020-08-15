@@ -105,16 +105,6 @@ let setAndGetBadgeText = (name) => {
 }
 
 let shims = [
-  ['URL', 'URL', () => URL, () => require('url').URL],
-  ['Disk', 'chrome.storage.local',
-    () => {
-      let {BrowserDisk} = require('./utils');
-      let out = new BrowserDisk(chrome.storage.local);
-      out.newDisk = () => out;
-      return out;
-    },
-    makeFakeDisk,
-  ],
   ['onMessage', 'chrome.runtime.onMessage', passThru, onAndSendMessage],
   ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
   ['onBeforeRequest', 'chrome.webRequest.onBeforeRequest', passThru, makeFakeMessages],
@@ -149,7 +139,6 @@ let shims = [
   ],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
-  ['document', 'document', passThru, () => (new (require('jsdom').JSDOM)()).window.document],
   ['tabsQuery', 'chrome.tabs.query', passThru,
     () => {
       let out = (obj, callback) => callback(out.tabs);
@@ -163,8 +152,26 @@ let shims = [
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
-  ['React', 'React', passThru, () => require('./external/react/react.production.min.js')],
-  ['ReactDOM', 'ReactDOM', passThru, () => require('./external/react-dom/react-dom.production.min.js')],
+  ['document', 'document', passThru, () => {
+    return import('jsdom').then(({default: {JSDOM}}) => {
+      console.log(JSDOM);
+      return (new JSDOM()).window.document;
+    })
+  }],
+  ['React', 'React', passThru, () => import('./external/react/react.production.min.js')],
+  ['ReactDOM', 'ReactDOM', passThru, () => import('./external/react-dom/react-dom.production.min.js')],
+  ['URL', 'URL', () => URL, () => {
+    return import('url').then(({URL}) => URL);
+  }],
+  ['Disk', 'chrome.storage.local',
+    () => {
+      let {BrowserDisk} = require('./utils');
+      let out = new BrowserDisk(chrome.storage.local);
+      out.newDisk = () => out;
+      return out;
+    },
+    makeFakeDisk,
+  ],
 ];
 
 shims.forEach(shim => shimmer.apply(undefined, shim));

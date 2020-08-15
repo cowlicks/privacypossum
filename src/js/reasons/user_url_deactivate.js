@@ -1,11 +1,10 @@
 "use strict";
 
-[(function(exports) {
 
-const {USER_URL_DEACTIVATE, NO_ACTION} = require('../constants'),
-    {log} = require('../utils'),
-    {setResponse, sendUrlDeactivate} = require('./utils'),
-    {Action} = require('../schemes');
+import {USER_URL_DEACTIVATE, NO_ACTION} from '../constants.js';
+import {log} from '../utils.js';
+import {setResponse, sendUrlDeactivate} from './utils.js';
+import {Action} from '../schemes.js';
 
 async function onUserUrlDeactivate({store, tabs}, {url, tabId}) {
   await store.updateUrl(url, currentAction => {
@@ -35,6 +34,4 @@ const urlDeactivateReason = {
   },
 }
 
-Object.assign(exports, {onUserUrlDeactivate, urlDeactivateReason});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/user_url_deactivate', func) : func(exports));
+export {onUserUrlDeactivate, urlDeactivateReason};

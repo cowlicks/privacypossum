@@ -1,13 +1,14 @@
 "use strict";
 
-[(function(exports) {
 
-const {Action} = require('../schemes'),
-  {setResponse, sendUrlDeactivate} = require('./utils'),
-  {URL} = require('../shim'),
-  {Listener, log, logger, setTabIconActive, hasAction} = require('../utils'),
-  constants = require('../constants');
+import {Action} from '../schemes.js';
+import {setResponse, sendUrlDeactivate} from './utils.js';
+import {Listener, log, logger, hasAction} from '../utils.js';
+import {setTabIconActive} from '../browser_utils.js';
+import {shims} from '../shim.js';
+import * as constants from '../constants.js';
 
+const {URL} = shims;
 const {NO_ACTION, CANCEL, BLOCK, GET_DEBUG_LOG,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
 
@@ -144,12 +145,18 @@ const reasonsArray = [
   },
 ];
 
-reasonsArray.push(require('./fingerprinting').fingerPrintingReason);
-reasonsArray.push(require('./user_url_deactivate').urlDeactivateReason);
-reasonsArray.push(require('./headers').reason);
-reasonsArray.push(require('./headers').tabReason);
-reasonsArray.push(require('./etag').reason);
+import {fingerPrintingReason} from './fingerprinting.js';
+import {urlDeactivateReason} from './user_url_deactivate.js';
+import {reason as headerReason} from './headers.js';
+import {tabReason} from './headers.js';
+import {reason as etagReason} from './etag.js';
 
-Object.assign(exports, {Reasons, reasonsArray, tabDeactivate, blockAction, Reason});
+reasonsArray.push(
+  fingerPrintingReason,
+  urlDeactivateReason,
+  headerReason,
+  tabReason,
+  etagReason,
+);
 
-})].map(func => typeof exports == 'undefined' ? define('/reasons/reasons', func) : func(exports));
+export {Reasons, reasonsArray, tabDeactivate, blockAction, Reason};

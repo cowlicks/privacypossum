@@ -1,9 +1,12 @@
 "use strict"
 
-const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = require('../shim'),
-  {Popup} = require('../popup');
 
-const {annotateDetails} = require('../webrequest');
+import {shims} from '../shim.js';
+import {Popup} from '../popup.js';
+import {annotateDetails} from '../webrequest.js';
+
+
+const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = shims;
 
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
@@ -19,8 +22,8 @@ function clearState() {
 }
 
 async function setDocument(path) {
-  let {JSDOM} = require('jsdom'),
-    {document} = require('../shim'),
+  let {JSDOM} = await import('jsdom'),
+    {document} = await import('../shim'),
     newDoc = (await JSDOM.fromFile(path)).window.document;
   document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
 }
@@ -42,7 +45,7 @@ function makeGetterSetterUpdater(obj, suffix) {
 
 async function testGetSetUpdate(obj, suffix, [k1, v1, update] = ['k1', 'v1', 'update']) {
   const [getter, setter, updater] = makeGetterSetterUpdater(obj, suffix),
-   {assert} = require('chai');
+   {default: {assert}} = await import('chai');
 
   setter(k1, v1);
   assert.deepEqual(getter(k1), v1);
@@ -156,4 +159,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState});
+export {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState};

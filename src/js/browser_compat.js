@@ -1,8 +1,7 @@
 "use strict";
 
-[(function(exports) {
 
-const shim = require('./shim');
+import {shims as shim} from './shim.js';
 
 /*
  * Firefox & Chrome now take different values in opt_extraInfoSpec
@@ -19,6 +18,4 @@ function getOnHeadersReceivedOptions({OnHeadersReceivedOptions} = shim) {
   return ["BLOCKING", "RESPONSE_HEADERS", "RESPONSEHEADERS", "EXTRA_HEADERS"].map(x => OnHeadersReceivedOptions[x]).filter(x => x);
 }
 
-Object.assign(exports, {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions});
-
-})].map(func => typeof exports == 'undefined' ? define('/browser_compat', func) : func(exports));
+export {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions};

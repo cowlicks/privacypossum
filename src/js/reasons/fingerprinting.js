@@ -1,12 +1,13 @@
 "use strict";
 
-[(function(exports) {
 
-const {Action} = require('../schemes'),
-  {log} = require('../utils'),
-  {sendUrlDeactivate} = require('./utils'),
-  {URL, tabsSendMessage} = require('../shim'),
-  {FINGERPRINTING, USER_URL_DEACTIVATE, CANCEL} = require('../constants');
+import {Action} from '../schemes.js';
+import {log} from '../utils.js';
+import {sendUrlDeactivate} from './utils.js';
+import {FINGERPRINTING, USER_URL_DEACTIVATE, CANCEL} from '../constants.js';
+import {shims} from '../shim.js';
+
+const {URL, tabsSendMessage} = shims;
 
 function isDeactivated(action) {
   return action && action.reason && action.reason === USER_URL_DEACTIVATE;
@@ -71,7 +72,4 @@ const fingerPrintingReason = {
   },
 };
 
-Object.assign(exports, {fingerPrintingReason});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/fingerprinting', func) : func(exports));
-
+export {fingerPrintingReason};

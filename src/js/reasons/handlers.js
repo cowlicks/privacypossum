@@ -1,10 +1,9 @@
 "use strict";
 
-[(function(exports) {
-
-const shim = require('../shim'),
-    {HeaderHandler} = require('./headers'),
-    {Reasons, reasonsArray} = require('./reasons');
+import {shims} from '../shim.js';
+const {onMessage, onUpdated} = shims;
+import  {HeaderHandler} from './headers.js';
+import  {Reasons, reasonsArray} from './reasons.js';
 
 /*
  * Handler superclass
@@ -78,7 +77,7 @@ class MessageHandler extends Dispatcher {
     return super.dispatcher(messenger.type, [messenger, sender, sendResponse]);
   }
 
-  startListeners(onMessage = shim.onMessage) {
+  startListeners(onMessage = onMessage) {
     Object.assign(this, {onMessage});
     this.onMessage.addListener(this.dispatcher.bind(this));
   }
@@ -107,7 +106,7 @@ class TabHandler extends Dispatcher {
     super('tabHandler', {tabs, store}, reasons);
   }
 
-  startListeners(onUpdated = shim.onUpdated) {
+  startListeners(onUpdated = onUpdated) {
     onUpdated.addListener(this.handleUpdated.bind(this));
   }
 
@@ -146,6 +145,4 @@ class Handler {
   }
 }
 
-Object.assign(exports, {PopupHandler, MessageHandler, RequestHandler, TabHandler, Handler});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/handlers', func) : func(exports));
+export {PopupHandler, MessageHandler, RequestHandler, TabHandler, Handler};
