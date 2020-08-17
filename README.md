@@ -30,7 +30,7 @@ We think tackling the problem from an economic angle is extremely important, and
 ## Why not Privacy Badger?
 
 [Privacy Badger](https://github.com/EFForg/privacybadger) is another privacy focused browser extension maintained by the Electronic Frontier Foundation.
-I worked for the EFF on the project full time for 6 months, and found that it's current privacy benefits to be limited.
+I worked for the EFF on the project full time for 6 months, and found that its current privacy benefits to be limited.
 Adding new privacy protections was difficult, or impossible with the current architecture.
 And the project maintainers were not interested in fixing these issues.
 
