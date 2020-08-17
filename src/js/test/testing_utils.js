@@ -1,6 +1,5 @@
 "use strict"
 
-
 import {shims} from '../shim.js';
 import {Popup} from '../popup.js';
 import {annotateDetails} from '../webrequest.js';
