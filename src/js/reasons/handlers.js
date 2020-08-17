@@ -1,9 +1,9 @@
 "use strict";
 
 import {shims} from '../shim.js';
-const {onMessage, onUpdated} = shims;
 import  {HeaderHandler} from './headers.js';
 import  {Reasons, reasonsArray} from './reasons.js';
+
 
 /*
  * Handler superclass
@@ -77,7 +77,7 @@ class MessageHandler extends Dispatcher {
     return super.dispatcher(messenger.type, [messenger, sender, sendResponse]);
   }
 
-  startListeners(onMessage = onMessage) {
+  startListeners(onMessage = shims.onMessage) {
     Object.assign(this, {onMessage});
     this.onMessage.addListener(this.dispatcher.bind(this));
   }
@@ -106,7 +106,7 @@ class TabHandler extends Dispatcher {
     super('tabHandler', {tabs, store}, reasons);
   }
 
-  startListeners(onUpdated = onUpdated) {
+  startListeners(onUpdated = shims.onUpdated) {
     onUpdated.addListener(this.handleUpdated.bind(this));
   }
 
