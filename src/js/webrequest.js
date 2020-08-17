@@ -27,7 +27,7 @@ class WebRequest {
     this.removeHeaders = this.handler.removeHeaders.bind(this.handler);
   }
 
-  startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
+  startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shims) {
 
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),
