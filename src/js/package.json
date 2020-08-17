@@ -17,7 +17,7 @@
     "react-dom": "file:./external/react-dom"
   },
   "scripts": {
-    "test": "mocha --recursive",
+    "test": "mocha --recursive test/helper.js",
     "lint": "git ls-files | grep \".js$\" | grep -v \"external\" | xargs eslint",
     "loc": "git ls-files | grep -v 'psl.js' | xargs cat | wc -l",
     "cover": "nyc --reporter=html --reporter=text mocha",
