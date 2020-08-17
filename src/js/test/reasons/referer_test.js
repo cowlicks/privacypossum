@@ -1,7 +1,7 @@
 "use strict";
 
-const {assert} = require('chai'),
-  {Referer} = require('../../reasons/referer');
+import chai from 'chai'; const {assert} = chai;
+import {Referer} from '../../reasons/referer.js';
 
 describe('referer.js', function() {
   let requestId = 1,
