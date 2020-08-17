@@ -20,12 +20,17 @@ function clearState() {
   getAllFrames.clear();
 }
 
-async function setDocument(path) {
-  let {JSDOM} = await import('jsdom'),
-    {document} = await import('../shim'),
-    newDoc = (await JSDOM.fromFile(path)).window.document;
-  document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
+async function setDocumentHtml(path) {
+  let {default: {JSDOM}} = await import('jsdom');
+  let {shims: {document}} = await import('../shim.js');
+  let newDoc = (await JSDOM.fromFile(path)).window.document;
+  (await document).documentElement.innerHTML = newDoc.documentElement.innerHTML;
 }
+
+function useJSDOM(JSDOM) {
+  shims.document.setBase = new JSDOM().window.document;
+}
+
 
 async function makePopup(tabId) {
   tabsQuery.tabs = [{id: tabId}];
@@ -158,4 +163,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-export {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState};
+export {setDocumentHtml, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState, useJSDOM};
