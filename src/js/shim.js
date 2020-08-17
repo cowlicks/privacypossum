@@ -11,6 +11,34 @@ const exports = {};
 
 import {FakeMessages, FakeDisk, Connects} from './fakes.js';
 
+function wrapObject(base) {
+  let mutableBase = null;
+  return new Proxy(base, {
+    construct(base, thisArg, argumentList) {
+      mutableBase ?? (mutableBase = base);
+      return new mutableBase(...argumentsList);
+    },
+    apply(base, thisArg, argumentsList) {
+      mutableBase ?? (mutableBase = base);
+      return mutableBase.apply(thisArg, argumentsList);
+    },
+    get(base, prop, receiver) {
+      mutableBase ?? (mutableBase = base);
+      const value = mutableBase[prop];
+      return typeof value === 'function' ? value.bind(mutableBase) : value;
+    },
+    set(base, prop, value, receiver) {
+      mutableBase ?? (mutableBase = base);
+      if (prop === 'setBase') {
+        mutableBase = value;
+        return true;
+      }
+      mutableBase[prop] = value;
+      return true;
+    }
+  });
+}
+
 let globalObj = (typeof window === 'object') ? window : global; // eslint-disable-line
 let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
 let passThru = (x) => x;
@@ -153,12 +181,12 @@ let shims = [
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
   ['document', 'document', passThru, () => {
-    return import('jsdom').then(({default: {JSDOM}}) => {
-      return (new JSDOM()).window.document;
-    })
+    return wrapObject(
+      import('jsdom').then(({default: {JSDOM}}) => {
+        let mainDoc = (new JSDOM()).window.document;
+        return mainDoc;
+      }));
   }],
-  ['React', 'React', passThru, () => import('./external/react/react.production.min.js')],
-  ['ReactDOM', 'ReactDOM', passThru, () => import('./external/react-dom/react-dom.production.min.js')],
   ['URL', 'URL', () => URL, () => {
     return import('url').then(({URL}) => URL);
   }],
@@ -174,5 +202,7 @@ let shims = [
 ];
 
 shims.forEach(shim => shimmer.apply(undefined, shim));
+
+Object.assign(exports, {wrapObject});
 
 export {exports as shims};
