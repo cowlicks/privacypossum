@@ -168,7 +168,7 @@ class Tabs {
     }
   }
 
-  async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {
+  async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shims) {
     onRemoved.addListener(this.removeTab.bind(this));
     onErrorOccurred.addListener(this.onErrorOccurred.bind(this));
     onNavigationCommitted.addListener(this.onNavigationCommitted.bind(this));
@@ -318,7 +318,7 @@ async function asyncTabsQuery(queryInfo = {}) {
 }
 
 async function getAllFrames(tabId) {
-  return new Promise(resolve => shim.getAllFrames({tabId}, resolve));
+  return new Promise(resolve => shims.getAllFrames({tabId}, resolve));
 }
 
 export {Frame, Tabs, Tab};
