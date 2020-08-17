@@ -1,8 +1,8 @@
 "use strict";
 
-const assert = require('chai').assert,
-  {Store} = require('../store'),
-  {Domain, Action} = require('../schemes');
+import chai from 'chai'; const {assert} = chai;
+import {Store} from '../store.js';
+import {Domain, Action} from '../schemes.js';
 
 describe('store.js', function() {
   describe('Store', function() {
