@@ -1,15 +1,14 @@
 "use strict";
 
-[(function(exports) {
 
-const constants = require('./constants'),
-  {Tabs} = require('./tabs'),
-  {Store} = require('./store'),
-  {Reasons, reasonsArray} = require('./reasons/reasons'),
-  {Handler, MessageHandler} = require('./reasons/handlers'),
-  {WebRequest} = require('./webrequest'),
-  PopupServer = require('./popup_server').Server,
-  {prettyLog, log} = require('./utils');
+import * as constants from './constants.js';
+import {Tabs} from './tabs.js';
+import {Store} from './store.js';
+import {Reasons, reasonsArray} from './reasons/reasons.js';
+import {Handler, MessageHandler} from './reasons/handlers.js';
+import {WebRequest} from './webrequest.js';
+import {Server as PopupServer} from './popup_server.js';
+import {prettyLog, log} from './utils.js';
 
 class Possum {
   constructor(store = new Store(constants.DISK_NAME)) {
@@ -38,6 +37,4 @@ class Possum {
   }
 }
 
-Object.assign(exports, {Possum});
-
-})].map(func => typeof exports == 'undefined' ? define('/possum', func) : func(exports));
+export {Possum};
