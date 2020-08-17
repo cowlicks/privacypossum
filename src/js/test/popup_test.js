@@ -1,17 +1,24 @@
 "use strict";
 
-const assert = require('chai').assert,
-  {USER_URL_DEACTIVATE} = require('../constants'),
-  {Tab, Tabs} = require('../tabs'),
-  {onMessage, tabsQuery} = require('../shim'),
-  {blockAction} = require('../reasons/reasons'),
-  {setDocument} = require('./testing_utils'),
-  {Server} = require('../popup_server'),
-  {Popup, $} = require('../popup');
+import chai from 'chai'; const {assert} = chai;
+import {USER_URL_DEACTIVATE} from '../constants.js';
+import {Tab, Tabs} from '../tabs.js';
+import {blockAction} from '../reasons/reasons.js';
+import {setDocumentHtml, useJSDOM} from './testing_utils.js';
+import {Server} from '../popup_server.js';
+import {Popup, $} from '../popup.js';
+import {shims} from '../shim.js';
+const {onMessage, tabsQuery, setAsyncImports, document} = shims;
+import * as jsdom from 'jsdom';
+const {default: {JSDOM}} = jsdom;
+
+before(() => {
+  useJSDOM(JSDOM);
+});
 
 describe('popup.js', function() {
   beforeEach(async function() {
-    await setDocument('../skin/popup.html');
+    await setDocumentHtml('../skin/popup.html');
   });
 
   describe('header html', function() {

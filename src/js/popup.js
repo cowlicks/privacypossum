@@ -8,12 +8,14 @@
 "use strict";
 
 import {shims} from './shim.js';
-const  {connect, document, sendMessage, ReactDOM} = shims;
+const  {connect, document, sendMessage} = shims;
 import  {PopupHandler} from './reasons/handlers.js';
 import  {View, Counter} from './utils.js';
 import  {Action} from './schemes.js';
 import  {popupTitleBar, popupBody} from './popup_components.js';
 import  {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} from './constants.js';
+import ReactDOM from './external/react-dom/react-dom.production.min.js';
+
 
 const $ = (id) => document.getElementById(id),
     asyncRender = (component, anchor) => new Promise(resolve => ReactDOM.render(component, anchor, resolve));
