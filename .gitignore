@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# managing package-lock.json is annoying and we don't even need it
+**/package-lock.json

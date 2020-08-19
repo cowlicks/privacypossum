@@ -58,6 +58,15 @@ describe('tabs.js', function() {
       });
     });
 
+    describe('#isThirdParty', function() {
+      it('false when 1st party', function () {
+        assert.isFalse(this.tabs.isThirdParty(tabId, 'google.com'));
+      });
+      it('true when 3rd party', function () {
+        assert.isTrue(this.tabs.isThirdParty(tabId, 'thirdparty.com'));
+      });
+    }),
+
     it('#getTabUrl', function() {
       assert.equal(this.tabs.getTabUrl(1), 'https://google.com/');
       assert.isUndefined(this.tabs.getTabUrl('not present'));

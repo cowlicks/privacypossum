@@ -50,6 +50,7 @@ const header_methods = new Map([
 // reasons
 // todo move these into their own namespace
 const FINGERPRINTING = 'fingerprinting',
+  INTERACTION = 'interaction',
   USER_HOST_DEACTIVATE = 'user_host_deactivate',
   USER_URL_DEACTIVATE = 'user_url_deactivate',
   BLOCK = 'block',
@@ -57,6 +58,7 @@ const FINGERPRINTING = 'fingerprinting',
 
 const CONTENTSCRIPTS = new Set([
   '/js/bootstrap.js',
+  '/js/contentscripts/interacted.js',
   '/js/contentscripts/fingercounting.js',
   '/js/initialize_contentscripts.js',
 ]);
@@ -90,6 +92,7 @@ Object.assign(exports, {
   reasons,
   request_methods,
   header_methods,
+  INTERACTION,
   FINGERPRINTING,
   CONTENTSCRIPTS,
   USER_HOST_DEACTIVATE,

@@ -1,6 +1,8 @@
 "use strict";
 
-let {makeFingerCounting} = require('./contentscripts/fingercounting');
+let {makeFingerCounting} = require('./contentscripts/fingercounting'),
+  interacted = require('./contentscripts/interacted');
+
 let event_id = Math.random();
 
 // listen for messages from the script we are about to insert
@@ -46,3 +48,5 @@ chrome.runtime.onMessage.addListener(message => {
     });
   }
 });
+
+interacted.initialize();
