@@ -19,8 +19,9 @@ async function currentTab() {
   });
 }
 
-function errorOccurred() {
+function errorOccurred(cb = ()=>{}) {
   if (typeof chrome !== 'undefined' && chrome.runtime.lastError) {
+    cb(chrome.runtime.lastError);
     return true;
   } else {
     return false;

@@ -211,13 +211,13 @@ class Tabs {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
       for (let file of CONTENTSCRIPTS) {
-        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', matchAboutBlank: true, file}, () => {
-          if (errorOccurred()) {
-            log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}`);
-          }
-        });
+        await tabsExecuteScript(
+          tabId,
+          {frameId, runAt: 'document_start', matchAboutBlank: true, file},
+          () => errorOccurred(e => log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}. Got error.message '${e.message}'`)),
+        );
       }
-    }
+    };
   }
 
   getTabHostname(tabId) {
