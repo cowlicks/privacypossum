@@ -10,9 +10,9 @@ class View {
       onChange
     });
     this.ready = new Promise(resolve => {
-      port.onMessage.addListener(obj => {
+      port.onMessage.addListener(async (obj) => {
         if (obj.change) {
-          onChange(obj.change);
+          await onChange(obj.change);
           resolve();
         }
       });
