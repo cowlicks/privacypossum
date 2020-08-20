@@ -1,10 +1,10 @@
 "use strict";
 
-const {Popup} = require('./popup'),
-  {currentTab} = require('./utils');
+import {Popup} from './popup.js';
+import {currentTab} from './browser_utils.js';
 
-let popup;
-currentTab().then(tab => {
-  popup = new Popup(tab.id);
-  popup.connect();
-});
+(async () => {
+  const tab = await currentTab();
+  const popup = new Popup(tab.id);
+  await popup.connect();
+})();
