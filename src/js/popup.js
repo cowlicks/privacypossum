@@ -7,18 +7,17 @@
  */
 "use strict";
 
+console.log('pre react-dom import');
 import {shims} from './shim.js';
-const  {connect, document, sendMessage} = shims;
+const  {connect, document, sendMessage, ReactDOM} = shims;
 import  {PopupHandler} from './reasons/handlers.js';
 import  {View, Counter} from './utils.js';
 import  {Action} from './schemes.js';
 import  {popupTitleBar, popupBody} from './popup_components.js';
 import  {GET_DEBUG_LOG, POPUP, USER_URL_DEACTIVATE, USER_HOST_DEACTIVATE, HEADER_DEACTIVATE_ON_HOST} from './constants.js';
-import ReactDOM from './external/react-dom/react-dom.production.min.js';
 
-
-const $ = (id) => document.getElementById(id),
-    asyncRender = (component, anchor) => new Promise(resolve => ReactDOM.render(component, anchor, resolve));
+const $ = (id) => document.getElementById(id);
+const asyncRender = (component, anchor) => new Promise(async (resolve) => (await ReactDOM).render(component, anchor, resolve));
 
 class Popup {
   constructor(tabId) {
@@ -31,18 +30,18 @@ class Popup {
     this.renderHeader(false);
   }
 
-  renderHeader(active) {
-    return asyncRender(popupTitleBar({onOff: this.onOff.bind(this), active}), $('title-bar'));
+  async renderHeader(active) {
+    return asyncRender((await popupTitleBar)({onOff: this.onOff.bind(this), active}), $('title-bar'));
   }
 
-  renderBody({active, urlActions, headerCounts, headerCountsActive} = this) {
-    let pb = popupBody({active, urlActions, headerCounts, headerCountsActive, headerHandler: this.headerHandler.bind(this)});
+  async renderBody({active, urlActions, headerCounts, headerCountsActive} = this) {
+    let pb = (await popupBody)({active, urlActions, headerCounts, headerCountsActive, headerHandler: this.headerHandler.bind(this)});
     return asyncRender(pb, $('base'));
   }
 
   connect() {
     this.port = connect({name: POPUP});
-    this.view = new View(this.port, ({active, actions, headerCounts, headerCountsActive}) => {
+    this.view = new View(this.port, async ({active, actions, headerCounts, headerCountsActive}) => {
       if (typeof active !== 'undefined') {
         this.active = active;
       }
@@ -55,7 +54,7 @@ class Popup {
       if (typeof headerCountsActive !== 'undefined') {
         this.headerCountsActive = headerCountsActive;
       }
-      this.show();
+      await this.show();
     });
     return this.view.ready;
   }
@@ -100,9 +99,9 @@ class Popup {
     });
   }
 
-  show() {
-    this.renderHeader(this.active);
-    this.renderBody();
+  async show() {
+    await this.renderHeader(this.active);
+    await this.renderBody();
   }
 
   getHandlers(actionsUrls) {
