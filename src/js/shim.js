@@ -10,6 +10,7 @@ const exports = {};
  */
 
 import {FakeMessages, FakeDisk, Connects} from './fakes.js';
+import {BrowserDisk} from './utils.js';
 
 function wrapObject(base) {
   let mutableBase = null;
@@ -180,6 +181,12 @@ let shims = [
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
+  ['React', 'React', passThru, () => {
+    return import('./external/react/react.production.min.js').then(({default: React}) => React);
+  }],
+  ['ReactDOM', 'ReactDOM', passThru, () => {
+    return import('./external/react-dom/react-dom.production.min.js').then(({default: ReactDOM}) => ReactDOM);
+  }],
   ['document', 'document', passThru, () => {
     return wrapObject(
       import('jsdom').then(({default: {JSDOM}}) => {
@@ -192,7 +199,6 @@ let shims = [
   }],
   ['Disk', 'chrome.storage.local',
     () => {
-      let {BrowserDisk} = require('./utils');
       let out = new BrowserDisk(chrome.storage.local);
       out.newDisk = () => out;
       return out;
