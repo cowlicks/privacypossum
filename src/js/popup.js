@@ -5,7 +5,6 @@
  * that tab to the popup. Changes on the server are pushed to the popup
  * automatically.
  */
-"use strict";
 
 import {shim} from './shim.js';
 const  {connect, document, sendMessage, ReactDOM} = shim;

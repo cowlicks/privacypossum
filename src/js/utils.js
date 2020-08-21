@@ -1,4 +1,3 @@
-"use strict";
 
 /*
  * View of some remote data represented by a `Model`.

@@ -1,4 +1,3 @@
-"use strict";
 // todo messages.js was added reasons/handlers.js, so rename this file, or add it to handlers.js
 
 import chai from 'chai'; const {assert} = chai;

@@ -1,4 +1,3 @@
-"use strict";
 
 import {shim} from './shim.js';
 import * as constants from './constants.js';

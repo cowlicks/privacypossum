@@ -1,4 +1,3 @@
-"use strict";
 
 const SENTINEL = '.',
   LABEL = 'label',

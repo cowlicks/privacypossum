@@ -1,4 +1,3 @@
-'use strict';
 
 import chai from 'chai';
 import {Tree, splitter} from '../suffixtree.js';

@@ -1,4 +1,3 @@
-"use strict";
 /**
  * DiskMap wraps an asynchronous get/set api, and prefixes its keys with a
  * string, effectively giving each instance of DiskMap a namespace. This allows

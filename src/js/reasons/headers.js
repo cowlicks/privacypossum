@@ -1,4 +1,3 @@
-"use strict";
 
 
 import {Action} from '../schemes.js';

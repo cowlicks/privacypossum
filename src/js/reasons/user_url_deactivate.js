@@ -1,4 +1,3 @@
-"use strict";
 
 
 import {USER_URL_DEACTIVATE, NO_ACTION} from '../constants.js';

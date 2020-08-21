@@ -1,4 +1,3 @@
-"use strict";
 
 
 import {etag} from '../constants.js';

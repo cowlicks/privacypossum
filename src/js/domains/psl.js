@@ -1,5 +1,4 @@
 /* eslint-disable */
-"use strict";
 
 const publicSuffixes = new Map(
 [["0.bg", 1],

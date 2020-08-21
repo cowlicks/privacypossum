@@ -8,7 +8,6 @@
  * Available under MIT license <http://mths.be/mit>
  */
 
-"use strict";
 
 import {publicSuffixes} from './psl.js';
 import {memoize} from '../utils.js';

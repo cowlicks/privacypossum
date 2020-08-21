@@ -1,4 +1,3 @@
-"use strict";
 
 import {Listener} from './utils.js';
 

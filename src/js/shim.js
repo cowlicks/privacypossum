@@ -2,7 +2,6 @@
  * We shim browser API's so our code can be compatible with both Node and the
  * Browser without transpiling stuff.
  */
-"use strict";
 
 const exports = {};
 /**

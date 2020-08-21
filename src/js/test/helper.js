@@ -1,4 +1,3 @@
-"use strict";
 
 /*
  * Clear global state between each test

@@ -2,7 +2,6 @@
  * Ideally shim should be as simple as possible so as not to require testing.
  * Some are a little more complicated so we test them here.
  */
-"use strict";
 
 import chai from 'chai'; const {assert} = chai;
 import {shim} from '../shim.js';

@@ -1,4 +1,3 @@
-"use strict";
 
 import {memoize} from '../utils.js';
 import {getBaseDomain} from './basedomain.js';

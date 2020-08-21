@@ -1,4 +1,3 @@
-"use strict";
 
 
 import {DiskMap} from './disk_map.js';

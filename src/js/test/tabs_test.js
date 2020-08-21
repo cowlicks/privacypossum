@@ -1,4 +1,3 @@
-'use strict';
 
 import chai from 'chai'; const {assert} = chai;
 import {BLOCK, REMOVE_ACTION} from '../constants.js';

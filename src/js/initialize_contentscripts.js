@@ -1,4 +1,3 @@
-"use strict";
 
 let {makeFingerCounting} = require('./contentscripts/fingercounting');
 let event_id = Math.random();

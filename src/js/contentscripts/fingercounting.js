@@ -1,4 +1,3 @@
-"use strict";
 
 /**
  * This watches methods that are commonly used for fingerprinting, and reports

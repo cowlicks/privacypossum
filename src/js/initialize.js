@@ -1,4 +1,3 @@
-"use strict";
 // Initialize the extension. This is only run in the browser.
 
 import {Possum} from './possum.js';

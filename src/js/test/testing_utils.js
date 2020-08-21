@@ -1,4 +1,3 @@
-"use strict"
 
 import {shim} from '../shim.js';
 import {Popup} from '../popup.js';

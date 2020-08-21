@@ -2,7 +2,6 @@
  * Provides a synchronous record of tabs and their frames. Data is recorded from the
  * webrequest api.
  */
-"use strict";
 
 
 import {shim} from './shim.js';

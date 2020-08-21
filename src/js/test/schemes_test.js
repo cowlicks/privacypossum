@@ -1,4 +1,3 @@
-'use strict';
 
 import chai from 'chai'; const {assert} = chai;
 import {Domain, Action} from '../schemes.js';
