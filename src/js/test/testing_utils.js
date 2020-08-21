@@ -1,11 +1,11 @@
 "use strict"
 
-import {shims} from '../shim.js';
+import {shim} from '../shim.js';
 import {Popup} from '../popup.js';
 import {annotateDetails} from '../webrequest.js';
 
 
-const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = shims;
+const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = shim;
 
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
@@ -22,13 +22,13 @@ function clearState() {
 
 async function setDocumentHtml(path) {
   let {default: {JSDOM}} = await import('jsdom');
-  let {shims: {document}} = await import('../shim.js');
+  let {shim: {document}} = await import('../shim.js');
   let newDoc = (await JSDOM.fromFile(path)).window.document;
   (await document).documentElement.innerHTML = newDoc.documentElement.innerHTML;
 }
 
 function useJSDOM(JSDOM) {
-  shims.document.setBase = new JSDOM().window.document;
+  shim.document.setBase = new JSDOM().window.document;
 }
 
 

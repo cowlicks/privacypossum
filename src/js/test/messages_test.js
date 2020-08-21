@@ -3,8 +3,8 @@
 
 import chai from 'chai'; const {assert} = chai;
 import * as constants from '../constants.js';
-import {shims} from '../shim.js';
-const {URL, onMessage, sendMessage} = shims;
+import {shim} from '../shim.js';
+const {URL, onMessage, sendMessage} = shim;
 import {Tabs} from '../tabs.js';
 import {Store} from '../store.js';
 import {Action} from '../schemes.js';

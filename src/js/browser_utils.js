@@ -1,7 +1,7 @@
 import {activeIcons, inactiveIcons} from './constants.js';
 
-import {shims} from './shim.js';
-const {tabsQuery, tabsGet, setIcon, setBadgeText} = shims;
+import {shim} from './shim.js';
+const {tabsQuery, tabsGet, setIcon, setBadgeText} = shim;
 
 
 async function currentTab() {

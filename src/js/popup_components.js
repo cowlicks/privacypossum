@@ -1,9 +1,9 @@
 "use strict";
 
-import {shims} from './shim.js';
+import {shim} from './shim.js';
 import {USER_URL_DEACTIVATE} from './constants.js';
 
-const {getURL, React} = shims;
+const {getURL, React} = shim;
 
 const pathToReact = './external/react/react.production.min.js';
 const text = {enabled: 'ENABLED', disabled: 'DISABLED'};

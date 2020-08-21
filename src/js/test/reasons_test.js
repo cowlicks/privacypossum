@@ -3,8 +3,8 @@
 import chai from 'chai'; const {assert} = chai;
 import {Tabs, Tab} from '../tabs.js';
 import {Store} from '../store.js';
-import {shims} from '../shim.js';
-const {URL, onMessage, onUpdated} = shims;
+import {shim} from '../shim.js';
+const {URL, onMessage, onUpdated} = shim;
 import {Action} from '../schemes.js';
 import {cookie, notCookie} from './testing_utils.js';
 import {details} from './testing_utils.js';

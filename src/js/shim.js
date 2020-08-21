@@ -95,7 +95,7 @@ function shimmer(out_name, real_name, onSuccess, onFail) {
 }
 
 /**
- * shims for api's that share state; // todo use proxy's for these?
+ * shim for api's that share state; // todo use proxy's for these?
  */
 let onAndSendMessage = (name) => {
   let fm = makeFakeMessages();
@@ -133,7 +133,7 @@ let setAndGetBadgeText = (name) => {
   return getter(name, exports);
 }
 
-let shims = [
+let shim = [
   ['onMessage', 'chrome.runtime.onMessage', passThru, onAndSendMessage],
   ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
   ['onBeforeRequest', 'chrome.webRequest.onBeforeRequest', passThru, makeFakeMessages],
@@ -207,8 +207,8 @@ let shims = [
   ],
 ];
 
-shims.forEach(shim => shimmer.apply(undefined, shim));
+shim.forEach(shim => shimmer.apply(undefined, shim));
 
 Object.assign(exports, {wrapObject});
 
-export {exports as shims};
+export {exports as shim};

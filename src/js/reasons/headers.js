@@ -2,13 +2,13 @@
 
 
 import {Action} from '../schemes.js';
-import {shims} from '../shim.js';
+import {shim} from '../shim.js';
 import {hasAction} from '../utils.js';
 import {newEtagHeaderFunc} from './etag.js';
 import {Referer} from './referer.js';
 import {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} from '../constants.js';
 
-const {URL} = shims;
+const {URL} = shim;
 
 const alwaysTrue = () => true;
 

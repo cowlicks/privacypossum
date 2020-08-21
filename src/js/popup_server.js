@@ -1,8 +1,8 @@
 "use strict";
 
 
-import {shims} from './shim.js';
-const {onConnect} = shims;
+import {shim} from './shim.js';
+const {onConnect} = shim;
 
 import {POPUP} from './constants.js';
 import {Model, log} from './utils.js';

@@ -2,6 +2,6 @@
 // Initialize the extension. This is only run in the browser.
 
 import {Possum} from './possum.js';
-import {shims} from './shim.js';
+import {shim} from './shim.js';
 
-Possum.load(shims.Disk).then(possum => window['possum'] = possum);
+Possum.load(shim.Disk).then(possum => window['possum'] = possum);

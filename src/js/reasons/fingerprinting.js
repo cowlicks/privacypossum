@@ -5,9 +5,9 @@ import {Action} from '../schemes.js';
 import {log} from '../utils.js';
 import {sendUrlDeactivate} from './utils.js';
 import {FINGERPRINTING, USER_URL_DEACTIVATE, CANCEL} from '../constants.js';
-import {shims} from '../shim.js';
+import {shim} from '../shim.js';
 
-const {URL, tabsSendMessage} = shims;
+const {URL, tabsSendMessage} = shim;
 
 function isDeactivated(action) {
   return action && action.reason && action.reason === USER_URL_DEACTIVATE;

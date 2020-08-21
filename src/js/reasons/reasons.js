@@ -5,10 +5,10 @@ import {Action} from '../schemes.js';
 import {setResponse, sendUrlDeactivate} from './utils.js';
 import {Listener, log, logger, hasAction} from '../utils.js';
 import {setTabIconActive} from '../browser_utils.js';
-import {shims} from '../shim.js';
+import {shim} from '../shim.js';
 import * as constants from '../constants.js';
 
-const {URL} = shims;
+const {URL} = shim;
 const {NO_ACTION, CANCEL, BLOCK, GET_DEBUG_LOG,
     USER_HOST_DEACTIVATE, TAB_DEACTIVATE, REMOVE_ACTION} = constants;
 

@@ -2,8 +2,8 @@
 
 import chai from 'chai'; const {assert} = chai;
 import {DiskMap} from '../disk_map.js';
-import {shims} from '../shim.js';
-const {Disk} = shims;
+import {shim} from '../shim.js';
+const {Disk} = shim;
 
 describe('disk_map.js', function() {
   describe('DiskMap', function() {

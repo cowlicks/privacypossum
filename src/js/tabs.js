@@ -5,8 +5,8 @@
 "use strict";
 
 
-import {shims} from './shim.js';
-const {URL, tabsGet, tabsQuery, tabsExecuteScript} = shims;
+import {shim} from './shim.js';
+const {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim;
 
 import {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} from './constants.js';
 import {Counter, listenerMixin, log} from './utils.js';
@@ -168,7 +168,7 @@ class Tabs {
     }
   }
 
-  async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shims) {
+  async startListeners({onRemoved, onErrorOccurred, onNavigationCommitted} = shim) {
     onRemoved.addListener(this.removeTab.bind(this));
     onErrorOccurred.addListener(this.onErrorOccurred.bind(this));
     onNavigationCommitted.addListener(this.onNavigationCommitted.bind(this));
@@ -318,7 +318,7 @@ async function asyncTabsQuery(queryInfo = {}) {
 }
 
 async function getAllFrames(tabId) {
-  return new Promise(resolve => shims.getAllFrames({tabId}, resolve));
+  return new Promise(resolve => shim.getAllFrames({tabId}, resolve));
 }
 
 export {Frame, Tabs, Tab};

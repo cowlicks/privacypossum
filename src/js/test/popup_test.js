@@ -7,8 +7,8 @@ import {blockAction} from '../reasons/reasons.js';
 import {setDocumentHtml, useJSDOM} from './testing_utils.js';
 import {Server} from '../popup_server.js';
 import {Popup, $} from '../popup.js';
-import {shims} from '../shim.js';
-const {onMessage, tabsQuery, setAsyncImports, document} = shims;
+import {shim} from '../shim.js';
+const {onMessage, tabsQuery, setAsyncImports, document} = shim;
 import * as jsdom from 'jsdom';
 const {default: {JSDOM}} = jsdom;
 

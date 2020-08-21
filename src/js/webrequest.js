@@ -1,6 +1,6 @@
 "use strict";
 
-import {shims} from './shim.js';
+import {shim} from './shim.js';
 import * as constants from './constants.js';
 
 const {header_methods, request_methods} = constants;
@@ -8,7 +8,7 @@ const {ON_BEFORE_REQUEST, ON_BEFORE_SEND_HEADERS, ON_HEADERS_RECEIVED} = request
 import {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions} from './browser_compat.js';
 import {Handler} from './reasons/handlers.js';
 
-const {URL} = shims;
+const {URL} = shim;
 
 function annotateDetails(details, requestType) {
   return Object.assign(details, {
@@ -27,7 +27,7 @@ class WebRequest {
     this.removeHeaders = this.handler.removeHeaders.bind(this.handler);
   }
 
-  startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shims) {
+  startListeners({onBeforeRequest, onBeforeSendHeaders, onHeadersReceived} = shim) {
 
     onBeforeRequest.addListener(
       this.onBeforeRequest.bind(this),

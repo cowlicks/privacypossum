@@ -7,8 +7,8 @@
  */
 "use strict";
 
-import {shims} from './shim.js';
-const  {connect, document, sendMessage, ReactDOM} = shims;
+import {shim} from './shim.js';
+const  {connect, document, sendMessage, ReactDOM} = shim;
 import  {PopupHandler} from './reasons/handlers.js';
 import  {View, Counter} from './utils.js';
 import  {Action} from './schemes.js';

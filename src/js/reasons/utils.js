@@ -1,10 +1,10 @@
 "use strict";
 
 
-import {shims} from '../shim.js';
+import {shim} from '../shim.js';
 import {REMOVE_ACTION, USER_URL_DEACTIVATE} from '../constants.js';
 
-const {sendMessage} = shims;
+const {sendMessage} = shim;
 
 function setResponse(response, shortCircuit) {
   return ({}, details) => Object.assign(details, {response, shortCircuit});

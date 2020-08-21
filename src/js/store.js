@@ -4,8 +4,8 @@
 import {DiskMap} from './disk_map.js';
 import {Tree, splitter} from './suffixtree.js';
 import {Domain} from './schemes.js';
-import {shims} from './shim.js';
-const {URL, Disk} = shims;
+import {shim} from './shim.js';
+const {URL, Disk} = shim;
 
 class DomainTree extends Tree {
   beforeSet(val) {

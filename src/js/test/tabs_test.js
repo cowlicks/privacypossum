@@ -2,8 +2,8 @@
 
 import chai from 'chai'; const {assert} = chai;
 import {BLOCK, REMOVE_ACTION} from '../constants.js';
-import {shims} from '../shim.js';
-const {onRemoved, getBadgeText, onNavigationCommitted, getAllFrames, tabsQuery, tabsExecuteScript} = shims;
+import {shim} from '../shim.js';
+const {onRemoved, getBadgeText, onNavigationCommitted, getAllFrames, tabsQuery, tabsExecuteScript} = shim;
 import {Action} from '../schemes.js';
 import {cookie} from './testing_utils.js';
 import {Tab, Tabs} from '../tabs.js';
