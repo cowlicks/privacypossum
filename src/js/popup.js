@@ -7,7 +7,6 @@
  */
 "use strict";
 
-console.log('pre react-dom import');
 import {shims} from './shim.js';
 const  {connect, document, sendMessage, ReactDOM} = shims;
 import  {PopupHandler} from './reasons/handlers.js';
