@@ -14,8 +14,6 @@ import urllib.request
 psl_url = 'https://publicsuffix.org/list/public_suffix_list.dat'
 
 file_text = '''/* eslint-disable */
-"use strict";
-
 const publicSuffixes = new Map(
 %s
 );
