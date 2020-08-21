@@ -1,4 +1,3 @@
-
 /*
  * Clear global state between each test
  *

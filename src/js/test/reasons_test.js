@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {Tabs, Tab} from '../tabs.js';
 import {Store} from '../store.js';

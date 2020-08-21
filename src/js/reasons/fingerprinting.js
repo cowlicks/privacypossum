@@ -1,5 +1,3 @@
-
-
 import {Action} from '../schemes.js';
 import {log} from '../utils.js';
 import {sendUrlDeactivate} from './utils.js';

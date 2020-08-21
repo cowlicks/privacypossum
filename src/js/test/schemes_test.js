@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {Domain, Action} from '../schemes.js';
 import {testGetSetUpdate} from './testing_utils.js';

@@ -1,4 +1,3 @@
-
 import {shim} from './shim.js';
 import {USER_URL_DEACTIVATE} from './constants.js';
 

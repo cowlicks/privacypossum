@@ -1,4 +1,3 @@
-
 const SENTINEL = '.',
   LABEL = 'label',
   root_label = 'root';

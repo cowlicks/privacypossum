@@ -1,5 +1,3 @@
-
-
 import {Action} from '../schemes.js';
 import {setResponse, sendUrlDeactivate} from './utils.js';
 import {Listener, log, logger, hasAction} from '../utils.js';

@@ -1,5 +1,3 @@
-
-
 import {DiskMap} from './disk_map.js';
 import {Tree, splitter} from './suffixtree.js';
 import {Domain} from './schemes.js';

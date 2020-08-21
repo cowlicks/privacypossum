@@ -1,4 +1,3 @@
-
 import {memoize} from '../utils.js';
 import {getBaseDomain} from './basedomain.js';
 import {isMdfp} from './mdfp.js';

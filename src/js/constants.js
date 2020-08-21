@@ -1,4 +1,3 @@
-
 // disk name
 const DISK_NAME = 'p055um';
 

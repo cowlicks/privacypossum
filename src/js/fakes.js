@@ -1,4 +1,3 @@
-
 import {Listener} from './utils.js';
 
 async function asyncify(func) {

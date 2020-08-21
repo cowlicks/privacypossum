@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {isThirdParty} from '../domains/parties.js';
 

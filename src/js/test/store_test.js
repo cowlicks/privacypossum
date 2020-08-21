@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {Store} from '../store.js';
 import {Domain, Action} from '../schemes.js';

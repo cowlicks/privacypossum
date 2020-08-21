@@ -1,4 +1,3 @@
-
 import {shim} from '../shim.js';
 import {Popup} from '../popup.js';
 import {annotateDetails} from '../webrequest.js';

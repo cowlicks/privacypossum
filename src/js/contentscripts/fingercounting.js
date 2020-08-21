@@ -1,4 +1,3 @@
-
 /**
  * This watches methods that are commonly used for fingerprinting, and reports
  * when a suspicious number of them are used by one script.

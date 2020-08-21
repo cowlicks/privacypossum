@@ -1,4 +1,3 @@
-
 let query_param,
   tcos_with_destination,
   fixes = {};

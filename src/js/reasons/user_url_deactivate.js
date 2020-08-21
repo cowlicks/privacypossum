@@ -1,5 +1,3 @@
-
-
 import {USER_URL_DEACTIVATE, NO_ACTION} from '../constants.js';
 import {log} from '../utils.js';
 import {setResponse, sendUrlDeactivate} from './utils.js';

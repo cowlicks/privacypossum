@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {WebRequest} from '../webrequest.js';
 import {NO_ACTION} from '../constants.js';

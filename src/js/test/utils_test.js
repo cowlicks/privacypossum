@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {fakePort} from '../fakes.js';
 import {View, Model, Listener, Counter, LruMap, LogBook, wrap, zip} from '../utils.js';

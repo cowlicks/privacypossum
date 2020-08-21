@@ -1,5 +1,3 @@
-
-
 import {shim} from '../shim.js';
 import {REMOVE_ACTION, USER_URL_DEACTIVATE} from '../constants.js';
 

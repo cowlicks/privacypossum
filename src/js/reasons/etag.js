@@ -1,5 +1,3 @@
-
-
 import {etag} from '../constants.js';
 import {log, LruMap} from '../utils.js';
 import {sendUrlDeactivate} from './utils.js';

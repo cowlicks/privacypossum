@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {USER_URL_DEACTIVATE} from '../constants.js';
 import {Tab, Tabs} from '../tabs.js';

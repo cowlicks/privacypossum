@@ -1,4 +1,3 @@
-
 /**
  * Simple commonjs-like module system that is compatible with node.
  *

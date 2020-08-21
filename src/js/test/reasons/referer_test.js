@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {Referer} from '../../reasons/referer.js';
 

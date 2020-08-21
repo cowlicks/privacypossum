@@ -1,5 +1,3 @@
-
-
 import * as constants from './constants.js';
 import {Tabs} from './tabs.js';
 import {Store} from './store.js';

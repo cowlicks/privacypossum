@@ -1,5 +1,3 @@
-
-
 import {LruMap, log} from '../utils.js';
 
 function is4xx(statusCode) {

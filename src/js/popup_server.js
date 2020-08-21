@@ -1,5 +1,3 @@
-
-
 import {shim} from './shim.js';
 const {onConnect} = shim;
 

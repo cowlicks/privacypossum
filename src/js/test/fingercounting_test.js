@@ -1,4 +1,3 @@
-
 import chai from 'chai'; const {assert} = chai;
 import {makeFingerCounting} from '../contentscripts/fingercounting.js';
 import {makeTrap} from '../utils.js';

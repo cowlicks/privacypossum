@@ -1,5 +1,3 @@
-
-
 import {Action} from '../schemes.js';
 import {shim} from '../shim.js';
 import {hasAction} from '../utils.js';
