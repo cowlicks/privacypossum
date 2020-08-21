@@ -1,7 +1,7 @@
 "use strict";
 
 
-import {shim as shim} from './shim.js';
+import {shim} from './shim.js';
 
 /*
  * Firefox & Chrome now take different values in opt_extraInfoSpec
