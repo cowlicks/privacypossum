@@ -8,7 +8,7 @@ const {makeFingerCounting} = require('../contentscripts/fingercounting.cjs');
 
 const {Counter, getUrlFromStackLine} = makeFingerCounting(0, false);
 
-describe('fingercounting.js', function() {
+describe('fingercounting.cjs', function() {
   describe('getUrlFromStackLine', function() {
     let data = [
       // test with both http & https urls

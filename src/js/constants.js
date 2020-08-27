@@ -53,7 +53,7 @@ const FINGERPRINTING = 'fingerprinting',
 
 const CONTENTSCRIPTS = new Set([
   '/js/bootstrap.js',
-  '/js/contentscripts/fingercounting.js',
+  '/js/contentscripts/fingercounting.cjs',
   '/js/initialize_contentscripts.js',
 ]);
 
