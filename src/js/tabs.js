@@ -199,7 +199,7 @@ class Tabs {
       error: ${error}`);
     if (this.hasTab(tabId)) {
       tabsGet(tabId, () => {
-        if (errorOccurred()) {
+        if (errorOccurred(e => log(`Error getting tab: ${tabId} error: ${e}`))) {
           this.removeTab(tabId);
         }
       });
@@ -213,7 +213,11 @@ class Tabs {
         await tabsExecuteScript(
           tabId,
           {frameId, runAt: 'document_start', matchAboutBlank: true, file},
-          () => errorOccurred(e => log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}. Got error.message '${e.message}'`)),
+          () => errorOccurred(e => log(`cannot inject content script ${file}
+    on url: ${url}
+    on tab: ${tabId}
+    on frame: ${frameId}.
+    errror message: '${e.message}'`)),
         );
       }
     };
