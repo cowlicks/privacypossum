@@ -1,7 +1,10 @@
 import chai from 'chai'; const {assert} = chai;
-import {makeFingerCounting} from '../contentscripts/fingercounting.js';
 import {makeTrap} from '../utils.js';
 import {Mock} from './testing_utils.js';
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const {makeFingerCounting} = require('../contentscripts/fingercounting.cjs');
 
 const {Counter, getUrlFromStackLine} = makeFingerCounting(0, false);
 
