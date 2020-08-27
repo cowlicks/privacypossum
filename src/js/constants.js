@@ -1,7 +1,3 @@
-"use strict";
-
-[(function(exports) {
-
 // disk name
 const DISK_NAME = 'p055um';
 
@@ -57,7 +53,7 @@ const FINGERPRINTING = 'fingerprinting',
 
 const CONTENTSCRIPTS = new Set([
   '/js/bootstrap.js',
-  '/js/contentscripts/fingercounting.js',
+  '/js/contentscripts/fingercounting.cjs',
   '/js/initialize_contentscripts.js',
 ]);
 
@@ -78,7 +74,7 @@ const REMOVE_ACTION = 'remove_action';
 
 const GET_DEBUG_LOG = 'get_debug_log';
 
-Object.assign(exports, {
+export {
   DISK_NAME,
   responses,
   NO_ACTION,
@@ -102,6 +98,4 @@ Object.assign(exports, {
   POPUP,
   REMOVE_ACTION,
   GET_DEBUG_LOG,
-});
-
-})].map(func => typeof exports == 'undefined' ? define('/constants', func) : func(exports));
+};

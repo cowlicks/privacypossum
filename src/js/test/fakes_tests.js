@@ -1,7 +1,5 @@
-'use strict';
-
-const assert = require('chai').assert,
-  fakes = require('../fakes');
+import chai from 'chai'; const {assert} = chai;
+import * as fakes from '../fakes.js';
 
 describe('fakes.js', function() {
   describe('Connects', function() {

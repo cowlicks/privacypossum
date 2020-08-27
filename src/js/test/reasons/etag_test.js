@@ -1,9 +1,8 @@
-"use strict";
-
-const {assert} = require('chai'),
-  {Store} = require('../../store'),
-  {newEtagHeaderFunc, setEtagAction} = require('../../reasons/etag'),
-  {etag: {ETAG_TRACKING}} = require('../../constants');
+import chai from 'chai'; const {assert} = chai;
+import {Store} from '../../store.js';
+import {newEtagHeaderFunc, setEtagAction} from '../../reasons/etag.js';
+import {etag} from '../../constants.js';
+const {ETAG_TRACKING} = etag;
 
 describe('etag.js', function() {
   let etagValue ='hi', href = 'https://foo.com/stuff.js';

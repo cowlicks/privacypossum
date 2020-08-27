@@ -1,13 +1,12 @@
-"use strict";
+import {shim} from './shim.js';
+import * as constants from './constants.js';
 
-[(function(exports) {
+const {header_methods, request_methods} = constants;
+const {ON_BEFORE_REQUEST, ON_BEFORE_SEND_HEADERS, ON_HEADERS_RECEIVED} = request_methods;
+import {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions} from './browser_compat.js';
+import {Handler} from './reasons/handlers.js';
 
-const shim = require('./shim'), {URL} = shim,
-  constants = require('./constants'),
-  {header_methods, request_methods} = constants,
-  {ON_BEFORE_REQUEST, ON_BEFORE_SEND_HEADERS, ON_HEADERS_RECEIVED} = request_methods,
-  {getOnBeforeRequestOptions, getOnBeforeSendHeadersOptions, getOnHeadersReceivedOptions} = require('./browser_compat'),
-  {Handler} = require('./reasons/handlers');
+const {URL} = shim;
 
 function annotateDetails(details, requestType) {
   return Object.assign(details, {
@@ -131,6 +130,4 @@ class WebRequest {
   }
 }
 
-Object.assign(exports, {WebRequest, annotateDetails});
-
-})].map(func => typeof exports == 'undefined' ? define('/webrequest', func) : func(exports));
+export {WebRequest, annotateDetails};

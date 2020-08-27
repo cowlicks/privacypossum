@@ -1,9 +1,6 @@
-'use strict';
-
-const assert = require('chai').assert,
-  {Domain} = require('../schemes'),
-  {testGetSetUpdate} = require('./testing_utils'),
-  {Action} = require('../schemes');
+import chai from 'chai'; const {assert} = chai;
+import {Domain, Action} from '../schemes.js';
+import {testGetSetUpdate} from './testing_utils.js';
 
 describe('schemes.js', function() {
   describe('Domain', function() {

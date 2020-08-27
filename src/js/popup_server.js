@@ -1,10 +1,9 @@
-"use strict";
+import {shim} from './shim.js';
+const {onConnect} = shim;
 
-[(function(exports) {
-
-let {onConnect} = require('./shim'),
-    {POPUP} = require('./constants'),
-    {Model, currentTab, log} = require('./utils');
+import {POPUP} from './constants.js';
+import {Model, log} from './utils.js';
+import {currentTab} from './browser_utils.js';
 
 class Server {
   constructor(tabs) {
@@ -30,6 +29,4 @@ class Server {
   }
 }
 
-Object.assign(exports, {Server});
-
-})].map(func => typeof exports == 'undefined' ? define('/popup_server', func) : func(exports));
+export {Server};

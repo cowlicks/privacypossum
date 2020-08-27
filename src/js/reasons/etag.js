@@ -1,11 +1,9 @@
-"use strict";
+import {etag} from '../constants.js';
+import {log, LruMap} from '../utils.js';
+import {sendUrlDeactivate} from './utils.js';
+import {Action} from '../schemes.js';
 
-[(function(exports) {
-
-const {etag: {ETAG_TRACKING}} = require('../constants'),
-  {log, LruMap} = require('../utils'),
-  {sendUrlDeactivate} = require('./utils'),
-  {Action} = require('../schemes');
+const {ETAG_TRACKING} = etag;
 
 async function setEtagAction(store, url, reason, data={etagValue: null}) {
     log(`etag update with:
@@ -60,6 +58,4 @@ const reason = {
   }
 }
 
-Object.assign(exports, {reason, etagHeader, setEtagAction, newEtagHeaderFunc});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/etag', func) : func(exports));
+export {reason, etagHeader, setEtagAction, newEtagHeaderFunc};

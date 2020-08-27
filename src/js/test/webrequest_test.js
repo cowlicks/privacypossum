@@ -1,11 +1,9 @@
-'use strict';
-
-const assert = require('chai').assert,
-  {WebRequest} = require('../webrequest'),
-  {NO_ACTION} = require('../constants'),
-  {Tabs} = require('../tabs'),
-  {Store} = require('../store'),
-  {details, clone, cookie, notCookie} = require('./testing_utils');
+import chai from 'chai'; const {assert} = chai;
+import {WebRequest} from '../webrequest.js';
+import {NO_ACTION} from '../constants.js';
+import {Tabs} from '../tabs.js';
+import {Store} from '../store.js';
+import {details, clone, cookie, notCookie} from './testing_utils.js';
 
 
 describe('webrequest.js', function() {

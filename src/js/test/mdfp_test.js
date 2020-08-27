@@ -1,7 +1,5 @@
-"use strict";
-
-const assert = require('chai').assert,
-  {isMdfp} = require('../domains/mdfp');
+import chai from 'chai'; const {assert} = chai;
+import {isMdfp} from '../domains/mdfp.js';
 
 describe('mdfp.js', function() {
   it('true cases', function() {

@@ -8,12 +8,9 @@
  * Available under MIT license <http://mths.be/mit>
  */
 
-"use strict";
 
-[(function(exports) {
-
-const {publicSuffixes} = require('./psl'),
-    {memoize} = require('../utils');
+import {publicSuffixes} from './psl.js';
+import {memoize} from '../utils.js';
 
 const re_ipv4 = /[0-9]$/;
 
@@ -70,6 +67,4 @@ function getBaseDomain(/**String*/ hostname) {
 }
 getBaseDomain = memoize(getBaseDomain, (x) => x, 1000);
 
-Object.assign(exports, {getBaseDomain});
-
-})].map(func => typeof exports == 'undefined' ? define('/domains/basedomain', func) : func(exports));
+export {getBaseDomain};

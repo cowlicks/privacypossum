@@ -2,14 +2,15 @@
  * Provides a synchronous record of tabs and their frames. Data is recorded from the
  * webrequest api.
  */
-"use strict";
 
-[(function(exports) {
 
-const shim = require('./shim'), {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim,
-  {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} = require('./constants'),
-  {errorOccurred, Counter, listenerMixin, setTabIconActive, safeSetBadgeText, log} = require('./utils'),
-  {isThirdParty} = require('./domains/parties');
+import {shim} from './shim.js';
+const {URL, tabsGet, tabsQuery, tabsExecuteScript} = shim;
+
+import {TYPES, REMOVE_ACTION, CONTENTSCRIPTS} from './constants.js';
+import {Counter, listenerMixin, log} from './utils.js';
+import {errorOccurred, setTabIconActive, safeSetBadgeText} from './browser_utils.js';
+import {isThirdParty} from './domains/parties.js';
 
 class Resource {
   constructor({url, method, type}) {
@@ -198,7 +199,7 @@ class Tabs {
       error: ${error}`);
     if (this.hasTab(tabId)) {
       tabsGet(tabId, () => {
-        if (errorOccurred()) {
+        if (errorOccurred(e => log(`Error getting tab: ${tabId} error: ${e}`))) {
           this.removeTab(tabId);
         }
       });
@@ -209,13 +210,17 @@ class Tabs {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
       for (let file of CONTENTSCRIPTS) {
-        await tabsExecuteScript(tabId, {frameId, runAt: 'document_start', matchAboutBlank: true, file}, () => {
-          if (errorOccurred()) {
-            log(`cannot inject content script ${file} into url ${url} on tab ${tabId} and frame ${frameId}`);
-          }
-        });
+        await tabsExecuteScript(
+          tabId,
+          {frameId, runAt: 'document_start', matchAboutBlank: true, file},
+          () => errorOccurred(e => log(`cannot inject content script ${file}
+    on url: ${url}
+    on tab: ${tabId}
+    on frame: ${frameId}.
+    errror message: '${e.message}'`)),
+        );
       }
-    }
+    };
   }
 
   getTabHostname(tabId) {
@@ -319,6 +324,4 @@ async function getAllFrames(tabId) {
   return new Promise(resolve => shim.getAllFrames({tabId}, resolve));
 }
 
-Object.assign(exports, {Frame, Tabs, Tab});
-
-})].map(func => typeof exports == 'undefined' ? define('/tabs', func) : func(exports));
+export {Frame, Tabs, Tab};

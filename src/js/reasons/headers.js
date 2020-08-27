@@ -1,13 +1,11 @@
-"use strict";
+import {Action} from '../schemes.js';
+import {shim} from '../shim.js';
+import {hasAction} from '../utils.js';
+import {newEtagHeaderFunc} from './etag.js';
+import {Referer} from './referer.js';
+import {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} from '../constants.js';
 
-[(function(exports) {
-
-const {Action} = require('../schemes'),
-  {URL} = require('../shim'),
-  {hasAction} = require('../utils'),
-  {newEtagHeaderFunc} = require('./etag'),
-  {Referer} = require('./referer'),
-  {HEADER_DEACTIVATE_ON_HOST, header_methods, NO_ACTION, TAB_DEACTIVATE_HEADERS} = require('../constants');
+const {URL} = shim;
 
 const alwaysTrue = () => true;
 
@@ -104,6 +102,4 @@ const tabReason = {
   }
 }
 
-Object.assign(exports, {HeaderHandler, requestHandler, tabHeaderHandler, messageHandler, reason, tabReason});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/headers', func) : func(exports));
+export {HeaderHandler, requestHandler, tabHeaderHandler, messageHandler, reason, tabReason};

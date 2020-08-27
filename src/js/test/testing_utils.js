@@ -1,9 +1,9 @@
-"use strict"
+import {shim} from '../shim.js';
+import {Popup} from '../popup.js';
+import {annotateDetails} from '../webrequest.js';
 
-const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = require('../shim'),
-  {Popup} = require('../popup');
 
-const {annotateDetails} = require('../webrequest');
+const {tabsExecuteScript, onNavigationCommitted, onConnect, tabsOnMessage, onMessage, tabsQuery, getAllFrames} = shim;
 
 const notCookie = {name: 'a', value: 'b'},
   cookie = {name: 'Cookie', value: 'c'};
@@ -18,12 +18,17 @@ function clearState() {
   getAllFrames.clear();
 }
 
-async function setDocument(path) {
-  let {JSDOM} = require('jsdom'),
-    {document} = require('../shim'),
-    newDoc = (await JSDOM.fromFile(path)).window.document;
-  document.documentElement.innerHTML = newDoc.documentElement.innerHTML;
+async function setDocumentHtml(path) {
+  let {default: {JSDOM}} = await import('jsdom');
+  let {shim: {document}} = await import('../shim.js');
+  let newDoc = (await JSDOM.fromFile(path)).window.document;
+  (await document).documentElement.innerHTML = newDoc.documentElement.innerHTML;
 }
+
+function useJSDOM(JSDOM) {
+  shim.document.setBase = new JSDOM().window.document;
+}
+
 
 async function makePopup(tabId) {
   tabsQuery.tabs = [{id: tabId}];
@@ -42,7 +47,7 @@ function makeGetterSetterUpdater(obj, suffix) {
 
 async function testGetSetUpdate(obj, suffix, [k1, v1, update] = ['k1', 'v1', 'update']) {
   const [getter, setter, updater] = makeGetterSetterUpdater(obj, suffix),
-   {assert} = require('chai');
+   {default: {assert}} = await import('chai');
 
   setter(k1, v1);
   assert.deepEqual(getter(k1), v1);
@@ -156,4 +161,4 @@ const main_frame = new Details({
 
 const details = {main_frame, sub_frame, first_party_script, script, third_party};
 
-Object.assign(exports, {setDocument, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState});
+export {setDocumentHtml, watchFunc, Mock, stub, stubber, Details, details, clone, cookie, notCookie, toSender, testGetSetUpdate, makePopup, clearState, useJSDOM};

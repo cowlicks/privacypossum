@@ -1,11 +1,8 @@
-"use strict";
-
-[(function(exports) {
-
-const {DiskMap} = require('./disk_map'),
-  {Tree, splitter} = require('./suffixtree'),
-  {Domain} = require('./schemes'),
-  {URL, Disk} = require('./shim');
+import {DiskMap} from './disk_map.js';
+import {Tree, splitter} from './suffixtree.js';
+import {Domain} from './schemes.js';
+import {shim} from './shim.js';
+const {URL, Disk} = shim;
 
 class DomainTree extends Tree {
   beforeSet(val) {
@@ -116,6 +113,4 @@ class Store {
   }
 }
 
-Object.assign(exports, {Store});
-
-})].map(func => typeof exports == 'undefined' ? define('/store', func) : func(exports));
+export {Store};

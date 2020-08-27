@@ -1,9 +1,7 @@
-"use strict";
+import {shim} from '../shim.js';
+import {REMOVE_ACTION, USER_URL_DEACTIVATE} from '../constants.js';
 
-[(function(exports) {
-
-const {sendMessage} = require('../shim'),
-  {REMOVE_ACTION, USER_URL_DEACTIVATE} = require('../constants');
+const {sendMessage} = shim;
 
 function setResponse(response, shortCircuit) {
   return ({}, details) => Object.assign(details, {response, shortCircuit});
@@ -18,7 +16,4 @@ function makeSendAction(type) {
 const sendUrlDeactivate = makeSendAction(USER_URL_DEACTIVATE),
   sendRemoveAction = makeSendAction(REMOVE_ACTION);
 
-Object.assign(exports, {sendUrlDeactivate, sendRemoveAction, setResponse});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/utils', func) : func(exports));
-
+export {sendUrlDeactivate, sendRemoveAction, setResponse};

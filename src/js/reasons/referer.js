@@ -1,8 +1,4 @@
-"use strict";
-
-[(function(exports) {
-
-const {LruMap, log} = require('../utils');
+import {LruMap, log} from '../utils.js';
 
 function is4xx(statusCode) {
   return (400 <= statusCode) && (statusCode < 500);
@@ -44,6 +40,4 @@ class Referer {
   }
 }
 
-Object.assign(exports, {Referer});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/referer', func) : func(exports));
+export {Referer};

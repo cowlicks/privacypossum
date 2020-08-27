@@ -2,19 +2,47 @@
  * We shim browser API's so our code can be compatible with both Node and the
  * Browser without transpiling stuff.
  */
-"use strict";
 
-[(function(exports) {
-
+const exports = {};
 /**
  * we load these lazily.
  */
+
+import {FakeMessages, FakeDisk, Connects} from './fakes.js';
+import {BrowserDisk} from './utils.js';
+
+function wrapObject(base) {
+  let mutableBase = null;
+  return new Proxy(base, {
+    construct(base, thisArg, argumentList) {
+      mutableBase ?? (mutableBase = base);
+      return new mutableBase(...argumentsList);
+    },
+    apply(base, thisArg, argumentsList) {
+      mutableBase ?? (mutableBase = base);
+      return mutableBase.apply(thisArg, argumentsList);
+    },
+    get(base, prop, receiver) {
+      mutableBase ?? (mutableBase = base);
+      const value = mutableBase[prop];
+      return typeof value === 'function' ? value.bind(mutableBase) : value;
+    },
+    set(base, prop, value, receiver) {
+      mutableBase ?? (mutableBase = base);
+      if (prop === 'setBase') {
+        mutableBase = value;
+        return true;
+      }
+      mutableBase[prop] = value;
+      return true;
+    }
+  });
+}
 
 let globalObj = (typeof window === 'object') ? window : global; // eslint-disable-line
 let getter = (name, obj) => name.split('.').reduce((o, i) => o[i], obj);
 let passThru = (x) => x;
 let makeFakeMessages = () => {
-  let {FakeMessages} = require('./fakes');
   return new FakeMessages();
 };
 let makeFakeSendMessage = () => {
@@ -24,7 +52,6 @@ let makeFakeSendMessage = () => {
   return sendMessage;
 }
 let makeFakeDisk = () => {
-  let {FakeDisk} = require('./fakes');
   let out = FakeDisk;
   out.newDisk = () => new FakeDisk();
   return out;
@@ -67,7 +94,7 @@ function shimmer(out_name, real_name, onSuccess, onFail) {
 }
 
 /**
- * shims for api's that share state; // todo use proxy's for these?
+ * shim for api's that share state; // todo use proxy's for these?
  */
 let onAndSendMessage = (name) => {
   let fm = makeFakeMessages();
@@ -84,7 +111,7 @@ let tabsOnAndSendMessage = (name) => {
 };
 
 let connectAndOnConnect = (name) => {
-  let [con, onCon] = require('./fakes').Connects.create();
+  let [con, onCon] = Connects.create();
   assign('onConnect', onCon);
   assign('connect', con);
   return getter(name, exports);
@@ -105,17 +132,7 @@ let setAndGetBadgeText = (name) => {
   return getter(name, exports);
 }
 
-let shims = [
-  ['URL', 'URL', () => URL, () => require('url').URL],
-  ['Disk', 'chrome.storage.local',
-    () => {
-      let {BrowserDisk} = require('./utils');
-      let out = new BrowserDisk(chrome.storage.local);
-      out.newDisk = () => out;
-      return out;
-    },
-    makeFakeDisk,
-  ],
+let shim = [
   ['onMessage', 'chrome.runtime.onMessage', passThru, onAndSendMessage],
   ['sendMessage', 'chrome.runtime.sendMessage', passThru, onAndSendMessage],
   ['onBeforeRequest', 'chrome.webRequest.onBeforeRequest', passThru, makeFakeMessages],
@@ -150,7 +167,6 @@ let shims = [
   ],
   ['connect', 'chrome.runtime.connect', passThru, connectAndOnConnect],
   ['onConnect', 'chrome.runtime.onConnect', passThru, connectAndOnConnect],
-  ['document', 'document', passThru, () => (new (require('jsdom').JSDOM)()).window.document],
   ['tabsQuery', 'chrome.tabs.query', passThru,
     () => {
       let out = (obj, callback) => callback(out.tabs);
@@ -164,10 +180,34 @@ let shims = [
   ['getBadgeText', 'chrome.browserAction.getBadgeText', passThru, setAndGetBadgeText],
   ['setIcon', 'chrome.browserAction.setIcon', passThru, () => () => {}],
   ['getURL', 'chrome.extension.getURL', passThru, () => () => {}],
-  ['React', 'React', passThru, () => require('./external/react/react.production.min.js')],
-  ['ReactDOM', 'ReactDOM', passThru, () => require('./external/react-dom/react-dom.production.min.js')],
+  ['React', 'React', passThru, () => {
+    return import('./external/react/react.production.min.js').then(({default: React}) => React);
+  }],
+  ['ReactDOM', 'ReactDOM', passThru, () => {
+    return import('./external/react-dom/react-dom.production.min.js').then(({default: ReactDOM}) => ReactDOM);
+  }],
+  ['document', 'document', passThru, () => {
+    return wrapObject(
+      import('jsdom').then(({default: {JSDOM}}) => {
+        let mainDoc = (new JSDOM()).window.document;
+        return mainDoc;
+      }));
+  }],
+  ['URL', 'URL', () => URL, () => {
+    return import('url').then(({URL}) => URL);
+  }],
+  ['Disk', 'chrome.storage.local',
+    () => {
+      let out = new BrowserDisk(chrome.storage.local);
+      out.newDisk = () => out;
+      return out;
+    },
+    makeFakeDisk,
+  ],
 ];
 
-shims.forEach(shim => shimmer.apply(undefined, shim));
+shim.forEach(shim => shimmer.apply(undefined, shim));
 
-})].map(func => typeof exports == 'undefined' ? define('/shim', func) : func(exports));
+Object.assign(exports, {wrapObject});
+
+export {exports as shim};

@@ -1,11 +1,10 @@
-'use strict';
-
-let assert = require('chai').assert,
-  {BLOCK, REMOVE_ACTION} = require('../constants'),
-  {onRemoved, getBadgeText, onNavigationCommitted, getAllFrames, tabsQuery, tabsExecuteScript} = require('../shim'),
-  {Action} = require('../schemes'),
-  {cookie} = require('./testing_utils'),
-  {Tab, Tabs} = require('../tabs');
+import chai from 'chai'; const {assert} = chai;
+import {BLOCK, REMOVE_ACTION} from '../constants.js';
+import {shim} from '../shim.js';
+const {onRemoved, getBadgeText, onNavigationCommitted, getAllFrames, tabsQuery, tabsExecuteScript} = shim;
+import {Action} from '../schemes.js';
+import {cookie} from './testing_utils.js';
+import {Tab, Tabs} from '../tabs.js';
 
 const tabId = 1,
   firstParty = 'https://google.com/', thirdParty = 'https://third.com/',

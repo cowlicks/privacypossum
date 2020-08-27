@@ -1,7 +1,6 @@
-"use strict";
 // Initialize the extension. This is only run in the browser.
 
-const {Possum} = require('./possum'),
-  {Disk} = require('./shim');
+import {Possum} from './possum.js';
+import {shim} from './shim.js';
 
-Possum.load(Disk).then(possum => window['possum'] = possum);
+Possum.load(shim.Disk).then(possum => window['possum'] = possum);

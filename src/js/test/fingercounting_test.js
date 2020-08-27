@@ -1,12 +1,14 @@
-'use strict';
+import chai from 'chai'; const {assert} = chai;
+import {makeTrap} from '../utils.js';
+import {Mock} from './testing_utils.js';
 
-const assert = require('chai').assert,
-  {makeFingerCounting} = require('../contentscripts/fingercounting'),
-  {Counter, getUrlFromStackLine} = makeFingerCounting(0, false),
-  {makeTrap} = require('../utils'),
-  {Mock} = require('./testing_utils');
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const {makeFingerCounting} = require('../contentscripts/fingercounting.cjs');
 
-describe('fingercounting.js', function() {
+const {Counter, getUrlFromStackLine} = makeFingerCounting(0, false);
+
+describe('fingercounting.cjs', function() {
   describe('getUrlFromStackLine', function() {
     let data = [
       // test with both http & https urls

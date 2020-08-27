@@ -1,8 +1,4 @@
-"use strict";
-
-[(function(exports) {
-
-const {Listener} = require('./utils');
+import {Listener} from './utils.js';
 
 async function asyncify(func) {
   return new Promise(resolve => setTimeout(() => resolve(func())));
@@ -121,6 +117,4 @@ class Connects extends Function {
   }
 }
 
-Object.assign(exports, {FakeDisk, FakeMessages, fakePort, Connects});
-
-})].map(func => typeof exports == 'undefined' ? define('/fakes', func) : func(exports));
+export {FakeDisk, FakeMessages, fakePort, Connects};

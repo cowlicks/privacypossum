@@ -1,10 +1,7 @@
-"use strict";
+import {shim} from '../shim.js';
+import  {HeaderHandler} from './headers.js';
+import  {Reasons, reasonsArray} from './reasons.js';
 
-[(function(exports) {
-
-const shim = require('../shim'),
-    {HeaderHandler} = require('./headers'),
-    {Reasons, reasonsArray} = require('./reasons');
 
 /*
  * Handler superclass
@@ -146,6 +143,4 @@ class Handler {
   }
 }
 
-Object.assign(exports, {PopupHandler, MessageHandler, RequestHandler, TabHandler, Handler});
-
-})].map(func => typeof exports == 'undefined' ? define('/reasons/handlers', func) : func(exports));
+export {PopupHandler, MessageHandler, RequestHandler, TabHandler, Handler};

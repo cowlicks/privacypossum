@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * These things get written to disk, so we can't use Map/Set & stuff that doesn't serialize there.
  *
@@ -17,7 +15,6 @@
  *
  */
 
-[(function(exports) {
 
 /* `reason` is from constants.reasons* */
 class Action {
@@ -78,6 +75,4 @@ class Domain {
   }
 }
 
-Object.assign(exports, {Action, Domain});
-
-})].map(func => typeof exports == 'undefined' ? define('/schemes', func) : func(exports));
+export {Action, Domain};

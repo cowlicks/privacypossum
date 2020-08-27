@@ -1,63 +1,3 @@
-"use strict";
-
-[(function(exports) {
-
-const {activeIcons, inactiveIcons} = require('./constants'),
-    {setIcon, setBadgeText, tabsQuery, tabsGet} = require('./shim');
-
-function errorOccurred() {
-  if (typeof chrome !== 'undefined' && chrome.runtime.lastError) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-async function currentTab() {
-  const active = true, lastFocusedWindow = true;
-  return new Promise(resolve => {
-    tabsQuery({active, lastFocusedWindow}, tabsFirstTry => {
-      if (tabsFirstTry.length > 0) {
-        resolve(tabsFirstTry[0]);
-      } else { // tab not focused
-        tabsQuery({active}, tabsSecondTry => {
-          resolve(tabsSecondTry[0]);
-        });
-      }
-    });
-  });
-}
-
-async function tabExists(tabId) {
-  if (tabId >= 0) {
-    return await new Promise(resolve => {
-      tabsGet(tabId, () => {
-        if (!errorOccurred()) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      });
-    });
-  } else {
-    return true;
-  }
-}
-
-// todo after setIcon return's a promise, make this return a promise
-async function setTabIconActive(tabId, active) {
-  if (await tabExists(tabId)) {
-    let icons = active ? activeIcons : inactiveIcons;
-    setIcon({tabId: tabId, path: icons});
-  }
-}
-
-async function safeSetBadgeText(tabId, text) {
-  if (await tabExists(tabId)) {
-    setBadgeText({text, tabId});
-  }
-}
-
 /*
  * View of some remote data represented by a `Model`.
  */
@@ -68,9 +8,9 @@ class View {
       onChange
     });
     this.ready = new Promise(resolve => {
-      port.onMessage.addListener(obj => {
+      port.onMessage.addListener(async (obj) => {
         if (obj.change) {
-          onChange(obj.change);
+          await onChange(obj.change);
           resolve();
         }
       });
@@ -326,14 +266,11 @@ function zip() {
   return out;
 }
 
-lazyDef(exports, 'log', () => {
-  let logger = new LogBook(100);
-  return {logger, log: logger.log.bind(logger), prettyLog: logger.prettyLog.bind(logger)};
-});
+const logger = new LogBook(100),
+  log = logger.log.bind(logger),
+  prettyLog = logger.prettyLog.bind(logger);
 
-Object.assign(exports, {
-  currentTab,
-  safeSetBadgeText,
+export {
   View,
   Model,
   LruMap,
@@ -344,13 +281,12 @@ Object.assign(exports, {
   makeTrap,
   listenerMixin,
   Listener,
-  setTabIconActive,
   hasAction,
   isBaseOfHostname,
   lazyDef,
   wrap,
   zip,
-  errorOccurred,
-});
-
-})].map(func => typeof exports == 'undefined' ? define('/utils', func) : func(exports));
+  logger,
+  log,
+  prettyLog,
+};

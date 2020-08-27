@@ -1,13 +1,12 @@
-"use strict";
-
-const assert = require('chai').assert,
-  constants = require('../constants'),
-  {Reason} = require('../reasons/reasons'),
-  {Action} = require('../schemes'),
-  {tabsOnMessage, sendMessage, URL, getBadgeText, tabsQuery} = require('../shim'),
-  {clearState, setDocument, cookie, notCookie, details, Details, toSender, makePopup} = require('./testing_utils'),
-  {Popup, $} = require('../popup'),
-  {Possum} = require('../possum');
+import chai from 'chai'; const {assert} = chai;
+import * as constants from '../constants.js';
+import {Reason} from '../reasons/reasons.js';
+import {Action} from '../schemes.js';
+import {shim} from '../shim.js';
+const {tabsOnMessage, sendMessage, URL, getBadgeText, tabsQuery} = shim;
+import {clearState, setDocumentHtml, cookie, notCookie, details, Details, toSender, makePopup} from './testing_utils.js';
+import {Popup, $} from '../popup.js';
+import {Possum} from '../possum.js';
 
 const {script, main_frame, first_party_script, third_party} = details,
   reqHeaders = new Details(Object.assign(script.copy(), {requestHeaders: [cookie, notCookie]})),
@@ -21,7 +20,7 @@ async function reloadPossum(possum) {
 
 async function reloadEverything(possum) {
   clearState();
-  await setDocument('../skin/popup.html');
+  await setDocumentHtml('../skin/popup.html');
   return await reloadPossum(possum);
 }
 
@@ -31,7 +30,7 @@ describe('possum.js', function() {
     this.onBeforeRequest = this.possum.webRequest.onBeforeRequest.bind(this.possum.webRequest);
     this.onBeforeSendHeaders = this.possum.webRequest.onBeforeSendHeaders.bind(this.possum.webRequest);
     this.onHeadersReceived = this.possum.webRequest.onHeadersReceived.bind(this.possum.webRequest);
-    await setDocument('../skin/popup.html');
+    await setDocumentHtml('../skin/popup.html');
   });
 
   describe('header deactivate', function() {

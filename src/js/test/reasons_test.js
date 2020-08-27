@@ -1,17 +1,18 @@
-"use strict";
+import chai from 'chai'; const {assert} = chai;
+import {Tabs, Tab} from '../tabs.js';
+import {Store} from '../store.js';
+import {shim} from '../shim.js';
+const {URL, onMessage, onUpdated} = shim;
+import {Action} from '../schemes.js';
+import {cookie, notCookie} from './testing_utils.js';
+import {details} from './testing_utils.js';
+const {main_frame, third_party} = details;
+import {Reason, Reasons, reasonsArray, tabDeactivate} from '../reasons/reasons.js';
+import {onUserUrlDeactivate} from '../reasons/user_url_deactivate.js';
+import {PopupHandler, Handler, TabHandler} from '../reasons/handlers.js';
+import {messageHandler, tabHeaderHandler, requestHandler} from '../reasons/headers.js';
 
-const {assert} = require('chai'),
-  {Tabs, Tab} = require('../tabs'),
-  {Store} = require('../store'),
-  {URL, onMessage, onUpdated} = require('../shim'),
-  {Action} = require('../schemes'),
-  {cookie, notCookie} = require('./testing_utils'),
-  {main_frame, third_party} = require('./testing_utils').details,
-  {Reason, Reasons, reasonsArray, tabDeactivate} = require('../reasons/reasons'),
-  {onUserUrlDeactivate} = require('../reasons/user_url_deactivate'),
-  {PopupHandler, Handler, TabHandler} = require('../reasons/handlers');
-
-const {TAB_DEACTIVATE, TAB_DEACTIVATE_HEADERS, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST, request_methods} = require('../constants');
+import {TAB_DEACTIVATE, TAB_DEACTIVATE_HEADERS, NO_ACTION, USER_HOST_DEACTIVATE, CANCEL, USER_URL_DEACTIVATE, BLOCK, FINGERPRINTING, HEADER_DEACTIVATE_ON_HOST, request_methods} from '../constants.js';
 
 describe('reasons.js', function() {
   beforeEach(function() {
@@ -21,7 +22,6 @@ describe('reasons.js', function() {
   });
 
   describe('header deactivate', function() {
-    let {messageHandler, tabHeaderHandler, requestHandler} = require('../reasons/headers');
     it('messageHandler', async function() {
       let {url, tabId} = main_frame;
       this.tabs.addResource(main_frame);

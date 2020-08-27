@@ -1,5 +1,3 @@
-"use strict";
-
 /*
  * Clear global state between each test
  *
@@ -7,13 +5,20 @@
  * clear them between each stateful interface between each test.
  */
 
-const {clearState} = require('./testing_utils'),
-  {logger} = require('../utils'),
-  {colors} = require('mocha/lib/reporters/base');
+import {clearState, useJSDOM} from './testing_utils.js';
+import {logger} from '../utils.js';
+import mochaBase from 'mocha/lib/reporters/base.js';
+
+const {colors} = mochaBase;
+import * as jsdom from 'jsdom';
+const {default: {JSDOM}} = jsdom;
 
 colors['pass'] = '32';
 colors['error stack'] = '31';
 
+before(() => {
+  useJSDOM(JSDOM);
+});
 
 beforeEach(function() {
   logger.print = false;

@@ -1,14 +1,14 @@
-"use strict";
 // todo messages.js was added reasons/handlers.js, so rename this file, or add it to handlers.js
 
-const assert = require('chai').assert,
-  constants = require('../constants'),
-  {URL, onMessage, sendMessage} = require('../shim'),
-  {Tabs} = require('../tabs'),
-  {Store} = require('../store'),
-  {Action} = require('../schemes'),
-  {MessageHandler} = require('../reasons/handlers'),
-  {Mock, Details, details} = require('./testing_utils');
+import chai from 'chai'; const {assert} = chai;
+import * as constants from '../constants.js';
+import {shim} from '../shim.js';
+const {URL, onMessage, sendMessage} = shim;
+import {Tabs} from '../tabs.js';
+import {Store} from '../store.js';
+import {Action} from '../schemes.js';
+import {MessageHandler} from '../reasons/handlers.js';
+import {Mock, Details, details} from './testing_utils.js';
 
 describe('messages.js', function() {
   describe('MessageHandler', function() {
