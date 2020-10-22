@@ -13,7 +13,6 @@
     "tabs",
     "http://*/*",
     "https://*/*",
-    "contextMenus",
     "webRequest",
     "webRequestBlocking",
     "webNavigation",
