@@ -1,7 +1,6 @@
 toplevel := $(shell git rev-parse --show-toplevel)
 possum_pem := $(toplevel)/possum.pem
 possum_zip := $(toplevel)/possum.zip
-possum_crx := $(toplevel)/possum.crx
 
 clean:
 	rm -rf src/js/node_modules
@@ -9,7 +8,6 @@ clean:
 	rm -rf selenium/node_modules
 	rm -f selenium/package-lock.json
 	rm -f possum.zip
-	rm -f possum.crx
 
 test_node: src/js/node_modules
 	./scripts/test.sh
@@ -38,9 +36,6 @@ src/js/node_modules: src/js/package.json
 selenium/node_modules: selenium/package.json
 	cd selenium && npm install
 
-possum.crx: possum.zip src/js/node_modules $(shell git ls-files src)
-	src/js/node_modules/.bin/crx3-new $(possum_pem) < $(possum_zip) > $(possum_crx)
-
 git_tag_release:
 	today=$$(date '+%Y.%-m.%-d'); \
 	manifest_version=$$(jq ".version" src/manifest.json); \
@@ -51,6 +46,6 @@ git_tag_release:
 	echo "tagging version: \"$${today}\""; \
 	git tag $${today}
 
-release: clean git_tag_release possum.zip possum.crx
+release: clean git_tag_release possum.zip
 
 .PHONY: clean test_node test_selenium npm_install_node npm_install_selenium psl release
