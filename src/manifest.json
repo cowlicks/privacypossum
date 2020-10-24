@@ -13,12 +13,10 @@
     "tabs",
     "http://*/*",
     "https://*/*",
-    "contextMenus",
     "webRequest",
     "webRequestBlocking",
     "webNavigation",
-    "storage",
-    "cookies"
+    "storage"
   ],
   "icons": {
     "48": "media/icon48.png",
