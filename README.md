@@ -124,8 +124,8 @@ Exported stuff is assigned to properties on `exports` just like in node.
 * save and commit
 * run `make release`, this tags the repo with the manifest version and builds a zip file
 * test the zip file in a fresh instances of supported browsers.
-    - for chrome run `google-chrome --user-data-dir=$(mktemp -d)` install the zip by dragging it to the chrome://extensions/ page.
-    - for firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging` and click load temporary addon. Navigate to the zip file.
+    - For chrome run `google-chrome --user-data-dir=$(mktemp -d)`. Go to `chrome://extensions/` and enable "developer mode". Install the zip by dragging it onto the page.
+    - For firefox run `firefox --profile $(mktemp -d) --no-remote --new-instance`. Go to `about:debugging#/runtime/this-firefox` and click load temporary addon. Navigate to the zip file.
     - Do some basic Q&A tests, visit https://valve.github.io/fingerprintjs2/ https://reddit.com/ https://twitch.tv/ https://duckduckgo.com/
 * upload the zip.
     - for chrome visit https://chrome.google.com/webstore/developer/edit/ommfjecdpepadiafbnidoiggfpbnkfbj record any other edits to the chrome store profile in this repo
