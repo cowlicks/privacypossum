@@ -210,15 +210,22 @@ class Tabs {
     const tab = this.getTab(tabId);
     if ((tabId >= 0) && tab && tab.active) {
       for (let file of CONTENTSCRIPTS) {
-        await tabsExecuteScript(
-          tabId,
-          {frameId, runAt: 'document_start', matchAboutBlank: true, file},
-          () => errorOccurred(e => log(`cannot inject content script ${file}
-    on url: ${url}
-    on tab: ${tabId}
-    on frame: ${frameId}.
-    errror message: '${e.message}'`)),
-        );
+        await new Promise((resolve) => {
+          tabsExecuteScript(
+            tabId,
+            {frameId, runAt: 'document_start', matchAboutBlank: true, file},
+            async (result) => {
+              errorOccurred((e) => {
+                log(`cannot inject content script ${file}
+        on url: ${url}
+        on tab: ${tabId}
+        on frame: ${frameId}.
+        errror message: '${e.message}'`);
+              });
+              resolve(await result);
+            }
+          );
+        });
       }
     };
   }
