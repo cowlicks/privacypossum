@@ -1,13 +1,19 @@
 body {
-  margin-top: 2px;
-  background-color: white;
-  font-family: Cantarell, Arial, sans-serif;
-  width: 300px;
+  margin: 8px;
+  color: #20123a;
+  background-color: #f9f9fb;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 header {
+  font-family: Metropolis;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
   border-bottom: 1px solid rgb(238, 238, 238);
-  margin-bottom: 8px;
+  padding-bottom: 8px;
 }
 
 footer {
@@ -43,6 +49,7 @@ code {
 }
 
 #title {
+  white-space: nowrap;
   font-size: 20;
   padding-left: 5;
 }
@@ -50,10 +57,13 @@ code {
 #on-off {
   display: flex;
   align-items: center;
+  padding-left: 8;
 }
 
 #on-off-text {
   font-size: 10;
+  font-weight: 400;
+  padding-top: 6;
   padding-right: 5;
 }
 
