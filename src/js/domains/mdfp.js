@@ -98,6 +98,7 @@ let multiDomainFirstPartiesArray = [
   ["century21.com", "21online.com"],
   ["chart.io", "chartio.com"],
   ["cnet.com", "cnettv.com", "com.com", "download.com", "news.com", "search.com", "upload.com"],
+  ["codepen.io", "cdpn.io"],
   ["concur.com", "concursolutions.com"],
   ["cox.com", "cox.net"],
   ["cricketwireless.com", "aiowireless.com"],
